@@ -55,18 +55,28 @@
 
 ## Task 4: Ship (walkthrough + pr_description + push + PR)
 
-> 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다. Hook 의 `.md` 제외가 Task 3 commit 이후 적용되므로 본 단계의 walkthrough/pr_description 본문은 시크릿 패턴 리터럴 사용 자유.
+> 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다. Hook 의 `.md` 제외가 Task 3 commit + 본 task 의 dogfood-sync 이후 적용되므로 산출물 본문은 시크릿 패턴 리터럴 사용 자유.
+
+### 4-0. Dogfood-sync (Hard Stop 후 추가됨)
+
+> 사전 검토에선 sources/ 패치만 작성했으나, `.harness-kit/` 가 PR #3 + 본 spec sources/ 패치와 비동기 (dogfood-sync drift) 라 Ship commit 차단됨. ADR-003 의 update.sh SSOT 정책으로 해소.
+
+- [x] main checkout 후 `bash update.sh --yes` → `.harness-kit/hooks/check-secrets.sh` 에 PR #3 `.env.*.example` filter 반영
+- [x] main 에 chore commit + push: `chore: dogfood sync after PR #3 (.env.*.example filter)` → `3ee4b1e`
+- [x] spec branch checkout → `git rebase main` (linear history 유지, hash 변경: de71624→8a74595, 2b5b8cc→efc7b09)
+- [x] spec branch 에서 다시 `bash update.sh --yes` → `.harness-kit/hooks/check-secrets.sh` 에 본 spec `.md` exclude 반영
+- [x] Commit: `chore(spec-x-check-secrets-docs-context): apply dogfood sync for .md exclude` → `a86f086`
 
 ### 4-1. 산출물 작성
-- [ ] `tests/test-check-secrets-dual-mode.sh` 전체 PASS 재확인 (증거 로그용)
-- [ ] **walkthrough.md 작성** (분기 분석 결정 기록, Test 14·15·16 신규, 16/16 결과 로그, Task 3 commit 이후 docs 본문 자유 회복 확인)
-- [ ] **pr_description.md 작성** (변경 요약, 회귀 가드 목록, 테스트 결과)
+- [x] `tests/test-check-secrets-dual-mode.sh` 전체 PASS 재확인 (증거 로그용)
+- [x] **walkthrough.md 작성** (분기 분석 결정 기록, Test 14·15·16 신규, 16/16 결과 로그, Task 3 commit 이후 docs 본문 자유 회복 확인)
+- [x] **pr_description.md 작성** (변경 요약, 회귀 가드 목록, 테스트 결과)
 
 ### 4-2. Ship Commit
-- [ ] Commit: `docs(spec-x-check-secrets-docs-context): ship walkthrough and pr description`
+- [x] Commit: `docs(spec-x-check-secrets-docs-context): ship walkthrough and pr description`
 
 ### 4-3. Push & PR
-- [ ] task.md 의 모든 `[ ]` 가 `[x]` 또는 `[-]` 인지 확인
+- [x] task.md 의 모든 `[ ]` 가 `[x]` 또는 `[-]` 인지 확인
 - [ ] **Push**: `git push -u origin spec-x-check-secrets-docs-context`
 - [ ] **PR 생성**: `gh pr create --repo LeoYoon7/harness-kit --base main`
 - [ ] **사용자 알림**: PR URL 보고 후 머지 대기
@@ -77,7 +87,7 @@
 
 | 항목 | 값 |
 |---|---|
-| **총 Task 수** | 4 (Pre-flight 제외) |
-| **예상 commit 수** | 3 (test + fix + docs/ship) |
-| **현재 단계** | Planning |
+| **총 Task 수** | 4 (Pre-flight 제외) + Task 4-0 dogfood-sync deviation |
+| **예상 commit 수** | spec branch 4 (test + fix + chore-sync + docs/ship) + main 1 (PR #3 sync chore) |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-05-28 |
