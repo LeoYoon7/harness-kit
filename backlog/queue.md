@@ -16,7 +16,6 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
-- [ ] spec-x-notify-auq-scope-fix — notify-auq-scope-fix
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -119,6 +118,7 @@
 - [x] spec-x-gemini-review (완료)
 - [x] spec-x-md-lf-normalize (완료)
 - [x] spec-x-notify-choice-context (완료)
+- [x] spec-x-notify-auq-scope-fix (완료)
 <!-- sdd:done:end -->
 
 ---
