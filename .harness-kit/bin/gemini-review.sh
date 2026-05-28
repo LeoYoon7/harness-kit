@@ -24,7 +24,12 @@ if ! command -v gemini >/dev/null 2>&1; then
 fi
 
 # 2. 활성 spec 식별
-STATUS_JSON=$(bash .harness-kit/bin/sdd status --json --no-drift 2>/dev/null)
+SDD_BIN="$PROJECT_ROOT/.harness-kit/bin/sdd"
+if [ ! -x "$SDD_BIN" ]; then
+    echo "✗ sdd 가 설치되지 않았습니다: $SDD_BIN" >&2
+    exit 1
+fi
+STATUS_JSON=$(bash "$SDD_BIN" status --json --no-drift 2>/dev/null)
 if [ -z "$STATUS_JSON" ]; then
     echo "✗ sdd status --json 호출 실패" >&2
     exit 1
@@ -67,70 +72,37 @@ if [ -z "$DIFF_STAT" ]; then
     exit 1
 fi
 
-# 5. 프롬프트 구성
-SPEC_BODY=$(cat "$SPEC_DIR/spec.md")
-DIFF_BODY=$(git diff "${BASE_BRANCH}...HEAD")
+# 5. 입력 본문 구성 (stdin 으로 전달 — argv 크기 한계 회피)
+INPUT_FILE=$(mktemp)
+{
+    echo "# Spec ($SPEC_ID)"
+    echo
+    cat "$SPEC_DIR/spec.md"
+    echo
+    echo "---"
+    echo
+    echo "# Diff (${BASE_BRANCH}...HEAD)"
+    echo
+    echo '```diff'
+    git diff "${BASE_BRANCH}...HEAD"
+    echo '```'
+} > "$INPUT_FILE"
 
-PROMPT=$(cat <<EOF
-당신은 독립적인 시니어 개발자 코드 리뷰어입니다.
-아래 spec 의 요구사항과 실제 코드 변경 (diff) 을 비교하여, 다음 3가지 관점에서 리뷰하세요.
+# 6. 짧은 지시문 (argv 안전 크기)
+INSTRUCTION="당신은 독립적인 시니어 개발자 코드 리뷰어입니다. 위 spec 의 요구사항과 실제 코드 변경 (diff) 을 비교하여 다음 3가지 관점에서 리뷰하세요. (1) Spec 대비 구현 검증 — Functional Requirements 모두 충족됐는가, scope creep 은 없는가. (2) 코드 품질 — KISS / DRY / Feature Envy / Dead Code / 네이밍 / 에러 처리. (3) 테스트 커버리지 — happy path / edge case / 동작 검증 vs 구현 검증. 발견된 문제마다 심각도 (Critical / Major / Minor) 를 매기고, 반드시 파일경로:라인번호 형식으로 위치를 명시하세요. 발견 없음인 관점은 '발견 없음' 으로 표기. 출력은 한국어 마크다운 형식. 첫 줄은 '# Code Review (Gemini): ${SPEC_ID}'. 다음 섹션: ## 요약 (전체 평가 Approve/Request Changes/Comment, Critical N, Major N, Minor N), ## 상세 리뷰 (### 1. Spec 대비 구현 검증, ### 2. 코드 품질, ### 3. 테스트 커버리지), ## 권고사항. 다른 텍스트는 출력하지 마세요."
 
-(1) Spec 대비 구현 검증 — Functional Requirements 모두 충족됐는가, scope creep 은 없는가
-(2) 코드 품질 — KISS / DRY / Feature Envy / Dead Code / 네이밍 / 에러 처리
-(3) 테스트 커버리지 — happy path / edge case / 동작 검증 vs 구현 검증
-
-발견된 문제마다 심각도 (Critical / Major / Minor) 를 매기고, 반드시
-\`파일경로:라인번호\` 형식으로 위치를 명시하세요. 발견 없음인 관점은 "발견 없음" 으로 표기.
-
-출력은 한국어 마크다운 형식, 다음 구조 그대로:
-
-# Code Review (Gemini): ${SPEC_ID}
-
-## 요약
-- 전체 평가: (Approve / Request Changes / Comment)
-- Critical: N
-- Major: N
-- Minor: N
-
-## 상세 리뷰
-
-### 1. Spec 대비 구현 검증
-- [심각도] \`파일:라인\` — 내용
-
-### 2. 코드 품질
-- [심각도] \`파일:라인\` — 내용 (위반 원칙: KISS/DRY/...)
-
-### 3. 테스트 커버리지
-- [심각도] 내용
-
-## 권고사항
-- (수정 제안 목록, 파일:라인 참조 포함)
-
----
-
-# Spec (${SPEC_ID})
-
-${SPEC_BODY}
-
----
-
-# Diff (${BASE_BRANCH}...HEAD)
-
-\`\`\`diff
-${DIFF_BODY}
-\`\`\`
-EOF
-)
-
-# 6. Gemini 호출 (read-only)
 OUTPUT_FILE="$SPEC_DIR/code-review-gemini.md"
 echo "🔍 Gemini 리뷰 실행 중 ($SPEC_ID, base=$BASE_BRANCH)..." >&2
 
-if ! gemini -p "$PROMPT" --approval-mode plan > "$OUTPUT_FILE" 2>/dev/null; then
+GEMINI_STDERR=$(mktemp)
+if ! gemini -p "$INSTRUCTION" --approval-mode plan < "$INPUT_FILE" > "$OUTPUT_FILE" 2>"$GEMINI_STDERR"; then
     echo "✗ gemini CLI 호출 실패" >&2
-    rm -f "$OUTPUT_FILE"
+    echo "--- gemini stderr ---" >&2
+    cat "$GEMINI_STDERR" >&2
+    rm -f "$OUTPUT_FILE" "$GEMINI_STDERR" "$INPUT_FILE"
     exit 1
 fi
+rm -f "$GEMINI_STDERR" "$INPUT_FILE"
 
 if [ ! -s "$OUTPUT_FILE" ]; then
     echo "✗ Gemini 가 빈 응답을 반환했습니다" >&2
@@ -138,6 +110,6 @@ if [ ! -s "$OUTPUT_FILE" ]; then
     exit 1
 fi
 
-# 7. 요약 추출
+# 7. 요약 추출 (마크다운 리스트 마커 / 공백 변형 허용)
 echo "✅ Gemini 리뷰 완료: $OUTPUT_FILE" >&2
-grep -E "^- (전체 평가|Critical|Major|Minor)" "$OUTPUT_FILE" 2>/dev/null | head -4 >&2 || true
+grep -E "^[-*]\s+(전체 평가|Critical|Major|Minor)" "$OUTPUT_FILE" 2>/dev/null | head -4 >&2 || true
