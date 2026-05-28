@@ -16,7 +16,6 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
-- [ ] spec-x-check-secrets-docs-context — check-secrets-docs-context
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -112,6 +111,7 @@
 - [x] spec-x-notify-channels (완료)
 - [x] spec-x-dogfood-sync (완료)
 - [x] spec-x-check-secrets-env-example (완료)
+- [x] spec-x-check-secrets-docs-context (완료)
 <!-- sdd:done:end -->
 
 ---
