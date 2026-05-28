@@ -264,6 +264,55 @@ Spec 완료: <N>/<N> Merged
 권장: <1번 또는 2번> — <FAIL 여부 및 리스크 기반 근거>" phase
 ```
 
+#### 9. 사용자 응답 직후 — 진행 시작 알림 (info) 【필수】
+
+사용자가 명시적 의사결정에 응답하면 **에이전트는 즉시 다음 명령을 실행**합니다.
+multi-device 환경에서 PC 응답 시 모바일 측에 진행 상태를 동기화하기 위한 핵심 알림.
+
+```bash
+bash .harness-kit/bin/notify-telegram.sh "✅ [ack] 사용자 응답: <선택지 요약>
+진행: <다음 단계 한 줄 요약>" info
+```
+
+본문에 `[ack]` prefix 가 반드시 포함되어야 합니다 — 사후 grep 으로 응답 알림 누락 사례 추적 가능.
+
+**트리거 (반드시 발송)**:
+- 명시적 선택지 응답 (`1`/`2`/`3`/`권장`/`Y`/`N`/`yes`/`no` 등)
+- AskUserQuestion 응답
+- Plan Accept / Critique / spec-critique 등 명시적 게이트 응답
+- Go/No-Go 다이얼로그 의사결정 응답
+- Opinion Divergence Reconciliation 옵션 선택 (constitution §5.6)
+
+**제외 (발송 안 함)**:
+- 일반 대화 / 질문 (선택지 형식 아님)
+- task 완료 / merge signal (별도 `merge` 레벨 알림 존재)
+- 자유 형식 텍스트 응답 (특정 선택지로 매핑 안 됨)
+
+**판단 기준**: *직전 에이전트 발화가 선택지 제시 (`[선택지]` / `[권장]` / `[Y/n]` / AskUserQuestion / numbered options) 였는가?* 그렇다면 사용자의 다음 응답은 의사결정 응답이라 발송 필요.
+
+**판단 책임**: 에이전트가 직접 판단. 본 절차 위반 사례를 사용자가 발견하면 walkthrough.md / RCA 에 캡처하여 학습.
+
+**누락 비용 비대칭** (중요): 다른 절차들 (One Task = One Commit, §1-§8 알림 등) 의 누락은 PC 세션에서 회복 가능하나, **§9 누락은 모바일 사용자가 응답 여부 자체를 모름 → 회복 불가**. 누락 비용이 다른 절차보다 비대칭으로 높음. 절차 위반 발견 시 walkthrough.md 외에 RCA 작성도 우선 고려.
+
+**Multi-device 가치**: PC 에서 응답해도 모바일에서 "어떤 선택지로 진행 중" 즉시 확인 가능. multi-device 사용자의 상태 불확실성 제거.
+
+**예시**:
+```bash
+# Plan Accept 응답 후
+bash .harness-kit/bin/notify-telegram.sh "✅ [ack] 사용자 응답: 1번 (Plan Accept)
+진행: Strict Loop 시작 — Task 1 브랜치 생성" info
+
+# Reconciliation 옵션 선택 후
+bash .harness-kit/bin/notify-telegram.sh "✅ [ack] 사용자 응답: A (현재 spec 에 통합)
+진행: spec/plan/task 갱신 → Plan Accept 재요청" info
+
+# AskUserQuestion 응답 후
+bash .harness-kit/bin/notify-telegram.sh "✅ [ack] 사용자 응답: Repo 전체 (archive/ 포함)
+진행: spec-x-md-lf-normalize spec/plan/task 작성" info
+```
+
+관련 ADR: `docs/decisions/ADR-004-notification-twofold-decision-flow.md` — 의사결정 요청 (자동 hook) + 응답 ack (에이전트 절차) 양방향 컨벤션.
+
 ### Strict Loop 중 Task 완료 알림 정책
 
 매 task마다 알림은 소음이 되므로 **기본 비활성**. 다음 경우에만 발송:
