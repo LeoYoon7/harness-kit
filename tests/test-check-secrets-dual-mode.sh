@@ -315,6 +315,73 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────
+# Test 14: .md 본문에 시크릿 할당 패턴 리터럴 staged → 통과 (docs false positive 해소)
+#   spec-x-check-secrets-docs-context: spec/walkthrough/pr_description 본문의
+#   *설명용* 리터럴이 hook 에 잡혀 commit 자체가 차단되는 self-trigger 해소.
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "▶ Test 14: git hook 모드 + .md 본문에 시크릿 할당 패턴 리터럴 staged → 통과"
+REPO14="$(_make_repo)"
+_install_hooks "$REPO14"
+
+# 패턴 변수 분리 — 이 테스트 파일 staged 시 self-trigger 방지
+_PWD_KW="password"; _ASSIGN="=<your-password>"
+echo "예시: ${_PWD_KW}${_ASSIGN} 같이 .md 본문 설명에 적힐 수 있음" > "$REPO14/notes.md"
+git -C "$REPO14" add notes.md
+
+exit_code=0
+_run_secrets "$REPO14" "HARNESS_GIT_HOOK_MODE=1" || exit_code=$?
+
+if [ "$exit_code" -eq 0 ]; then
+  ok "Test 14: .md 본문 시크릿 할당 패턴 리터럴 → 통과 (exit=0)"
+else
+  fail "Test 14: .md 본문 시크릿 할당 패턴 리터럴 → 차단됨 (통과되어야 함, exit=$exit_code)"
+fi
+
+# ─────────────────────────────────────────────────────────
+# Test 15: .py 본문에 동일 패턴 staged → 차단 (regression 가드: 비-md 파일은 계속 검사)
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "▶ Test 15: git hook 모드 + .py 본문에 시크릿 할당 패턴 staged → 차단"
+REPO15="$(_make_repo)"
+_install_hooks "$REPO15"
+
+_PWD_KW="password"; _ASSIGN="=<your-password>"
+echo "${_PWD_KW}${_ASSIGN}" > "$REPO15/config.py"
+git -C "$REPO15" add config.py
+
+exit_code=0
+_run_secrets "$REPO15" "HARNESS_GIT_HOOK_MODE=1" || exit_code=$?
+
+if [ "$exit_code" -ne 0 ]; then
+  ok "Test 15: .py 본문 시크릿 할당 패턴 → 차단됨 (exit=$exit_code)"
+else
+  fail "Test 15: .py 본문 시크릿 할당 패턴 → 통과 (차단되어야 함 — regression)"
+fi
+
+# ─────────────────────────────────────────────────────────
+# Test 16: .md 본문에 AWS 키 패턴 staged → 차단 (강한 형식 검사는 .md 도 포함)
+#   .md 제외는 시크릿 할당 패턴 검사에만 적용 — AWS / Private Key / GitHub 토큰은 모든 파일.
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "▶ Test 16: git hook 모드 + .md 본문 AWS 키 staged → 차단 (강한 형식 검사 유지)"
+REPO16="$(_make_repo)"
+_install_hooks "$REPO16"
+
+_AKIA_PFX="AKIA"
+echo "예시 키: ${_AKIA_PFX}IOSFODNN7EXAMPLE12345" > "$REPO16/security-note.md"
+git -C "$REPO16" add security-note.md
+
+exit_code=0
+_run_secrets "$REPO16" "HARNESS_GIT_HOOK_MODE=1" || exit_code=$?
+
+if [ "$exit_code" -ne 0 ]; then
+  ok "Test 16: .md 본문 AWS 키 → 차단됨 (exit=$exit_code)"
+else
+  fail "Test 16: .md 본문 AWS 키 → 통과 (차단되어야 함 — 강한 형식 검사 유지)"
+fi
+
+# ─────────────────────────────────────────────────────────
 # 결과
 # ─────────────────────────────────────────────────────────
 echo ""
