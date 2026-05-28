@@ -43,6 +43,9 @@ fi
 
 # 2. staged diff 에서 시크릿 패턴 검색
 staged_diff="$(git -C "$HARNESS_ROOT" diff --cached 2>/dev/null)"
+# 시크릿 할당 패턴 검사 전용 — .md 본문의 설명용 리터럴 false positive 회피
+# (AWS 키 / Private Key / GitHub 토큰은 강한 형식이라 .md 포함 모든 파일에 계속 적용)
+staged_diff_no_md="$(git -C "$HARNESS_ROOT" diff --cached -- ':(exclude)*.md' 2>/dev/null)"
 
 if [ -n "$staged_diff" ]; then
   # AWS Access Key (추가된 줄만 검사)
@@ -57,8 +60,8 @@ if [ -n "$staged_diff" ]; then
     violations="${violations}  Private Key 패턴 발견\n"
   fi
 
-  # 일반 시크릿 (추가된 줄만, 값이 있는 경우)
-  if echo "$staged_diff" | grep -E '^\+' | grep -qiE '(password|secret|api_key|api_secret|access_token|private_key)[[:space:]]*[=:][[:space:]]*[^[:space:]]+'; then
+  # 일반 시크릿 (추가된 줄만, 값이 있는 경우) — .md 제외 staged diff 사용
+  if echo "$staged_diff_no_md" | grep -E '^\+' | grep -qiE '(password|secret|api_key|api_secret|access_token|private_key)[[:space:]]*[=:][[:space:]]*[^[:space:]]+'; then
     violations="${violations}  시크릿 할당 패턴 발견 (password=, secret=, api_key= 등)\n"
   fi
 
