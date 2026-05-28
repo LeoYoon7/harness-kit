@@ -16,6 +16,7 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
+- [ ] spec-x-sdd-drift-fixes — sdd-drift-fixes
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
