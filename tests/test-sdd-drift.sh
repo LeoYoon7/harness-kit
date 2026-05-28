@@ -174,6 +174,71 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────
+# T6: dogfood-sync — sources/ 와 .harness-kit/ 동일 → 보고 없음
+# (spec-x-sdd-drift-fixes)
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "T6: dogfood-sync (sync 일치) → '도그푸딩 sync' 줄 없음"
+F6=$(make_fixture)
+FIXTURES_TO_CLEAN+=("$F6")
+
+# fixture 에 sources/hooks/ 디렉토리 추가 + .harness-kit/hooks/ 의 파일 한 개 복사 (동일 내용)
+mkdir -p "$F6/sources/hooks"
+if [ -f "$F6/.harness-kit/hooks/check-secrets.sh" ]; then
+  cp "$F6/.harness-kit/hooks/check-secrets.sh" "$F6/sources/hooks/check-secrets.sh"
+fi
+git -C "$F6" add -A >/dev/null 2>&1
+git -C "$F6" commit -q -m "snapshot for T6" >/dev/null 2>&1
+
+OUT6=$(run_sdd_status "$F6")
+if echo "$OUT6" | grep -q "도그푸딩 sync"; then
+  fail "T6: 동일 내용인데 '도그푸딩 sync' 출력됨"
+else
+  ok "T6: sources/ 와 .harness-kit/ 동일 → 보고 없음"
+fi
+
+# ─────────────────────────────────────────────────────────
+# T7: dogfood-sync — sources/ 와 .harness-kit/ 다름 → '도그푸딩 sync: N ...' 출력
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "T7: dogfood-sync (mismatch) → '도그푸딩 sync: 1 파일' 출력"
+F7=$(make_fixture)
+FIXTURES_TO_CLEAN+=("$F7")
+
+mkdir -p "$F7/sources/hooks"
+if [ -f "$F7/.harness-kit/hooks/check-secrets.sh" ]; then
+  # 다른 내용으로 sources/ 의 파일 생성 (mismatch)
+  echo "# intentionally different from .harness-kit/" > "$F7/sources/hooks/check-secrets.sh"
+fi
+git -C "$F7" add -A >/dev/null 2>&1
+git -C "$F7" commit -q -m "snapshot for T7" >/dev/null 2>&1
+
+OUT7=$(run_sdd_status "$F7")
+if echo "$OUT7" | grep -qE "도그푸딩 sync: [1-9]"; then
+  ok "T7: mismatch 검출 — '도그푸딩 sync: N 파일' 출력"
+else
+  fail "T7: mismatch 인데 '도그푸딩 sync' 메시지 누락"
+fi
+
+# ─────────────────────────────────────────────────────────
+# T8: dogfood-sync — sources/ 디렉토리 없음 → skip (보고 없음)
+# (외부 target 사용자 환경 시뮬레이션)
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "T8: dogfood-sync (sources/ 없음) → skip 보고 없음"
+F8=$(make_fixture)
+FIXTURES_TO_CLEAN+=("$F8")
+
+# make_fixture 결과에 sources/ 없음 — 그대로 사용
+
+OUT8=$(run_sdd_status "$F8")
+if echo "$OUT8" | grep -q "도그푸딩 sync"; then
+  fail "T8: sources/ 없는데 '도그푸딩 sync' 출력됨 (외부 target 영향)"
+else
+  ok "T8: sources/ 없음 → _drift_dogfood_sync skip"
+fi
+
+# ─────────────────────────────────────────────────────────
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  결과: PASS=$PASS  FAIL=$FAIL"

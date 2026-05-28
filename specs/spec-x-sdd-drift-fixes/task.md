@@ -52,13 +52,10 @@
 > `_drift_dogfood_sync` 신규 함수의 동작 검증.
 
 ### 4-1. 테스트 케이스 작성
-- [ ] `tests/test-sdd-drift.sh` 에 T6/T7/T8 추가:
-  - T6: fixture 에 sources/hooks/foo.sh = .harness-kit/hooks/foo.sh (sync) → drift 섹션에 `도그푸딩 sync` 줄 없음
-  - T7: fixture 에 sources/hooks/foo.sh ≠ .harness-kit/hooks/foo.sh (mismatch) → `도그푸딩 sync: 1 파일 ... 권장` 줄 출력
-  - T8: fixture 에 sources/ 디렉토리 없음 → `_drift_dogfood_sync` skip (drift 섹션에 줄 없음)
-- [ ] 테스트 실행: `bash tests/test-sdd-drift.sh`
-- [ ] 결과 확인: T6/T8 PASS (현재는 함수 자체가 없어 호출 안 됨 → 줄 없음), T7 FAIL (mismatch 검출 안 됨)
-- [ ] Commit: `test(spec-x-sdd-drift-fixes): add failing tests for dogfood-sync drift detection`
+- [x] `tests/test-sdd-drift.sh` 에 T6/T7/T8 추가
+- [x] 테스트 실행: `bash tests/test-sdd-drift.sh`
+- [x] 결과 확인: T6/T8 PASS, T7 FAIL (Red 확인). T1 의 첫 check FAIL 은 baseline pre-existing (본 변경 이전부터). 본 spec 무관.
+- [x] Commit: `test(spec-x-sdd-drift-fixes): add failing tests for dogfood-sync drift detection`
 
 ---
 
