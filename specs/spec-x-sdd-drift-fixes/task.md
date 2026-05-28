@@ -39,11 +39,11 @@
 ## Task 3: TDD Green — `_drift_stale_adr` 에 `../` 제외 한 줄
 
 ### 3-1. sdd 패치
-- [ ] `sources/bin/sdd` 의 `_drift_stale_adr` token 필터 체인 4) 검사 직전에 한 줄 추가:
+- [x] `sources/bin/sdd` 의 `_drift_stale_adr` token 필터 체인 4) 검사 직전에 한 줄 추가:
   - `echo "$token" | grep -qE '^\.\./' && continue`
-- [ ] 테스트 실행: `bash tests/test-drift-stale-adr.sh`
-- [ ] 결과 확인: Step 4 PASS + 기존 Step 1-3 도 모두 PASS (regression 없음)
-- [ ] Commit: `fix(spec-x-sdd-drift-fixes): exclude ../ relative-path tokens from stale ADR check`
+- [x] 테스트 실행: `bash tests/test-drift-stale-adr.sh`
+- [x] 결과 확인: Step 1-4 모두 PASS (ADR-003 의 false positive 해소 + regression 가드)
+- [x] Commit: `fix(spec-x-sdd-drift-fixes): exclude ../ relative-path tokens from stale ADR check`
 
 ---
 

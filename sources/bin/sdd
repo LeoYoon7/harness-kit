@@ -389,7 +389,9 @@ _drift_stale_adr() {
       echo "$token" | grep -qE '^(https?:|git@)' && continue
       # 3) 확장자 또는 끝 슬래시 보유
       echo "$token" | grep -qE '\.[a-zA-Z0-9]+$|/$' || continue
-      # 4) 존재하면 skip
+      # 4) 상대경로 토큰 (../) 은 ADR 본문의 가설/예시 인용 — 진단 제외 (spec-x-sdd-drift-fixes)
+      echo "$token" | grep -qE '^\.\./' && continue
+      # 5) 존재하면 skip
       [ -e "$SDD_ROOT/$token" ] && continue
       has_missing=1
       break
