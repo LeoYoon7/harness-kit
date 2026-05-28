@@ -75,22 +75,20 @@
 > 본 spec 자체가 dogfood-sync 를 fix 하므로 update.sh 호출이 *예상된* 단계.
 
 ### 6-0. Dogfood-sync (sources/bin/sdd → .harness-kit/bin/sdd)
-- [ ] `bash update.sh --yes` 실행 → `.harness-kit/bin/sdd` 에 본 spec 패치 반영
-- [ ] `bash .harness-kit/bin/sdd status` 실행 → 새 `_drift_dogfood_sync` + 보강된 `_drift_stale_adr` 가 *현재 환경* 에서 동작 확인:
-  - `stale ADR` 줄 사라짐 (ADR-003 의 `../` token 제외)
-  - `🔄 동기화 상태` 가 `깔끔` 또는 워킹트리 변경 1줄만
-- [ ] Commit: `chore(spec-x-sdd-drift-fixes): apply dogfood sync for sdd drift fixes`
+- [x] `bash update.sh --yes` 실행 → `.harness-kit/bin/sdd` 에 본 spec 패치 반영
+- [x] `bash .harness-kit/bin/sdd status` 실행 → `stale ADR` 줄 사라짐 ✓
+- [x] Commit: `chore(spec-x-sdd-drift-fixes): apply dogfood sync for sdd drift fixes` → `b4f73ae`
 
 ### 6-1. 산출물 작성
-- [ ] 전체 테스트 PASS 재확인 (`bash tests/test-drift-stale-adr.sh && bash tests/test-sdd-drift.sh`)
-- [ ] **walkthrough.md 작성** (결정 기록, Test 신규 4건, 수동 검증 3 시나리오, dogfood-sync 자기 검증)
-- [ ] **pr_description.md 작성** (변경 요약, 회귀 가드, sdd status before/after 출력)
+- [x] 전체 테스트 PASS 재확인 (`bash tests/test-drift-stale-adr.sh && bash tests/test-sdd-drift.sh`)
+- [x] **walkthrough.md 작성** (결정 7개, Test 4건, 수동 검증 3 시나리오, dogfood self-verify + EOL 발견)
+- [x] **pr_description.md 작성** (Key Review 5점, before/after sdd status 출력, EOL 노이즈 명시)
 
 ### 6-2. Ship Commit
-- [ ] Commit: `docs(spec-x-sdd-drift-fixes): ship walkthrough and pr description`
+- [x] Commit: `docs(spec-x-sdd-drift-fixes): ship walkthrough and pr description`
 
 ### 6-3. Push & PR
-- [ ] task.md 의 모든 `[ ]` 가 `[x]` 또는 `[-]` 인지 확인
+- [x] task.md 의 모든 `[ ]` 가 `[x]` 또는 `[-]` 인지 확인
 - [ ] **Push**: `git push -u origin spec-x-sdd-drift-fixes`
 - [ ] **PR 생성**: `gh pr create --repo LeoYoon7/harness-kit --base main`
 - [ ] **사용자 알림**: PR URL 보고 후 머지 대기
@@ -103,5 +101,5 @@
 |---|---|
 | **총 Task 수** | 6 (Pre-flight 제외) |
 | **예상 commit 수** | 6 (test-D + fix-stale + test-ABC + feat-sync + chore-sync + docs/ship) |
-| **현재 단계** | Planning |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-05-28 |
