@@ -43,13 +43,13 @@
 ## Task 3: TDD Green — check-secrets.sh 의 staged_diff_no_md 도입
 
 ### 3-1. hook 패치
-- [ ] `sources/hooks/check-secrets.sh` 의 line 42 `staged_diff=...` 다음 줄에 `staged_diff_no_md=...` (pathspec `:(exclude)*.md`) 추가
-- [ ] 시크릿 할당 패턴 검사 (현 line 58 의 `if echo "$staged_diff" | ...`) 한 곳만 `$staged_diff_no_md` 로 변경
-- [ ] AWS 키 / Private Key / GitHub 토큰 검사는 그대로 (모두 `$staged_diff`)
-- [ ] 테스트 실행: `bash tests/test-check-secrets-dual-mode.sh`
-- [ ] 결과 확인: `PASS: 16  FAIL: 0`
-- [ ] 회귀 가드 확인: Test 2/4/8/9/11/12/13 모두 PASS
-- [ ] Commit: `fix(spec-x-check-secrets-docs-context): exclude .md from secret-assignment pattern check`
+- [x] `sources/hooks/check-secrets.sh` 의 line 42 `staged_diff=...` 다음 줄에 `staged_diff_no_md=...` (pathspec `:(exclude)*.md`) 추가
+- [x] 시크릿 할당 패턴 검사 (현 line 58 의 `if echo "$staged_diff" | ...`) 한 곳만 `$staged_diff_no_md` 로 변경
+- [x] AWS 키 / Private Key / GitHub 토큰 검사는 그대로 (모두 `$staged_diff`)
+- [x] 테스트 실행: `bash tests/test-check-secrets-dual-mode.sh`
+- [x] 결과 확인: `PASS: 16  FAIL: 0`
+- [x] 회귀 가드 확인: Test 2/4/8/9/11/12/13/15/16 모두 PASS
+- [x] Commit: `fix(spec-x-check-secrets-docs-context): exclude .md from secret-assignment pattern check`
 
 ---
 
