@@ -57,30 +57,66 @@ else
 fi
 
 # 권한 요청 감지 — Notification 이벤트 + Claude Code 의 권한 메시지 패턴
-# 권한 시점에 transcript 의 무관한 직전 발화를 함께 보내면 사용자가 헷갈리므로
-# 이 모드에서는 transcript 발췌를 생략하고 권한 정보만 표시
+# 권한 요청 감지 (안전망 — (b)/(c) 미감지 시에만 brief 적용)
 IS_PERMISSION=0
 if [ "$EVENT" = "Notification" ] && \
    echo "$HOOK_MSG" | grep -qiE 'permission|approve|requesting|needs|allow|승인|허가|권한'; then
     IS_PERMISSION=1
 fi
 
-# 최근 대화 컨텍스트 추출 (권한 요청 시에는 skip)
-# - text 블록이 있는 마지막 assistant 엔트리 선택 (tool_use 만 있는 turn 은 건너뜀)
-# - 같은 entry 내 모든 text 블록은 join (tool_use 사이에 끼어 있어도 text 누락 없음)
-# - jq 의 .[:N] 은 unicode 글자(code point) 단위라 UTF-8 byte boundary 깨짐 없음
-# - tail -100 으로 transcript 후미 충분히 확보 (직전 turn 이 tool_use 만일 수 있음)
+# transcript 분석 — 3 케이스 (a/b/c) 구분
+# (a) 순수 도구 권한: (b)/(c) 미감지 + IS_PERMISSION=1 → brief
+# (b) 텍스트 선택지: 직전 assistant text 마지막 5줄에 선택지 패턴 → transcript 발췌
+# (c) AskUserQuestion: 최근 tool_use 가 AskUserQuestion → 질문/옵션 요약
+ASK_USER_Q_BODY=""
 CONTEXT=""
-if [ "$IS_PERMISSION" = "0" ] && [ -n "$TRANSCRIPT" ] && [ -f "$TRANSCRIPT" ] && command -v jq >/dev/null 2>&1; then
+HAS_TEXT_CHOICE=0
+if [ -n "$TRANSCRIPT" ] && [ -f "$TRANSCRIPT" ] && command -v jq >/dev/null 2>&1; then
+    # (c) AskUserQuestion 최근 호출 추출 — header / question / options.label
+    AUQ_JSON=$(tail -100 "$TRANSCRIPT" 2>/dev/null | \
+        jq -rs '[.[] | select(.type == "assistant") | .message.content[]? | select(.type == "tool_use" and .name == "AskUserQuestion")] | last // empty' 2>/dev/null || echo "")
+
+    if [ -n "$AUQ_JSON" ]; then
+        ASK_USER_Q_BODY=$(echo "$AUQ_JSON" | jq -r '
+            "[질문 " + (.input.questions | length | tostring) + "개]\n" +
+            ([.input.questions | to_entries[] |
+                (.value.header // "" | if . == "" then "" else "[" + . + "] " end) as $hdr |
+                "\(.key + 1). \($hdr)\(.value.question)\n   옵션: " +
+                (.value.options | map(.label) | join(" / "))
+            ] | join("\n"))
+        ' 2>/dev/null || echo "")
+    fi
+
+    # (b) 직전 assistant text 발췌 (기존 로직 유지)
     CONTEXT=$(tail -100 "$TRANSCRIPT" 2>/dev/null | \
               jq -rs '[.[] | select(.type == "assistant") | (.message.content // []) | map(select(.type == "text") | .text) | join("\n") | select(. != "")] | last // "" | .[:3000]' 2>/dev/null || echo "")
+
+    # 선택지 패턴 감지 — 마지막 단락 (직전 5줄) 만 매칭 (false positive 차단)
+    # `^\d+\)` 제거 — 회고/예시 텍스트 오탐 원인 (Critique 발견)
+    if [ -n "$CONTEXT" ]; then
+        LAST_PARAGRAPH=$(echo "$CONTEXT" | tail -5)
+        if echo "$LAST_PARAGRAPH" | grep -qE '\[선택지\]|\[권장\]|\[Recommendation\]|\[Y/n\]|\[y/N\]|\[의사결정 요청\]|\[Decision Request\]'; then
+            HAS_TEXT_CHOICE=1
+        fi
+    fi
 fi
 
 # 현재 브랜치 정보
 BRANCH=$(git -C "$PROJECT_ROOT" branch --show-current 2>/dev/null || echo "unknown")
 
-# 알림 본문 조립
-if [ "$IS_PERMISSION" = "1" ]; then
+# 알림 본문 분기 — 우선순위: (c) > (b) > (a) > 일반
+if [ -n "$ASK_USER_Q_BODY" ]; then
+    NOTIFY_BODY="사용자 질문 대기
+Branch: $BRANCH
+
+$ASK_USER_Q_BODY"
+elif [ "$HAS_TEXT_CHOICE" = "1" ]; then
+    NOTIFY_BODY="사용자 선택 대기
+Branch: $BRANCH
+
+[최근 Claude 메시지]
+$CONTEXT"
+elif [ "$IS_PERMISSION" = "1" ]; then
     NOTIFY_BODY="권한 승인 대기
 Branch: $BRANCH
 $HOOK_MSG"
