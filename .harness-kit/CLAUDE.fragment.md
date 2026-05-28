@@ -289,15 +289,31 @@ Spec 완료: <N>/<N> Merged
 
 #### 9. 사용자 응답 직후 — 진행 시작 알림 (info) 【필수】
 
-사용자가 명시적 의사결정에 응답하면 **에이전트는 즉시 다음 명령을 실행**합니다.
+사용자가 명시적 의사결정에 응답하면 **에이전트는 즉시 *단일 채널* 로 ack 메시지를 발송**합니다.
 multi-device 환경에서 PC 응답 시 모바일 측에 진행 상태를 동기화하기 위한 핵심 알림.
 
-```bash
-bash .harness-kit/bin/notify-telegram.sh "✅ [ack] 사용자 응답: <선택지 요약>
-진행: <다음 단계 한 줄 요약>" info
-```
-
 본문에 `[ack]` prefix 가 반드시 포함되어야 합니다 — 사후 grep 으로 응답 알림 누락 사례 추적 가능.
+
+**응답 경로별 분기 (단일 소스 원칙)**:
+
+- **Telegram 경유 응답** (`<channel source="telegram" ...>` 태그가 사용자 메시지에 포함):
+  → `mcp__plugin_telegram_telegram__reply` 사용. reply 본문에 §9 의 `[ack]` 포맷 포함:
+    ```
+    ✅ [ack] 사용자 응답: <선택지 요약>
+    진행: <다음 단계 요약>
+    ```
+  → `notify.sh` 별도 발송 *생략*. reply 가 단독 ack 역할 겸함.
+
+- **PC chat 경유 응답** (채널 태그 없음):
+  → `notify.sh` 로 §9 ack 발송:
+    ```bash
+    bash .harness-kit/bin/notify.sh "✅ [ack] 사용자 응답: <선택지 요약>
+    진행: <다음 단계 한 줄 요약>" info
+    ```
+
+**Discord 의 절차**: 본 protocol 미명시. Discord MCP reply 도구가 active 화되는 시점의 별도 spec 에서 다룸. 현재는 `notify.sh` dispatcher 가 `NM_NOTIFY_CHANNEL` (예: `both`) 설정 시 Discord 도 §9 ack 도달 보장.
+
+**근거**: 이중 발송 (reply + notify.sh) 시 같은 ack 가 양쪽 채널로 도달 → 노이즈. PR #9 직후 사용자 보고 (mcp reply "Plan Accepted..." + notify-telegram.sh "[ack] 사용자 응답..." 둘 다 발송) 의 라이브 사례. ADR-004 Amendment 참조.
 
 **트리거 (반드시 발송)**:
 - 명시적 선택지 응답 (`1`/`2`/`3`/`권장`/`Y`/`N`/`yes`/`no` 등)
@@ -319,22 +335,24 @@ bash .harness-kit/bin/notify-telegram.sh "✅ [ack] 사용자 응답: <선택지
 
 **Multi-device 가치**: PC 에서 응답해도 모바일에서 "어떤 선택지로 진행 중" 즉시 확인 가능. multi-device 사용자의 상태 불확실성 제거.
 
-**예시**:
+**예시 (PC chat 경유)**:
 ```bash
 # Plan Accept 응답 후
-bash .harness-kit/bin/notify-telegram.sh "✅ [ack] 사용자 응답: 1번 (Plan Accept)
+bash .harness-kit/bin/notify.sh "✅ [ack] 사용자 응답: 1번 (Plan Accept)
 진행: Strict Loop 시작 — Task 1 브랜치 생성" info
 
 # Reconciliation 옵션 선택 후
-bash .harness-kit/bin/notify-telegram.sh "✅ [ack] 사용자 응답: A (현재 spec 에 통합)
+bash .harness-kit/bin/notify.sh "✅ [ack] 사용자 응답: A (현재 spec 에 통합)
 진행: spec/plan/task 갱신 → Plan Accept 재요청" info
 
 # AskUserQuestion 응답 후
-bash .harness-kit/bin/notify-telegram.sh "✅ [ack] 사용자 응답: Repo 전체 (archive/ 포함)
+bash .harness-kit/bin/notify.sh "✅ [ack] 사용자 응답: Repo 전체 (archive/ 포함)
 진행: spec-x-md-lf-normalize spec/plan/task 작성" info
 ```
 
-관련 ADR: `docs/decisions/ADR-004-notification-twofold-decision-flow.md` — 의사결정 요청 (자동 hook) + 응답 ack (에이전트 절차) 양방향 컨벤션.
+**예시 (Telegram 경유 응답)**: `mcp__plugin_telegram_telegram__reply` 호출 시 본문에 동일 `[ack]` 포맷 포함.
+
+관련 ADR: `docs/decisions/ADR-004-notification-twofold-decision-flow.md` — 양방향 컨벤션 + Amendment (단일 소스 원칙).
 
 ### Strict Loop 중 Task 완료 알림 정책
 
