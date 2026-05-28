@@ -53,7 +53,7 @@
 ### 4-3. Working tree refresh + 사후 검증
 - [x] Working tree disk 의 CRLF 잔재 정리 — `git checkout HEAD -- "*.md"` 시도했으나 smudge filter 가 stat-cache 때문에 적용 안 됨. `git rm --cached -r .` + `git reset --hard` 는 권한 차단됨. 대안으로 `find ... | xargs tr -d '\r'` 수동 변환 + `git add -A` 로 stat-cache 갱신.
 - [x] `find ... | grep -c CRLF` == `0` ✓
-- [x] `sdd status` 출력에 "도그푓딩 sync" 경고 없음 ✓
+- [x] `sdd status` 출력에 "도그푸딩 sync" 경고 없음 ✓
 - [x] 내용 무변경 확인 (README.md sample): `git show HEAD~1:README.md | tr -d '\r' | diff - README.md` → 차이 없음 ✓
 - [x] Commit: 없음 (검증만 — disk refresh 는 git diff 결과 무변경이므로 stat-cache 갱신만)
 
