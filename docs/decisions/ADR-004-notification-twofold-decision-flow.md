@@ -54,3 +54,27 @@ Accepted (2026-05-28, spec-x-notify-choice-context 머지 시점). 첫 사용자
 - Critique: `specs/spec-x-notify-choice-context/critique.md` — 대안 B/C 의 자세한 트레이드오프 분석
 - Hook 구현: `sources/hooks/notify-on-input-wait.sh` — (a)/(b)/(c) 본문 분기
 - Fragment §9: `sources/claude-fragments/CLAUDE.fragment.md` — 응답 측 절차 정의
+
+## 🔄 Amendments
+
+### 2026-05-29 (spec-x-notify-channel-coherence)
+
+**단일 소스 위반 위험 식별 + 보조 규칙 도입**
+
+**배경 — 실증 사례**: PR #9 직후 라이브 검증에서 §5 stop 의 사람-작성 옵션 순서 (1.Gemini/2.Opus/3.Skip, 권장 3번) 와 AskUserQuestion 의 권장-첫번째 관행 (1.Skip(권장)/2.Gemini/3.Opus) 이 *번호 충돌*. Telegram=3 Skip / Desktop=1 Skip → 사용자가 Telegram 의 "3번" 으로 보고 Desktop 에서 3 누르면 Opus 선택 → 혼동/무반응.
+
+추가 결함: Telegram 경유 응답 시 (a) `mcp_telegram_reply` + (b) `notify-telegram.sh` 의 `[ack]` notify 둘 다 발송되어 *같은 ack 중복*.
+
+**결정 — ADR-004 양방향 컨벤션의 발화 sink 단일성 보강**:
+
+1. **AUQ 옵션 충분성 조건부 생략**: AUQ 가 옵션 표현으로 충분한 케이스 (옵션 ≤4 + free-text 미요구) 에서만 §5 stop 자동 생략. 옵션 5개 이상 등 생략 불가 케이스는 §5 stop 발송 + AUQ 와 옵션 순서 sync (권장-첫번째 강제). 단일 sink = 주, 옵션 순서 sync = fallback 이중화.
+2. **응답 측 단일 채널**: Telegram 경유 응답일 때 `mcp__plugin_telegram_telegram__reply` 단독 (본문에 `[ack]` 포맷 포함), `notify.sh` 발송 생략. PC chat 경유 응답일 때 `notify.sh` 단독.
+3. **Discord 절차 미명시 — dispatcher 만**: 현재 fragment 의 `notify.sh` 호출이 `NM_NOTIFY_CHANNEL` 라우팅으로 Discord 자동 cover. Discord MCP reply 패턴은 active 화 시점의 별도 spec 에서 다룸.
+4. **Fragment §1-§8 의 dispatcher 통일**: 11곳의 `notify-telegram.sh` 호출을 `notify.sh` 로 일괄 교체. Telegram/Discord channel-agnostic 보장.
+
+**Consequences/부정 절 추가**:
+- **단일 소스 위반 위험**: 같은 의사결정에 대해 *복수 채널/포맷* (예: §5 stop + AUQ, mcp reply + §9 ack) 으로 발산 시 *번호/내용 충돌*. multi-device 사용자가 본 라벨과 다른 선택 의도를 가져 잘못된 응답 → *회복 어려움*. 단일 sink 원칙 + 옵션 순서 sync fallback 의 이중화로 차단.
+
+**관련 spec**: `specs/spec-x-notify-channel-coherence/` — fragment §5/§9 갱신, §1-§8 의 dispatcher 통일.
+
+**상태**: Accepted (2026-05-29, spec-x-notify-channel-coherence 머지 시점).
