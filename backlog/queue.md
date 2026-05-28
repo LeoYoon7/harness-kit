@@ -109,6 +109,7 @@
 - [x] spec-x-check-secrets-dual-mode (완료)
 - **phase-19** — 문서 지식 그래프 (Doc Knowledge Graph) — completed 2026-05-27
 - [x] spec-x-notify-channels (완료)
+- [x] spec-x-dogfood-sync (완료)
 <!-- sdd:done:end -->
 
 ---
