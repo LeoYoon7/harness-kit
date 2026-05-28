@@ -213,7 +213,11 @@ bash .harness-kit/bin/notify.sh "<spec-id> 의사결정 요청
 
 **AUQ 사용 시 §5 stop 조건부 생략 + 옵션 순서 sync 보조 규칙 (단일 소스 원칙)**
 
-에이전트가 동일 의사결정을 `AskUserQuestion` 도구로 발산할 때:
+> **현재 정책 (spec-x-notify-bidirectional-policy 이후)**: 에이전트는 AskUserQuestion 도구 사용 안 함 — 모든 게이트 텍스트 형식 통일 (multi-device 응답 지원). 본 조건부 생략 규칙은 *이론상 발화 불가* — 본 에이전트 절차에서 사용 안 됨. 향후 6개월 dead 누적 시 별도 spec 으로 완전 제거 재평가.
+>
+> **적용 범위**: 본 에이전트 (Claude Code main 세션) + sub-agent (Opus critique, code review 등 — 동일 절차 권장). 외부 도구 (Gemini CLI 모달, Codex 자체 UI 등) 는 OOS — 본 키트 통제 밖.
+
+에이전트가 동일 의사결정을 `AskUserQuestion` 도구로 발산할 때 *(legacy — 본 에이전트는 사용 안 함)*:
 
 **조건부 생략 (§5 stop 미발송)**: 다음 모든 조건 충족 시 §5 stop 을 *생략* 한다.
 - 옵션 ≤ 4개 (AUQ 한계 내)
