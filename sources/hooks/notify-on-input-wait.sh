@@ -72,9 +72,13 @@ ASK_USER_Q_BODY=""
 CONTEXT=""
 HAS_TEXT_CHOICE=0
 if [ -n "$TRANSCRIPT" ] && [ -f "$TRANSCRIPT" ] && command -v jq >/dev/null 2>&1; then
-    # (c) AskUserQuestion 최근 호출 추출 — header / question / options.label
+    # (c) AskUserQuestion 추출 — 마지막 assistant turn 안에 있는 경우만
+    # 이전 turn 의 stale AUQ 가 현재 trigger 와 무관하게 (c) 로 잘못 선택되는 false positive 차단
     AUQ_JSON=$(tail -100 "$TRANSCRIPT" 2>/dev/null | \
-        jq -rs '[.[] | select(.type == "assistant") | .message.content[]? | select(.type == "tool_use" and .name == "AskUserQuestion")] | last // empty' 2>/dev/null || echo "")
+        jq -rs '[.[] | select(.type == "assistant")] | last // null |
+                if . == null then empty
+                else (.message.content // []) | map(select(.type == "tool_use" and .name == "AskUserQuestion")) | .[0] // empty
+                end' 2>/dev/null || echo "")
 
     if [ -n "$AUQ_JSON" ]; then
         ASK_USER_Q_BODY=$(echo "$AUQ_JSON" | jq -r '
