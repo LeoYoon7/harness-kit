@@ -126,7 +126,7 @@ TELEGRAM_CHAT_ID=<사용자 chat_id>
 공식 Gate 에서는 자동 알림보다 **구조화된 메시지** 가 유용합니다. 에이전트는 다음 단일 Bash 명령을 실행합니다 (agent.md §6.4 단일 명령 원칙 준수):
 
 ```bash
-bash .harness-kit/bin/notify-telegram.sh "<메시지>" <level>
+bash .harness-kit/bin/notify.sh "<메시지>" <level>
 ```
 
 레벨: `info | align | plan | accept | stop | ship | merge | phase`
@@ -140,7 +140,7 @@ bash .harness-kit/bin/notify-telegram.sh "<메시지>" <level>
 상태 요약을 사용자에게 보고한 직후, 동일 내용의 축약판을 Telegram에도 발송:
 
 ```bash
-bash .harness-kit/bin/notify-telegram.sh "세션 시작
+bash .harness-kit/bin/notify.sh "세션 시작
 Phase: <phase-id 또는 없음>
 Spec: <spec-id 또는 없음>
 Branch: <current-branch>
@@ -154,7 +154,7 @@ Plan Accept: <yes/no>" align
 agent.md §4.4 Hard Stop for Review 시점. spec.md/plan.md/task.md 작성 완료 보고와 동시에:
 
 ```bash
-bash .harness-kit/bin/notify-telegram.sh "<spec-id> 계획 작성 완료
+bash .harness-kit/bin/notify.sh "<spec-id> 계획 작성 완료
 Spec: specs/<spec-dir>/spec.md
 Plan: specs/<spec-dir>/plan.md
 Task: specs/<spec-dir>/task.md (총 <N>개 task)
@@ -174,7 +174,7 @@ Task: specs/<spec-dir>/task.md (총 <N>개 task)
 코드 편집이 시작되는 중요한 전환점:
 
 ```bash
-bash .harness-kit/bin/notify-telegram.sh "<spec-id> Plan Accepted
+bash .harness-kit/bin/notify.sh "<spec-id> Plan Accepted
 Strict Loop 실행을 시작합니다.
 첫 Task: <첫 번째 미완 task 제목>" accept
 ```
@@ -184,7 +184,7 @@ Strict Loop 실행을 시작합니다.
 agent.md §7 Deviation & Hard Stop 시점. 사용자 개입이 반드시 필요:
 
 ```bash
-bash .harness-kit/bin/notify-telegram.sh "<spec-id> HARD STOP
+bash .harness-kit/bin/notify.sh "<spec-id> HARD STOP
 사유: <plan 이탈 / 테스트 실패 / hook 차단 / main 커밋 시도 등>
 상세: <구체적 메시지 1-2줄>
 Branch: <current-branch>
@@ -198,7 +198,7 @@ Strict Loop 진행 중 plan 에 없는 선택지가 발생해 사용자 의사�
 이 경우 **계층 1 자동 감지 알림이 먼저 발동**하지만, 에이전트는 선택지 정보를 더 구체적으로 전달하기 위해 다음 명령을 **추가로** 실행합니다. 본 메시지는 반드시 "선택지 제시 규약" (위 섹션 참조) 을 따라 [권장] 을 포함합니다:
 
 ```bash
-bash .harness-kit/bin/notify-telegram.sh "<spec-id> 의사결정 요청
+bash .harness-kit/bin/notify.sh "<spec-id> 의사결정 요청
 상황: <1-2줄 요약>
 
 선택지:
@@ -237,7 +237,7 @@ bash .harness-kit/bin/notify-telegram.sh "<spec-id> 의사결정 요청
 **예시 (Task 분해 제안)**:
 
 ```bash
-bash .harness-kit/bin/notify-telegram.sh "spec-8-001 의사결정 요청
+bash .harness-kit/bin/notify.sh "spec-8-001 의사결정 요청
 상황: Task 13 을 RollbackService + MigrationCliService 로 분해 제안
 
 선택지:
@@ -252,7 +252,7 @@ bash .harness-kit/bin/notify-telegram.sh "spec-8-001 의사결정 요청
 #### 6. `/hk-ship` 완료 — PR 생성 (ship) 【필수】
 
 ```bash
-bash .harness-kit/bin/notify-telegram.sh "<spec-id> PR 생성 완료
+bash .harness-kit/bin/notify.sh "<spec-id> PR 생성 완료
 Title: <pr title>
 Base: <PR_BASE>
 URL: <pr-url>
@@ -264,7 +264,7 @@ URL: <pr-url>
 agent.md §6.3.1 Post-Merge Protocol. 사용자가 "머지 완료" 신호를 주면:
 
 ```bash
-bash .harness-kit/bin/notify-telegram.sh "<spec-id> Merged
+bash .harness-kit/bin/notify.sh "<spec-id> Merged
 NEXT: <다음 backlog spec 또는 'Phase 완료 준비'>
 제안: <sdd spec new <slug> 또는 /hk-phase-ship>" merge
 ```
@@ -274,7 +274,7 @@ NEXT: <다음 backlog spec 또는 'Phase 완료 준비'>
 Phase 단위 main merge는 특히 중요한 의사결정. 본 메시지는 "선택지 제시 규약" 에 따라 [권장] 을 포함합니다:
 
 ```bash
-bash .harness-kit/bin/notify-telegram.sh "<phase-id> Phase Ship Ready
+bash .harness-kit/bin/notify.sh "<phase-id> Phase Ship Ready
 성공 기준: <N>/<M> PASS
 통합 테스트: <N>/<M> PASS
 Spec 완료: <N>/<N> Merged
@@ -313,7 +313,7 @@ multi-device 환경에서 PC 응답 시 모바일 측에 진행 상태를 동기
 
 **Discord 의 절차**: 본 protocol 미명시. Discord MCP reply 도구가 active 화되는 시점의 별도 spec 에서 다룸. 현재는 `notify.sh` dispatcher 가 `NM_NOTIFY_CHANNEL` (예: `both`) 설정 시 Discord 도 §9 ack 도달 보장.
 
-**근거**: 이중 발송 (reply + notify.sh) 시 같은 ack 가 양쪽 채널로 도달 → 노이즈. PR #9 직후 사용자 보고 (mcp reply "Plan Accepted..." + notify-telegram.sh "[ack] 사용자 응답..." 둘 다 발송) 의 라이브 사례. ADR-004 Amendment 참조.
+**근거**: 이중 발송 (reply + notify.sh) 시 같은 ack 가 양쪽 채널로 도달 → 노이즈. PR #9 직후 사용자 보고 (mcp reply "Plan Accepted..." + 당시 `notify-telegram.sh` 의 "[ack] 사용자 응답..." 둘 다 발송) 의 라이브 사례. ADR-004 Amendment 참조.
 
 **트리거 (반드시 발송)**:
 - 명시적 선택지 응답 (`1`/`2`/`3`/`권장`/`Y`/`N`/`yes`/`no` 등)
@@ -381,7 +381,7 @@ bash .harness-kit/bin/notify.sh "✅ [ack] 사용자 응답: Repo 전체 (archiv
 | **한국어** | 메시지 본문은 한국어 (constitution §5.4). 레이블(Phase, Spec, Task 등)과 기술 용어는 영어 허용. |
 | **간결성** | 각 알림은 10줄 이내. 상세 내용은 본 세션에서 확인. |
 | **민감정보 금지** | 토큰, 비밀번호, 환경변수 값 등을 메시지에 포함하지 않음. |
-| **단일 명령** | `notify-telegram.sh` 호출은 한 번에 하나씩. 체이닝 금지 (agent.md §6.4). |
+| **단일 명령** | `notify.sh` 호출은 한 번에 하나씩. 체이닝 금지 (agent.md §6.4). |
 | **권장안 필수** | 선택지 2개 이상이면 [권장] 반드시 포함 (agent.md §8.5). |
 
 ### 알림 비활성화
