@@ -105,6 +105,7 @@
 - **phase-18** — Precheck Gate — 설정 기반 PR 사전 검증 자동화 — completed 2026-05-21
 - [x] spec-x-check-secrets-dual-mode (완료)
 - **phase-19** — 문서 지식 그래프 (Doc Knowledge Graph) — completed 2026-05-27
+- [x] spec-x-notify-channels (완료)
 <!-- sdd:done:end -->
 
 ---
