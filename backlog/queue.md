@@ -37,6 +37,7 @@
 - **도그푸딩 sync 자동화** — sources 와 본 저장소 installed 자산 간 drift 가시화 메커니즘. 옵션: `sdd doctor` 에 sources vs installed diff 경고 / CI 의 `bash update.sh --check` (dry-run 모드 신설 후) / post-merge 자동 update. 본 사건(`spec-x-dogfood-sync`)의 근본 원인 — 별도 spec 으로 신중 설계
 - ~~**ADR-NNN-dogfood-sync-policy 작성** (convention)~~ → ✓ **ADR-003** 작성 (2026-05-28, commit `3a4ad76`)
 - **`check-secrets.sh` `.env.*.example` 패턴 제외 fix** — 현재 `(^|/)\.env(\..+)?$` 가 `.env.telegram.example` 같은 *템플릿* 까지 false positive 로 잡음. 본 사건에서 self-host 한정 회피(.gitignore 추가) 로 우회했으나 target 프로젝트에도 영향. 패턴을 `\.env(\.[a-z0-9_-]+)?$` 형태로 좁히거나 `.example`/`.sample` 접미사 화이트리스트 추가 필요
+- **Telegram 응답 시 ack 중복 발송** — 사용자가 Telegram 으로 응답하면 (a) mcp_telegram_reply (예: "Plan Accepted. Strict Loop 시작...") + (b) `[ack]` notify 둘 다 발송됨. Plan Accept 단계뿐 아니라 Telegram 경유 모든 응답에서 발생 추정. fix: Telegram 경유 응답 시 한 채널만 사용 (mcp reply 에 §9 ack 포맷 통합 or §9 ack 만 발송하고 mcp reply 생략). 사용자 보고 (Telegram msg #3075, 2026-05-28)
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
 - ~~접근성 개선~~ → phase-17 **spec-17-02** (accessibility-install-and-entry)
