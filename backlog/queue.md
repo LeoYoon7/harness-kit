@@ -38,6 +38,7 @@
 - ~~**ADR-NNN-dogfood-sync-policy 작성** (convention)~~ → ✓ **ADR-003** 작성 (2026-05-28, commit `3a4ad76`)
 - **`check-secrets.sh` `.env.*.example` 패턴 제외 fix** — 현재 `(^|/)\.env(\..+)?$` 가 `.env.telegram.example` 같은 *템플릿* 까지 false positive 로 잡음. 본 사건에서 self-host 한정 회피(.gitignore 추가) 로 우회했으나 target 프로젝트에도 영향. 패턴을 `\.env(\.[a-z0-9_-]+)?$` 형태로 좁히거나 `.example`/`.sample` 접미사 화이트리스트 추가 필요
 - **Telegram 응답 시 ack 중복 발송** — 사용자가 Telegram 으로 응답하면 (a) mcp_telegram_reply (예: "Plan Accepted. Strict Loop 시작...") + (b) `[ack]` notify 둘 다 발송됨. Plan Accept 단계뿐 아니라 Telegram 경유 모든 응답에서 발생 추정. fix: Telegram 경유 응답 시 한 채널만 사용 (mcp reply 에 §9 ack 포맷 통합 or §9 ack 만 발송하고 mcp reply 생략). 사용자 보고 (Telegram msg #3075, 2026-05-28)
+- **§5 stop notification 과 AskUserQuestion 옵션 번호 불일치** — 에이전트가 AUQ 호출 시 권장안을 첫 번째에 배치 (라벨에 (권장)). 동시에 §5 stop notification 으로 동일 선택지를 Telegram 에 보낼 때는 사람이 작성한 순서 (예: 1.Gemini/2.Opus/3.Skip, 권장 3번). 두 채널의 번호가 sync 안 됨 → 사용자가 Telegram 의 "3번" (Skip) 으로 보고 Desktop 에서 3 누르면 Opus 가 선택되어 무반응/혼동. fix: (a) AUQ 호출 시 §5 stop 자동 생략 (hook (c) 가 cover) or (b) §5 stop 메시지를 AUQ 옵션 순서와 동일하게 자동 생성. spec-x-notify-ack-dedup 의 범위에 통합 후보. 사용자 보고 (Telegram msg #3084+#3086, 2026-05-28)
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
 - ~~접근성 개선~~ → phase-17 **spec-17-02** (accessibility-install-and-entry)
