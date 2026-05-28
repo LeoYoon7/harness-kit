@@ -16,7 +16,6 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
-- [ ] spec-x-md-lf-normalize — md-lf-normalize
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -115,6 +114,7 @@
 - [x] spec-x-check-secrets-docs-context (완료)
 - [x] spec-x-sdd-drift-fixes (완료)
 - [x] spec-x-gemini-review (완료)
+- [x] spec-x-md-lf-normalize (완료)
 <!-- sdd:done:end -->
 
 ---
