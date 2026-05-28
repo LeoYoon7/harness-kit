@@ -39,12 +39,12 @@
 ## Task 3: TDD Green — check-secrets.sh regex 패치 후 전체 PASS
 
 ### 3-1. hook 패치
-- [ ] `sources/hooks/check-secrets.sh` line 36 파이프라인 끝에 `grep -vE '\.(example|sample)$'` 추가
+- [x] `sources/hooks/check-secrets.sh` line 36 파이프라인 끝에 `grep -vE '\.(example|sample)$'` 추가
   - 다중 라인 (백슬래시 continuation) 으로 가독성 유지
-- [ ] 테스트 실행: `bash tests/test-check-secrets-dual-mode.sh`
-- [ ] 결과 확인: `PASS: 13  FAIL: 0`
-- [ ] 회귀 가드 확인: Test 2/4/8/9/11 모두 PASS (출력 라인 확인)
-- [ ] Commit: `fix(spec-x-check-secrets-env-example): exclude .env.*.example/.sample from staged check`
+- [x] 테스트 실행: `bash tests/test-check-secrets-dual-mode.sh`
+- [x] 결과 확인: `PASS: 13  FAIL: 0`
+- [x] 회귀 가드 확인: Test 2/4/8/9/11 모두 PASS (출력 라인 확인)
+- [x] Commit: `fix(spec-x-check-secrets-env-example): exclude .env.*.example/.sample from staged check`
 
 ---
 
