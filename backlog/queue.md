@@ -16,7 +16,6 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
-- [ ] spec-x-check-secrets-env-example — check-secrets-env-example
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -111,6 +110,7 @@
 - **phase-19** — 문서 지식 그래프 (Doc Knowledge Graph) — completed 2026-05-27
 - [x] spec-x-notify-channels (완료)
 - [x] spec-x-dogfood-sync (완료)
+- [x] spec-x-check-secrets-env-example (완료)
 <!-- sdd:done:end -->
 
 ---
