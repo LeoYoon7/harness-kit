@@ -398,7 +398,7 @@ Whenever the Agent presents multiple options to the User and requests a decision
 ```
 
 **Rationale**:
-- The User often reviews these decisions on mobile (via Telegram notifications or Remote Control) where reading long options is slow.
+- The User often reviews these decisions on mobile (via remote channel notifications — Telegram/Discord — or Remote Control) where reading long options is slow.
 - A [Recommendation] with reasoning lets the User make a fast, informed choice.
 - "Missing recommendation" is a recurring failure mode — the Agent MUST self-check before sending any multi-option message.
 
