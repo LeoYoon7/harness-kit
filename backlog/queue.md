@@ -16,6 +16,7 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
+- [ ] spec-x-notify-channel-coherence — notify-channel-coherence
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
