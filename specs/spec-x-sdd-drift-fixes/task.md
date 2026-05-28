@@ -62,12 +62,11 @@
 ## Task 5: TDD Green — `_drift_dogfood_sync` 함수 추가 + 등록
 
 ### 5-1. sdd 패치
-- [ ] `sources/bin/sdd` 에 `_drift_dogfood_sync` 함수 신규 추가 (plan.md §Proposed Changes §2 의 코드)
-- [ ] `_status_drift` 의 `_drift_install` 호출 직후에 `_drift_dogfood_sync && has_drift=1` 추가
-- [ ] 테스트 실행: `bash tests/test-sdd-drift.sh`
-- [ ] 결과 확인: T1-T8 모두 PASS
-- [ ] 회귀 가드 확인: 기존 T1-T5 PASS 유지
-- [ ] Commit: `feat(spec-x-sdd-drift-fixes): add _drift_dogfood_sync to detect tracked .harness-kit drift`
+- [x] `sources/bin/sdd` 에 `_drift_dogfood_sync` 함수 신규 추가
+- [x] `_status_drift` 의 `_drift_install` 호출 직후에 `_drift_dogfood_sync && has_drift=1` 추가
+- [x] 테스트 실행: `bash tests/test-sdd-drift.sh && bash tests/test-drift-stale-adr.sh`
+- [x] 결과 확인: 본 spec 의 신규 T6/T7/T8 + Test D 모두 PASS. 기존 T1 baseline fail 만 존속 (본 spec 무관)
+- [x] Commit: `feat(spec-x-sdd-drift-fixes): add _drift_dogfood_sync to detect tracked .harness-kit drift`
 
 ---
 

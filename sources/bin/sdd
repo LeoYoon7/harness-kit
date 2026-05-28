@@ -423,18 +423,54 @@ _drift_stale_adr() {
   return 0
 }
 
+# 도그푸딩 sync drift 검출 (spec-x-sdd-drift-fixes)
+# tracked .harness-kit/{hooks,agent/templates}/* + .claude/commands/* 가 대응
+# sources/{hooks,templates,commands}/* 와 다른 경우 카운트.
+# sources/ 디렉토리 없으면 skip — 외부 target (sources/ 없음) 환경 무영향.
+# 출력 예: "도그푸딩 sync: 3 파일 sources/와 비동기 — bash update.sh --yes 권장"
+_drift_dogfood_sync() {
+  [ -d "$SDD_ROOT/sources" ] || return 1
+
+  local mismatch=0
+  local check_pairs="\
+.harness-kit/hooks|sources/hooks
+.harness-kit/agent/templates|sources/templates
+.claude/commands|sources/commands"
+
+  local installed_dir source_dir f source_path
+  while IFS='|' read -r installed_dir source_dir; do
+    [ -z "$installed_dir" ] && continue
+    [ -d "$SDD_ROOT/$installed_dir" ] || continue
+    [ -d "$SDD_ROOT/$source_dir" ] || continue
+    for f in "$SDD_ROOT/$installed_dir"/*; do
+      [ -f "$f" ] || continue
+      source_path="$SDD_ROOT/$source_dir/$(basename "$f")"
+      [ -f "$source_path" ] || continue
+      diff -q "$f" "$source_path" >/dev/null 2>&1 || mismatch=$((mismatch + 1))
+    done
+  done <<EOF
+$check_pairs
+EOF
+
+  [ "$mismatch" -eq 0 ] && return 1
+  printf "  ${C_YLW}도그푸딩 sync: %d 파일 sources/와 비동기 — bash update.sh --yes 권장${C_RST}\n" \
+    "$mismatch"
+  return 0
+}
+
 # drift 섹션 통합 출력
 _status_drift() {
   echo ""
   echo "🔄 동기화 상태"
 
   local has_drift=0
-  _drift_kit_version && has_drift=1
-  _drift_remote      && has_drift=1
-  _drift_worktree    && has_drift=1
-  _drift_consistency && has_drift=1
-  _drift_install     && has_drift=1
-  _drift_stale_adr   && has_drift=1
+  _drift_kit_version  && has_drift=1
+  _drift_remote       && has_drift=1
+  _drift_worktree     && has_drift=1
+  _drift_consistency  && has_drift=1
+  _drift_install      && has_drift=1
+  _drift_dogfood_sync && has_drift=1
+  _drift_stale_adr    && has_drift=1
 
   if [ "$has_drift" -eq 0 ]; then
     echo "  ${C_DIM}깔끔${C_RST}"
