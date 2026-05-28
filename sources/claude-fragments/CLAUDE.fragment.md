@@ -211,6 +211,29 @@ bash .harness-kit/bin/notify-telegram.sh "<spec-id> 의사결정 요청
 
 **판단 기준**: 사용자에게 2개 이상의 선택지를 제시하거나, 기술 방향이 갈리는 결정이면 명시적 알림을 발송합니다. 단순 Yes/No 확인은 계층 1 자동 알림으로 충분합니다.
 
+**AUQ 사용 시 §5 stop 조건부 생략 + 옵션 순서 sync 보조 규칙 (단일 소스 원칙)**
+
+에이전트가 동일 의사결정을 `AskUserQuestion` 도구로 발산할 때:
+
+**조건부 생략 (§5 stop 미발송)**: 다음 모든 조건 충족 시 §5 stop 을 *생략* 한다.
+- 옵션 ≤ 4개 (AUQ 한계 내)
+- free-text 자유 응답 미요구
+- 같은 turn 의 AUQ + §5 stop 동시 의도 없음
+- AUQ 가 의사결정 발산의 *유일한 경로*
+
+생략 시 hook (c) 분기가 AUQ 의 `header`/`question`/`options.label` 을 자동 노출 → 채널에 알림 도달.
+
+**생략 불가 케이스 — §5 stop 발송 + 옵션 순서 sync 필수**:
+- 옵션 5개 이상 (AUQ 한계 초과)
+- free-text 응답 포함
+- AUQ + §5 stop 동시 의도 (예: 텍스트 선택지 + 모달 confirm)
+
+이 경우 §5 stop 의 옵션 순서를 AUQ 와 *동일* (권장-첫번째 관행) 으로 강제. *단일 sink 원칙이 주, 옵션 순서 sync 가 fallback 이중화*. 번호 충돌 차단.
+
+**근거**: PR #9 직후 라이브 실증 — §5 stop 의 사람-작성 순서 (1.Gemini/2.Opus/3.Skip, 권장 3번) 와 AUQ 의 권장-첫번째 (1.Skip(권장)/2.Gemini/3.Opus) 가 *번호 충돌* → Telegram=3 Skip / Desktop=1 Skip → 사용자 혼동. ADR-004 의 Amendment 절 참조.
+
+**범위 한정**: 본 규칙은 §5 (Ad-hoc 선택지) 만 적용. §4 (Hard Stop) 은 그대로 유지 — Hard Stop 은 사용자 즉시 개입 요청이며 AUQ 동반 케이스는 본 규칙 범위 외.
+
 **예시 (Task 분해 제안)**:
 
 ```bash
