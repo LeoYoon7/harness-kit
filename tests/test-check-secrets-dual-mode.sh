@@ -272,6 +272,49 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────
+# Test 12: .env.*.example 템플릿 staged → 통과 (false positive 해소)
+#   spec-x-check-secrets-env-example: install.sh 가 생성하는 .env.telegram.example
+#   같은 템플릿 파일은 시크릿이 아니므로 commit 가능해야 함.
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "▶ Test 12: git hook 모드 + .env.telegram.example staged → 통과"
+REPO12="$(_make_repo)"
+_install_hooks "$REPO12"
+
+echo "TELEGRAM_BOT_TOKEN=<your-bot-token>" > "$REPO12/.env.telegram.example"
+git -C "$REPO12" add .env.telegram.example
+
+exit_code=0
+_run_secrets "$REPO12" "HARNESS_GIT_HOOK_MODE=1" || exit_code=$?
+
+if [ "$exit_code" -eq 0 ]; then
+  ok "Test 12: .env.telegram.example staged → 통과 (exit=0)"
+else
+  fail "Test 12: .env.telegram.example staged → 차단됨 (통과되어야 함, exit=$exit_code)"
+fi
+
+# ─────────────────────────────────────────────────────────
+# Test 13: .env.*.sample 템플릿 staged → 통과 (false positive 해소)
+#   .sample 도 .example 과 동등한 관용 표기.
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "▶ Test 13: git hook 모드 + .env.discord.sample staged → 통과"
+REPO13="$(_make_repo)"
+_install_hooks "$REPO13"
+
+echo "DISCORD_BOT_TOKEN=<your-bot-token>" > "$REPO13/.env.discord.sample"
+git -C "$REPO13" add .env.discord.sample
+
+exit_code=0
+_run_secrets "$REPO13" "HARNESS_GIT_HOOK_MODE=1" || exit_code=$?
+
+if [ "$exit_code" -eq 0 ]; then
+  ok "Test 13: .env.discord.sample staged → 통과 (exit=0)"
+else
+  fail "Test 13: .env.discord.sample staged → 차단됨 (통과되어야 함, exit=$exit_code)"
+fi
+
+# ─────────────────────────────────────────────────────────
 # 결과
 # ─────────────────────────────────────────────────────────
 echo ""

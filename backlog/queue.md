@@ -16,6 +16,7 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
+- [ ] spec-x-check-secrets-env-example — check-secrets-env-example
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
