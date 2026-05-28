@@ -34,7 +34,7 @@
 - **하위 디렉토리 CLAUDE.md** — `sources/CLAUDE.md` (키트 원본 시점) / `specs/CLAUDE.md` (작업 로그 시점) 분리로 두 시점 혼동 방지 (기사 인사이트 #3)
 - **LSP/MCP 활용 가이드** — agent.md §6.5 (Static Analysis First) 확장. 적용 대상 프로젝트가 LSP 지원 언어일 때 grep 대신 심볼 기반 정의/참조 추적 권장 (기사 인사이트 #4)
 - **도그푸딩 sync 자동화** — sources 와 본 저장소 installed 자산 간 drift 가시화 메커니즘. 옵션: `sdd doctor` 에 sources vs installed diff 경고 / CI 의 `bash update.sh --check` (dry-run 모드 신설 후) / post-merge 자동 update. 본 사건(`spec-x-dogfood-sync`)의 근본 원인 — 별도 spec 으로 신중 설계
-- **ADR-NNN-dogfood-sync-policy 작성** (convention) — 본 저장소(harness-kit self-host) 에서 sources → installed 동기화는 *키트 자체 `update.sh`* 가 SSOT. 수동 cp / symlink / 직접 편집 금지. link 모델 거부 결정 + drift-visibility-deferred (tradeoff) 흡수. `spec-x-dogfood-sync` 머지 직후 작성
+- ~~**ADR-NNN-dogfood-sync-policy 작성** (convention)~~ → ✓ **ADR-003** 작성 (2026-05-28, commit `3a4ad76`)
 - **`check-secrets.sh` `.env.*.example` 패턴 제외 fix** — 현재 `(^|/)\.env(\..+)?$` 가 `.env.telegram.example` 같은 *템플릿* 까지 false positive 로 잡음. 본 사건에서 self-host 한정 회피(.gitignore 추가) 로 우회했으나 target 프로젝트에도 영향. 패턴을 `\.env(\.[a-z0-9_-]+)?$` 형태로 좁히거나 `.example`/`.sample` 접미사 화이트리스트 추가 필요
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
