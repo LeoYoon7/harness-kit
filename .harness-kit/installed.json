@@ -1,7 +1,7 @@
 {
   "kitVersion": "0.13.6",
   "kitOrigin": "git@github.com:LeoYoon7/harness-kit.git",
-  "installedAt": "2026-05-28T05:49:51Z",
+  "installedAt": "2026-05-28T08:02:30Z",
   "uxMode": "interactive",
   "installedCommands": ["hk","hk-align","hk-archive","hk-ask-mode","hk-cleanup","hk-code-review","hk-doctor","hk-phase-review","hk-phase-ship","hk-plan-accept","hk-pr-bb","hk-pr-gh","hk-ship","hk-spec-critique","hk-update"]
 }
