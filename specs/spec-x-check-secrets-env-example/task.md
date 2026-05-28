@@ -53,15 +53,15 @@
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
 ### 4-1. 산출물 작성
-- [ ] `tests/test-check-secrets-dual-mode.sh` 전체 PASS 재확인 (증거 로그용)
-- [ ] **walkthrough.md 작성** (Test 9 회귀 가드, Test 12·13 신규, 13/13 결과 로그 포함)
-- [ ] **pr_description.md 작성** (변경 요약, before/after diff, 테스트 결과)
+- [x] `tests/test-check-secrets-dual-mode.sh` 전체 PASS 재확인 (증거 로그용)
+- [x] **walkthrough.md 작성** (Test 9 회귀 가드, Test 12·13 신규, 13/13 결과 로그 포함)
+- [x] **pr_description.md 작성** (변경 요약, before/after diff, 테스트 결과)
 
 ### 4-2. Ship Commit
-- [ ] Commit: `docs(spec-x-check-secrets-env-example): ship walkthrough and pr description`
+- [x] Commit: `docs(spec-x-check-secrets-env-example): ship walkthrough and pr description`
 
 ### 4-3. Push & PR
-- [ ] task.md 의 모든 `[ ]` 가 `[x]` 또는 `[-]` 인지 확인
+- [x] task.md 의 모든 `[ ]` 가 `[x]` 또는 `[-]` 인지 확인
 - [ ] **Push**: `git push -u origin spec-x-check-secrets-env-example`
 - [ ] **PR 생성**: `/hk-pr-gh` 또는 `gh pr create` (base: fork main — `LeoYoon7/harness-kit:main`)
 - [ ] **사용자 알림**: PR URL 보고 후 머지 대기
@@ -74,5 +74,5 @@
 |---|---|
 | **총 Task 수** | 4 (Pre-flight 제외) |
 | **예상 commit 수** | 3 (test + fix + docs/ship) |
-| **현재 단계** | Planning |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-05-28 |

@@ -1,82 +1,78 @@
 # Walkthrough: spec-x-check-secrets-env-example
 
-> 본 문서는 *작업 기록* 입니다. 결정 과정, 사용자 협의, 검증 결과를 미래의 자신과 리뷰어에게 남깁니다.
-> 작업을 진행하는 동안 *지속적으로* 갱신하세요. 마지막에 한 번에 작성하지 마세요.
+> `.env.*.example` / `.env.*.sample` 템플릿 파일의 `check-secrets` hook false positive 해소.
 
 ## 📌 결정 기록
 
-> 작업 중 이슈가 발생했을 때, 어떤 선택지가 있었고 왜 이 방향을 결정했는지 기록합니다.
-
 | 이슈 | 선택지 | 결정 | 이유 |
 |---|---|---|---|
-| <이슈 1> | A 또는 B | A | <이유> |
+| Filter 위치 | (A) 기존 regex 자체를 negative lookahead 등으로 보강 / (B) 파이프 끝에 `grep -vE` 추가 | **B** | 양성 매칭 → 음성 필터 분리가 가독성·테스트 용이성 우월. POSIX `grep -vE` 만 사용 (bash 3.2 호환). |
+| 제외 패턴 범위 | (A) `.example` 만 / (B) `.example` + `.sample` | **B** | `.sample` 도 관용 표기로 사용됨. spec.md 요구사항에 명시. |
+| 테스트 위치 | (A) 별도 테스트 파일 신규 / (B) `test-check-secrets-dual-mode.sh` 에 append | **B** | .env 파일명 검사 (Test 9) 와 같은 토픽. 분리할 가치 없음. |
+| **Task 2 Red commit 시 hook 자체 차단** | (A) spec.md Out of Scope 설명 한 줄 reword / (B) `HARNESS_HOOK_MODE_SECRETS=warn` 단발 우회 / (C) docs 컨텍스트 인식 본 spec 에 포함 | **A** | spec.md Out of Scope 가 이미 *"docs-context fix는 별도 spec"* 으로 명시. 본 PR 범위 보존 + hook 통과의 최소 변경. B 는 우회 흔적이 commit 환경에 남고 C 는 scope creep. |
 
 ### ADR 승격 가이드
 
-> 위 결정 중 *cross-spec / long-lived* 인 것이 있다면 ADR 로 승격합니다 (constitution §6.3).
->
-> 승격 기준:
-> - 다른 spec 의 작업이 본 결정에 의존하는가?
-> - 6 개월 이상 유지될 가능성이 높은가?
-> - frontmatter `type:` 어휘 (`decision` / `invariant` / `convention` / `tradeoff`) 중 하나에 해당하는가?
->
-> 셋 중 둘 이상이면 ADR 후보. 비강제 — 미체크여도 ship 차단 없음.
-
-- [ ] ADR 승격 대상 있음 → 작성됨: `docs/decisions/ADR-<NNN>-<slug>.md`
-- [ ] 없음
+- [ ] ADR 승격 대상 있음
+- [x] 없음 — 단순 regex 보강. ADR-003 의 dogfood-sync 운영 원칙은 그대로 유지.
 
 ## 💬 사용자 협의
 
-> 사용자와 논의한 내용과 합의 사항을 기록합니다.
-
-- **주제**: <논의 주제>
-  - **사용자 의견**: <사용자가 제시한 방향>
-  - **합의**: <최종 합의 내용>
+- **주제**: 미완 spec-x 처리 방향 (세션 시작 시 작성된 spec.md 만 있고 plan/task 비어 있음)
+  - **사용자 의견**: 이어서 진행 (1번)
+  - **합의**: plan/task 재작성 후 Plan Accept → Strict Loop 진행
+- **주제**: Plan Accept vs Critique
+  - **사용자 의견**: Plan Accept (1번)
+  - **합의**: 즉시 실행 진입. spec 이 명확하고 변경 범위 작음 (1줄 + 테스트 2건).
+- **주제**: Task 2 Red commit hook 차단 시 해소 방법
+  - **사용자 의견**: 1번 (spec.md 한 줄 reword)
+  - **합의**: 해당 리터럴(`secret` 키워드 + `=` + 값 형태)을 `password / secret / api_key 등 키워드 뒤에 = 와 값이 오는 형태` 풀어쓰기로 변경.
 
 ## 🧪 검증 결과
 
 ### 1. 자동화 테스트
 
 #### 단위 테스트
-- **명령**: `<프로젝트의 단위 테스트 명령>`
-- **결과**: ✅ Passed (X tests in Y.Y s) / ❌ Failed (자세한 내용 아래)
+- **명령**: `bash tests/test-check-secrets-dual-mode.sh`
+- **결과**: ✅ Passed (PASS: 13 / FAIL: 0)
 - **로그 요약**:
+
 ```text
-(핵심 로그 붙여넣기)
+▶ Test 9:  git hook 모드에서 .env staged → 차단됨 (exit=2)        ← 회귀 가드 OK
+▶ Test 11: Private Key staged → 차단됨 (exit=2)                  ← 회귀 가드 OK
+▶ Test 12: .env.telegram.example staged → 통과 (exit=0)          ← 신규 (Red→Green)
+▶ Test 13: .env.discord.sample staged → 통과 (exit=0)            ← 신규 (Red→Green)
+───────────────────────────────────────────────────────
+ PASS: 13  FAIL: 0
+───────────────────────────────────────────────────────
 ```
 
-#### 통합 테스트 (Integration Test Required = yes 인 경우)
-- **명령**: `<프로젝트의 통합 테스트 명령>`
-- **결과**: ✅ Passed / ❌ Failed
-- **로그 요약**:
-```text
-(핵심 로그 붙여넣기)
-```
+#### 통합 테스트
+Integration Test Required = no — 생략.
 
 ### 2. 수동 검증
 
-> 에이전트가 실행한 단계와 결과를 시간순으로 기록.
-
-1. **Action**: `<실행한 명령 또는 행동>`
-   - **Result**: <관찰된 결과>
+1. **Action**: 패치 *이전* `bash tests/test-check-secrets-dual-mode.sh` 실행
+   - **Result**: `PASS: 11  FAIL: 2` — Test 12·13 만 차단 (Red 확인).
+2. **Action**: `sources/hooks/check-secrets.sh` line 36 파이프 끝에 `grep -vE '\.(example|sample)$'` 추가
+   - **Result**: 단일 줄 (다중 라인 백슬래시 continuation) 변경.
+3. **Action**: 패치 *이후* 전체 테스트 재실행
+   - **Result**: `PASS: 13  FAIL: 0` — Test 9 (`.env` 차단) / Test 11 (Private Key) 등 회귀 가드 PASS.
 
 ## 🔍 발견 사항
 
-<!-- 작업 중 발견한 흥미로운 점, 사이드 이슈, 다음 SPEC 후보 -->
+- **Self-trigger 패턴 재발**: spec.md 의 Out of Scope 섹션이 *언급한* 패턴 (백틱 안에 `secret` 키워드 + `=` + 값을 그대로 적은 리터럴) 이 본 spec 의 commit 자체를 차단했다. `spec-x-dogfood-sync` ship 시 동일 현상이 있었음. → **별도 spec 후보**: `check-secrets` hook 의 *docs 컨텍스트 (.md 본문, 코드 fence 내부) 인식 보강*. 본 spec 범위 외 (Out of Scope).
+- **bash 3.2 호환 확인**: `grep -vE` 는 POSIX, BSD grep / GNU grep 모두 동일 동작. 추가 검증 불필요.
+- **`.sample` 사용처**: 현재 키트 자체에는 `.env.*.sample` 미사용이지만 외부 관용 표기로 미리 지원. install.sh 가 향후 `.sample` 로 변경해도 회귀 없음.
 
-- <발견 1>
-- <발견 2>
+## 🚧 이월 항목
 
-## 🚧 이월 항목 (Optional)
-
-> 본 SPEC 범위를 벗어나 다음 작업으로 미룬 항목.
-
-- <항목 1> → `backlog/queue.md` 에 추가됨
+- `check-secrets` hook 의 docs 컨텍스트 (.md / 코드 fence) 인식 보강 → `backlog/queue.md` Icebox 후보 (사용자 결정 후 등록).
 
 ## 📅 메타
 
 | 항목 | 값 |
 |---|---|
-| **작성자** | Agent + <user> |
-| **작성 기간** | YYYY-MM-DD ~ YYYY-MM-DD |
-| **최종 commit** | `<short hash>` |
+| **작성자** | Agent (Opus 4.7) + Leo |
+| **작성 기간** | 2026-05-28 |
+| **최종 commit** | `a6d816f` (fix), `37df8cc` (test) |
