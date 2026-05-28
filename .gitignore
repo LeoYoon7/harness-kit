@@ -28,3 +28,12 @@ tests/fixtures/_target/
 
 # Hook 캐시 (kit 버전 알림) — 매 SessionStart 마다 자동 갱신, 추적 대상 아님
 .harness-kit/cache.json
+.env.telegram
+.env.discord
+
+# self-host 전용: install 이 생성하는 .env.*.example 템플릿. 매 install 마다
+# 재생성되는 아티팩트라 추적 불필요. 또한 check-secrets.sh 의 .env file staged
+# 패턴이 .env.*.example 까지 false positive 로 잡는 알려진 버그를 회피.
+# (#queue.md Icebox: check-secrets.sh .env.*.example 패턴 제외 fix)
+.env.telegram.example
+.env.discord.example
