@@ -354,6 +354,36 @@ bash .harness-kit/bin/notify.sh "✅ [ack] 사용자 응답: Repo 전체 (archiv
 
 관련 ADR: `docs/decisions/ADR-004-notification-twofold-decision-flow.md` — 양방향 컨벤션 + Amendment (단일 소스 원칙).
 
+#### 10. 채널 답장을 의사결정 응답으로 인식 (응답 측 양방향) 【필수】
+
+사용자가 Telegram/Discord 등 *원격 채널* 에서 답장으로 응답하면, 에이전트는 이를 *해당 의사결정 게이트의 응답* 으로 처리합니다.
+multi-device 환경에서 외부 작업 시나리오 (모바일에서 plan accept, 모바일에서 옵션 선택 등) 의 핵심 절차.
+
+**트리거 신호**:
+- 사용자 메시지에 `<channel source="telegram" ...>` 또는 `<channel source="discord" ...>` 태그 포함
+- 직전 에이전트 발화가 *의사결정 게이트* (선택지 제시, [Y/n], Plan Accept 등)
+
+**처리 절차**:
+1. 채널 메시지 본문을 PC chat 응답과 *동일 자격* 으로 의사결정 응답으로 처리
+2. **응답 매핑 알고리즘** (ChatOps 패턴):
+   - 숫자 변형 (`1`, `1번`, `첫번째`, `옵션 1`) → 옵션 번호 매핑
+   - 권장 키워드 (`권장`, `recommended`) → 권장 옵션 매핑
+   - 옵션 라벨 substring 매칭 (예: 옵션 "Gemini (cross-model)" 에 `"Gemini"` / `"제미니"` 매칭)
+   - 매핑 실패 또는 모호 → 사용자에게 명시적 확인 요청 (round trip)
+3. §9 ack 발송 — 같은 채널의 reply 도구 사용 (단일 소스 원칙):
+   - Telegram: `mcp__plugin_telegram_telegram__reply` (reply 본문에 `[ack]` 포맷 포함)
+   - Discord: 등가 MCP 도구 (active 시)
+4. 에이전트 작업 진행
+
+**모호 케이스 처리** (간결):
+- 응답 형식 모호 (자유 텍스트, "잘 모르겠어", 제3 제안) → 사용자에게 명시적 확인 요청 (단일 원칙)
+- 직전 게이트가 *둘 이상* 활성 → *가장 최근* 게이트 우선 매핑. 모호 시 확인 요청
+- 같은 게이트 PC + 채널 양쪽 응답 → 먼저 도착 채택, 두 번째 무시 + 사용자 알림
+
+**권한 검증**: MCP 가 담당 (chat_id 화이트리스트 등). 본 fragment 는 MCP 신뢰 전제 — 응답은 *선택지 매핑* 만 수행, 임의 명령 실행 안 함.
+
+**관련 ADR**: `docs/decisions/ADR-004-notification-twofold-decision-flow.md` Amendment 절 — 정책 전환 (보조 → 양방향).
+
 ### Strict Loop 중 Task 완료 알림 정책
 
 매 task마다 알림은 소음이 되므로 **기본 비활성**. 다음 경우에만 발송:
