@@ -18,6 +18,51 @@ description: 현재 SPEC 작업 종료 — walkthrough/pr_description 검증 후
 
 부족한 부분이 있으면 사용자에게 정확히 무엇이 부족한지 보고하고 멈춥니다.
 
+## 1.5 코드 리뷰 게이트 (선택)
+
+Push/PR 직전 cross-model 또는 self-model 코드 리뷰를 옵션으로 제공합니다.
+사용자에게 다음 선택지를 제시하고 응답을 대기합니다 (CLAUDE.fragment.md 선택지 제시 규약 — [권장] 포함):
+
+```
+[상황 / 맥락]
+Ship 직전 코드 리뷰 옵션 — push/PR 후에는 리뷰 비용이 커집니다.
+
+[선택지]
+1. Gemini (cross-model, 다른 모델 관점) — bash .harness-kit/bin/gemini-review.sh
+2. Opus (기존 /hk-code-review)
+3. Skip — 리뷰 없이 §2 품질 게이트로 진행
+
+[권장]
+1 — cross-model 리뷰가 self-evaluation 편향을 줄입니다 (LLM-as-judge 연구 일관).
+    gemini CLI 미설치 또는 빠른 ship 필요 시 3.
+
+[의사결정 요청]
+어떤 리뷰로 진행할까요?
+```
+
+사용자 응답:
+- `1` / `gemini` → `bash .harness-kit/bin/gemini-review.sh` 실행. 결과는 `specs/<spec-dir>/code-review-gemini.md`.
+- `2` / `opus` → `/hk-code-review` 절차 실행. 결과는 `specs/<spec-dir>/code-review.md`.
+- `3` / `skip` → 바로 §2 로 진행.
+
+**Critical 이슈 발견 시**: 리뷰 결과의 `Critical: N` 이 0 보다 크면 사용자에게 보고 후 다음 선택지를 추가로 제시합니다.
+
+```
+[상황] 리뷰에서 Critical N개 발견.
+
+[선택지]
+1. 보고 후 멈춤 — 사용자가 fix 진행
+2. 그대로 ship 진행 (Critical 무시)
+
+[권장]
+1 — Critical 은 ship 후 정정 비용이 큰 항목입니다.
+
+[의사결정 요청]
+어떻게 진행할까요?
+```
+
+리뷰 실행 실패 (gemini CLI 미설치 등) 시 사용자에게 보고하고 다시 선택지를 제시합니다 (Skip 도 옵션).
+
 ## 2. 품질 게이트
 
 **실패 시 즉시 멈추고 사용자에게 보고. 에이전트가 임의로 fix 시도 금지 — 사용자 결정 대기.**
