@@ -57,6 +57,7 @@
 - **`.claude/commands/` 의 라인 엔딩 mixed**: 기존 main 의 `.claude/commands/*.md` 는 CRLF, `sources/commands/*.md` 는 LF. `.gitattributes` 가 `.sh` 만 LF 강제. 본 spec 범위 외 — 향후 별도 spec-x 로 normalize 가능.
 - **Gemini false positive 패턴**: 본 spec 자체에 리뷰를 돌리면 *진행 중인 task* 의 미구현 변경을 "누락" 으로 판정. 이는 Ship 직전 시점이 적절한 리뷰 타이밍이라는 가설을 강화 — 모든 task 종료 후 실행해야 의미 있음.
 - **gemini CLI `-p` argv 크기 한계 (Windows)**: 큰 프롬프트는 stdin 으로 전달 필요. 본 패턴은 향후 다른 Gemini 호출 (예: spec-critique 의 Gemini 화) 에도 재사용 가치.
+- **`sdd ship` 의 spec-x 스코프 트렁케이션 버그**: ship commit subject 가 `docs(spec-x-gemini)` 로 생성됨 (정확한 형식은 `docs(spec-x-gemini-review)`). 본 PR 에서는 amend 로 정정했으나, sdd ship 의 spec-x slug 파싱 로직에 버그가 있을 가능성. 후속 spec-x 가능 (Icebox).
 
 ## 🚧 이월 항목
 
