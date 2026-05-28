@@ -16,6 +16,7 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
+- [ ] spec-x-md-lf-normalize — md-lf-normalize
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox

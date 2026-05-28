@@ -1,2 +1,5 @@
 # Shell 스크립트는 LF 로 저장 — macOS/Linux 에서 bash\r shebang 오류 방지 (autocrlf 설정 무관 강제)
 *.sh text eol=lf
+
+# 마크다운도 LF 로 통일 — Windows / macOS / Linux 간 일관성 보장, sdd status dogfood drift 방지
+*.md text eol=lf
