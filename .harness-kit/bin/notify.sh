@@ -9,13 +9,17 @@
 # 레벨 (info|align|plan|accept|stop|ship|merge|phase) — 하위 헬퍼와 동일.
 #
 # 채널 라우팅 (환경변수 NM_NOTIFY_CHANNEL):
-#   미설정 또는 telegram  → notify-telegram.sh 만 호출
-#   discord               → notify-discord.sh  만 호출
-#   both                  → 둘 다 호출
-#   none                  → 발송 안 함 (silent skip)
+#   미설정 또는 telegram      → notify-telegram.sh 만 호출
+#   discord                   → notify-discord.sh  만 호출
+#   none                      → 발송 안 함 (silent skip)
+#   기타 값 (예: 과거 'both') → telegram fallback (역호환)
 #
-# 채널은 보통 launcher 가 export (예: discord-nextmarket-system.sh).
+# 채널은 보통 launcher 가 export (예: telegram.sh / discord.sh).
 # 직접 claude 실행 시 미설정 → telegram 기본 (역호환).
+#
+# 'both' 는 spec-x-notify-drop-both 에서 제거 — ADR-004 의 단일 소스 원칙과 충돌
+# (응답 측 ack 가 한쪽 채널에만 도달 → 반대 채널에 "응답 미완" 인상 잔존).
+# Redundancy 가 필요하면 외부 wrapper 로 두 helper 를 직접 호출.
 #
 # 하위 헬퍼가 없거나 .env.{telegram,discord} 가 없으면 헬퍼 내부에서 silent skip.
 
@@ -43,13 +47,9 @@ call_helper() {
 case "$CHANNEL" in
     telegram) call_helper "notify-telegram.sh" ;;
     discord)  call_helper "notify-discord.sh" ;;
-    both)
-        call_helper "notify-telegram.sh"
-        call_helper "notify-discord.sh"
-        ;;
     none)     : ;;
     *)
-        # 알 수 없는 값은 telegram 으로 fallback (방어적 기본값)
+        # 알 수 없는 값 (과거 'both' 포함) 은 telegram 으로 fallback (방어적 기본값)
         call_helper "notify-telegram.sh"
         ;;
 esac
