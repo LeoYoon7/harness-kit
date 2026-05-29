@@ -16,6 +16,7 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
+- [ ] spec-x-notify-drop-both — notify-drop-both
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
