@@ -7,6 +7,24 @@ harness-kit의 주요 변경 사항을 버전별로 정리합니다.
 
 ---
 
+## [0.15.0-leo.1] — 2026-05-29
+
+> **Fork-distinct stable release** — LeoYoon7/harness-kit (forked from Changsik00/harness-kit).
+> `-leo.N` suffix 는 upstream 충돌 방지용 식별자이며 unstable 의미 없음.
+>
+> 알림 dispatcher 의 발송 측 명시성 원칙 정립 + chunk 분할 가독성 결함 해소. ADR-004 의 양방향 컨벤션이 응답 측 단일 소스 + 발송 측 명시성으로 대칭 완성.
+
+### Changed (Breaking)
+
+- **notify dispatcher 발송 측 명시성 원칙** — `NM_NOTIFY_CHANNEL` 미설정/알 수 없는 값 시 silent skip (이전: telegram fallback). launcher (`./telegram.sh` / `./discord.sh`) 가 채널을 명시 export 한 경우에만 발송. 직접 `claude` 실행은 알림 끊김 — 마이그레이션은 launcher 사용으로 전환. ADR-004 amendment 추가 (#15)
+- **notify dispatcher `both` 채널 라우팅 제거** — `NM_NOTIFY_CHANNEL=both` 가 두 helper 모두 호출하던 분기 제거. 단일 소스 원칙 일관화 (ADR-004 응답 측 단일 채널과 충돌 해소). 본 release 의 net 동작: `both` 입력 → silent skip (위 항목과 연쇄). ADR-004 amendment 추가 (#14)
+
+### Fixed
+
+- **notify chunk 분할이 라인/코드 펜스 경계 보호** — 기존 `jq .[a:b]` 단순 byte 절단을 awk 라인 누적으로 교체. CHUNK_SIZE 초과 직전 라인 경계에서 청크 emit. Discord 는 청크 경계 시점 코드 펜스 균형 자동 — 펜스 열려 있으면 ` ``` ` 닫고 다음 청크에서 재오픈해 양쪽 청크 모두 valid 마크다운. 라이브 사례 `FROM STP_USERS` → `FR` + `OM` 끊김 완전 해소 (#16)
+
+---
+
 ## [0.14.0-leo.1] — 2026-05-29
 
 > **Fork-distinct stable release** — LeoYoon7/harness-kit (forked from Changsik00/harness-kit at `0.13.6`). `-leo.N` suffix 는 upstream 충돌 방지용 식별자이며 unstable 의미 없음.
