@@ -17,19 +17,19 @@
 ## Task 1: 브랜치 생성
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-x-notify-drop-both`
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-x-notify-drop-both`
+- [x] Commit: 없음 (브랜치 생성만)
 
 ---
 
 ## Task 2: dispatcher 에서 `both` case 제거
 
 ### 2-1. dispatcher 변경 (sources + 도그푸딩 동기화)
-- [ ] `sources/bin/notify.sh` — `both` case 라벨 제거 + 헤더 주석 라우팅 표 갱신
-- [ ] `.harness-kit/bin/notify.sh` — 동일 변경 (도그푸딩 sync)
-- [ ] `diff sources/bin/notify.sh .harness-kit/bin/notify.sh` → 0 줄 확인
-- [ ] 수동 검증 — plan.md "수동 검증 시나리오" 1~5 수행 (helper silent skip OK)
-- [ ] Commit: `refactor(spec-x-notify-drop-both): drop 'both' channel from notify dispatcher`
+- [x] `sources/bin/notify.sh` — `both` case 라벨 제거 + 헤더 주석 라우팅 표 갱신
+- [x] `.harness-kit/bin/notify.sh` — 동일 변경 (도그푸딩 sync)
+- [x] `diff sources/bin/notify.sh .harness-kit/bin/notify.sh` → 0 줄 확인
+- [x] 수동 검증 — plan.md "수동 검증 시나리오" 1~5 수행 + xtrace 로 `both` → telegram fallback 확인 (notify-discord.sh 호출 없음)
+- [x] Commit: `refactor(spec-x-notify-drop-both): drop 'both' channel from notify dispatcher`
 
 ---
 
