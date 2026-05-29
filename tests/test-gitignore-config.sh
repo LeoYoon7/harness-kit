@@ -232,6 +232,52 @@ fi
 echo ""
 
 # ──────────────────────────────────────────────
+# Scenario J: uninstall.sh awk 대칭성 — install 추가 라인은 uninstall 도 제거 (ADR-005)
+# spec-x-install-ignore-coverage critique 보강: install 추가 라인이 uninstall awk 의
+# 알려진 패턴 enumeration 에 등재 안 되면 stale 잔존 + 인접 라인 조기 종료 부작용.
+# ──────────────────────────────────────────────
+echo "▶ Scenario J: uninstall.sh awk 대칭성 (install 추가 라인 모두 제거)"
+FIX_J="$(make_fixture)"
+UNINSTALL="$ROOT/uninstall.sh"
+trap 'rm -rf "$FIX_A" "$FIX_B" "$FIX_C" "$FIX_H" "$FIX_J"' EXIT
+
+# install → uninstall
+bash "$INSTALL" --yes "$FIX_J" > /dev/null 2>&1
+bash "$UNINSTALL" --yes "$FIX_J" > /dev/null 2>&1
+
+# J-1: '# harness-kit' 헤더가 제거됐는가
+check
+if ! grep -qE '^# harness-kit$' "$FIX_J/.gitignore" 2>/dev/null; then
+  pass "J-1: uninstall 후 '# harness-kit' 헤더 제거"
+else
+  fail "J-1: uninstall 후 '# harness-kit' 헤더 잔존"
+fi
+
+# J-2: 신규 라인 (specs/**/code-review*.md) 가 제거됐는가 — install/uninstall 대칭성
+check
+if ! grep -q '^specs/\*\*/code-review\*\.md$' "$FIX_J/.gitignore" 2>/dev/null; then
+  pass "J-2: uninstall 후 'specs/**/code-review*.md' 제거 (대칭성 invariant)"
+else
+  fail "J-2: uninstall 후 'specs/**/code-review*.md' 잔존 (uninstall awk 패턴 누락 — ADR-005 위반)"
+fi
+
+# J-3: 기존 알려진 라인들도 모두 제거됐는가 (회귀 보장)
+check
+_leftovers=""
+for _pat in '^\.harness-kit/$' '^\.harness-backup-\*/$' '^\.claude/state/$' '^\.env\.telegram$' '^\.env\.discord$'; do
+  if grep -qE "$_pat" "$FIX_J/.gitignore" 2>/dev/null; then
+    _leftovers="$_leftovers $_pat"
+  fi
+done
+if [ -z "$_leftovers" ]; then
+  pass "J-3: uninstall 후 기존 5개 라인 모두 제거 (회귀 없음)"
+else
+  fail "J-3: uninstall 후 잔존 라인:$_leftovers"
+fi
+
+echo ""
+
+# ──────────────────────────────────────────────
 # 결과
 # ──────────────────────────────────────────────
 echo "═══════════════════════════════════════════"
