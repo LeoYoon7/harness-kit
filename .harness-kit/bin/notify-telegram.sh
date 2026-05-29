@@ -114,23 +114,48 @@ esac
 REPO_NAME="$(basename "$PROJECT_ROOT")"
 
 # Telegram 한 메시지 본문 4096자 제한 대응 — chunking 으로 분할 전송.
-# 본문(MESSAGE)을 CHUNK_SIZE 단위로 쪼개 각 청크에 헤더(`prefix [repo] [N/M]`) prepend.
-# jq 의 .[a:b] 는 unicode code point 단위라 UTF-8 byte boundary 손상 없음.
-# 안전 마진: 헤더 약 50자 여유 → 본문 3800자.
+# 본문(MESSAGE)을 라인 단위로 누적해 CHUNK_SIZE 초과 직전마다 청크 emit.
+# 각 청크 앞에 헤더(`prefix [repo] [N/M]`) prepend. 라인 경계 보호로 단어/문장
+# 중간 끊김 방지 (spec-x-notify-chunk-line-aware). 한 라인이 CHUNK_SIZE 를 넘는
+# 예외 케이스는 그 라인만 단순 절단 fallback.
+# 안전 마진: 헤더 약 50자 여유 → 본문 3800 byte (awk length 는 byte 단위).
 CHUNK_SIZE=3800
 
 command -v jq >/dev/null 2>&1 || exit 0
 
-TOTAL_LEN=$(jq -nr --arg s "$MESSAGE" '$s | length')
-NUM_CHUNKS=$(( (TOTAL_LEN + CHUNK_SIZE - 1) / CHUNK_SIZE ))
+# awk 로 라인 누적 + NUL 구분자 출력 (각 청크 사이 NUL).
+# 임시 파일에 써서 bash 의 `read -d ''` 로 한 청크씩 추출 — bash 3.2 호환.
+TMP_CHUNKS=$(mktemp 2>/dev/null || echo "/tmp/notify-telegram.$$.chunks")
+printf '%s\n' "$MESSAGE" | awk -v CS="$CHUNK_SIZE" '
+    BEGIN { acc = ""; n = 0 }
+    {
+        line_len = length($0) + 1
+        if (n + line_len > CS && n > 0) {
+            printf "%s%c", acc, 0
+            acc = ""
+            n = 0
+        }
+        if (line_len > CS) {
+            # 한 라인이 너무 김 — 단순 절단 fallback (multiple chunks)
+            while (length($0) >= CS) {
+                printf "%s\n%c", substr($0, 1, CS - 1), 0
+                $0 = substr($0, CS)
+            }
+            acc = $0 "\n"
+            n = length(acc)
+            next
+        }
+        acc = acc $0 "\n"
+        n += line_len
+    }
+    END { if (acc != "") printf "%s%c", acc, 0 }
+' > "$TMP_CHUNKS"
+
+NUM_CHUNKS=$(tr -cd '\0' < "$TMP_CHUNKS" | wc -c | tr -d ' ')
 [ "$NUM_CHUNKS" -lt 1 ] && NUM_CHUNKS=1
 
 i=0
-while [ "$i" -lt "$NUM_CHUNKS" ]; do
-    START=$(( i * CHUNK_SIZE ))
-    END=$(( (i + 1) * CHUNK_SIZE ))
-    CHUNK=$(jq -nr --arg s "$MESSAGE" --argjson a $START --argjson b $END '$s[$a:$b]')
-
+while IFS= read -r -d '' CHUNK; do
     if [ "$NUM_CHUNKS" -eq 1 ]; then
         HEADER="${PREFIX} [${REPO_NAME}]"
     else
@@ -158,6 +183,8 @@ ${CHUNK}"
     [ "$((i + 1))" -lt "$NUM_CHUNKS" ] && sleep 0.3
 
     i=$((i + 1))
-done
+done < "$TMP_CHUNKS"
+
+rm -f "$TMP_CHUNKS" 2>/dev/null || true
 
 exit 0
