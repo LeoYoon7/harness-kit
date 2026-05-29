@@ -115,3 +115,15 @@ Accepted (2026-05-28, spec-x-notify-choice-context 머지 시점). 첫 사용자
 **관련 spec**: `specs/spec-x-notify-bidirectional-policy/` — fragment 전 layer 정합화.
 
 **상태**: Accepted (2026-05-29, spec-x-notify-bidirectional-policy 머지 시점).
+
+### 2026-05-29 (spec-x-notify-drop-both)
+
+**`both` 채널 라우팅 제거 — 단일 소스 원칙 일관화**
+
+**배경**: Amendment (2026-05-29, channel-coherence) 의 "응답 측 단일 채널" 결정과 dispatcher 의 `both` 라우팅이 모순. `both` 로 원본 게이트를 양쪽 채널에 뿌려도 §9/§10 의 ack 는 응답 채널 한쪽에만 도달 → 반대 채널에 "응답 미완" 인상 잔존 → multi-device 상태 동기화 가치 (ADR-004 본문 결정) 가 오히려 깨짐.
+
+**결정**: `notify.sh` 의 `both` case 제거. 라우팅은 `telegram` / `discord` / `none` 만 남기고, 미지정/알 수 없는 값 (과거 `both` 포함) 은 `telegram` fallback 으로 흡수 (backward compatible). fragment §9 ack note 의 "예: `both`" 표현도 정합 갱신. Redundancy 가 필요한 경우 외부 wrapper 로 두 helper 를 직접 호출 (본 키트 surface 외).
+
+**관련 spec**: `specs/spec-x-notify-drop-both/` — dispatcher + fragment §9 정합.
+
+**상태**: Accepted (2026-05-29, spec-x-notify-drop-both 머지 시점).

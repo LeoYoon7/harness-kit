@@ -46,8 +46,8 @@
 ## Task 4: ADR-004 amendment 추가
 
 ### 4-1. ADR-004 amendment
-- [ ] `docs/decisions/ADR-004-notification-twofold-decision-flow.md` 의 Amendments 절 끝에 `### 2026-05-29 (spec-x-notify-drop-both)` 추가 (plan.md 의 본문 사용)
-- [ ] Commit: `docs(spec-x-notify-drop-both): add ADR-004 amendment for dropping 'both' channel`
+- [x] `docs/decisions/ADR-004-notification-twofold-decision-flow.md` 의 Amendments 절 끝에 `### 2026-05-29 (spec-x-notify-drop-both)` 추가 (plan.md 의 본문 사용)
+- [x] Commit: `docs(spec-x-notify-drop-both): add ADR-004 amendment for dropping 'both' channel`
 
 ---
 
