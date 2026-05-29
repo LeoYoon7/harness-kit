@@ -113,26 +113,29 @@
 ## Task 9: 검증 smoke
 
 ### 9-1. grep
-- [ ] `grep -ci "telegram" sources/claude-fragments/CLAUDE.fragment.md` — 사전 18 → 사후 ~11 확인 (축소 적용)
-- [ ] `grep -c "보조 채널" sources/claude-fragments/CLAUDE.fragment.md` = 0 확인
-- [ ] `grep -c "양방향 채널" sources/claude-fragments/CLAUDE.fragment.md` = 1 확인
-- [ ] `grep -c "Telegram notifications" sources/governance/agent.md` = 0 확인 (Layer 7 검증)
+- [x] `grep -ci "telegram" sources/claude-fragments/CLAUDE.fragment.md` — 사전 18 → 사후 19 (§10 신규 mentions 늘림 — 의도)
+- [x] `grep -c "보조 채널"` = 0 ✓ (line 379 + line 136 모두 정합화)
+- [x] `grep -c "양방향 채널"` = 3 ✓ (line 136 + line 379 + §10)
+- [x] `grep -c "Telegram notifications" sources/governance/agent.md` = 0 ✓ (Layer 7 검증)
+- [x] **검증 중 line 136 모순 추가 발견 + 정합화** (Critique 학습 — line 122 외 모순 검사 누락 인지)
 
-### 9-2. 메타 dogfood (Critique #6 — 본질 보강)
-- [ ] **본질 검증**: 본 spec 의 *한 게이트* (예: 항목 선택, Plan Accept 게이트 직후 추가 결정 등) 를 *실제 Telegram 답장* 으로 응답하여 §10 절차 실증 — 응답 매핑 알고리즘 + 단일 sink ack 동작 확인
-- [ ] (부수적) AUQ 미사용 확인 — 텍스트만
-- [ ] Telegram 답장 응답 → mcp reply 단독 사용 (단일 소스)
-- [ ] PC chat 응답 → notify.sh 단독 사용
-- [ ] Commit: 없음 (검증만)
+### 9-2. 메타 dogfood (Critique #6 — 본질 보강) — *본 spec 진행 자체* 가 dogfood
+- [x] **본질 검증**: §10 절차 dogfood 2회 실증:
+  - msg #3130 (Telegram, "2") → §10 응답 인식 + mcp reply ack (Critique 선택)
+  - msg #3136 (Telegram, "1") → §10 응답 인식 + mcp reply ack (Plan Accept)
+- [x] AUQ 미사용 ✓ — 모든 게이트 텍스트 형식 (Plan Accept, Critique 선택, 항목 선택)
+- [x] Telegram 답장 응답 → mcp reply 단독 사용 (단일 소스 PR #10 패턴 보존)
+- [x] PC chat 응답 → notify.sh 단독 사용 (예: "권장 진행" 응답 = PC chat 으로 처리됨)
+- [-] Commit: 없음 (검증만)
 
 ---
 
 ## Task 10: Ship
 
-- [ ] §1.5 리뷰 게이트 (텍스트 형식 — AUQ 미사용 dogfood)
+- [x] §1.5 리뷰 게이트 — Skip 선택 (사용자 msg #3140, Telegram). 텍스트 형식 dogfood ✓ (AUQ 미사용)
 - [-] 단위 테스트 → skip
-- [ ] **walkthrough.md 작성**
-- [ ] **pr_description.md 작성**
+- [x] **walkthrough.md 작성**
+- [x] **pr_description.md 작성**
 - [ ] **Ship Commit**: `docs(spec-x-notify-bidirectional-policy): ship walkthrough and pr description`
 - [ ] **Push**: `git push -u origin spec-x-notify-bidirectional-policy`
 - [ ] **PR 생성**: `gh pr create`
