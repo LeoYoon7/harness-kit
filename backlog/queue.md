@@ -16,7 +16,6 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
-- [ ] spec-x-notify-chunk-line-aware — notify-chunk-line-aware
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -127,6 +126,7 @@
 - [x] spec-x-install-ignore-coverage (완료)
 - [x] spec-x-notify-drop-both (완료)
 - [x] spec-x-notify-launcher-only (완료)
+- [x] spec-x-notify-chunk-line-aware (완료)
 <!-- sdd:done:end -->
 
 ---
