@@ -163,6 +163,7 @@ if [ -f "$TARGET/.gitignore" ]; then
     inblk==1 && /^\.claude\/state\/$/   { next }
     inblk==1 && /^\.env\.telegram$/     { next }
     inblk==1 && /^\.env\.discord$/      { next }
+    inblk==1 && /^specs\/\*\*\/code-review\*\.md$/ { next }
     inblk==1                           { inblk=0 }
     { print }
   ' "$TARGET/.gitignore" > "$tmp"
