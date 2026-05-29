@@ -399,6 +399,32 @@ multi-device 환경에서 외부 작업 시나리오 (모바일에서 plan accep
 
 **관련 ADR**: `docs/decisions/ADR-004-notification-twofold-decision-flow.md` Amendment 절 — 정책 전환 (보조 → 양방향).
 
+### 알림 메시지 마크다운 컨벤션
+
+본 프로젝트의 모든 `notify.sh` 호출 + Telegram/Discord MCP reply 본문은 단일 마크다운 컨벤션을 따른다. 인프라가 채널별로 적절히 변환하므로 (Discord: raw 마크다운 네이티브 렌더링 + 표 → code-block ASCII 정렬, Telegram: `markdown_simplify` 가 메타문자 제거 + 표 셀 join) **발신 측은 단일 컨벤션만 알면 된다** (spec-x-notify-channel-formatter).
+
+| 요소 | 마크다운 작성 | Discord 렌더링 | Telegram 렌더링 |
+|---|---|---|---|
+| 섹션 라벨 | `**[라벨]**` | bold | 평문 (`[라벨]`) |
+| 강조 | `**값**` | bold | 평문 |
+| 인라인 코드 | `` `값` `` | code (등폭) | 평문 |
+| 표 | ` ```\n\| col \| col \|\n\| --- \| --- \|\n\| a \| b \|\n``` ` | code-block 안 정렬 ASCII 표 (CJK 혼합 시 정렬 깨짐 허용 — NF6 한계) | 셀 ` — ` join (평문화) |
+| 구분선 | `---` | horizontal rule | 제거 |
+| 코드 블록 | ` ```lang\n...\n``` ` | code block (lang hint 적용) | 펜스 라인 제거, 본문 보존, **언어 hint 도 제거** |
+
+**금지**:
+- 표를 plain text 로 작성 (Discord 가독성 손실 — 표 마크다운 정상 사용)
+- bold/italic 메타문자 (`**`, `*`, `_`) 를 평문 의도로 사용 (Telegram 평문화로 의도 손실)
+- 라벨 없이 본문만 나열 (구조화 손실)
+
+**한계 (NF6 / A4 명시)**:
+- 한글 셀과 ASCII 셀이 혼합된 표는 Discord 등폭 폰트에서 정렬 보장 미흡 (Unicode UAX #11 East Asian Width 미적용). 한글 전용 / ASCII 전용 표는 정렬 보존.
+- `***nested***`, `**unbalanced ** text` 같은 중첩·비균형 메타문자는 Telegram 측 `markdown_simplify` 에 일부 메타문자 잔존 가능 — 단순 `**[라벨]**` 만 사용 권장.
+- Branch 이름·식별자 등에 backtick (`` ` ``) 포함 금지 — `markdown_simplify` 의 inline-code sed 매칭이 깨짐 (Git 자체도 backtick branch 권장 안 함).
+
+**참고 ADR (트리거 대기)**:
+- `notify-channel-adapter-responsibility` (type: **invariant**) — 신규 채널 추가 spec 트리거 시 작성. "발신 측은 단일 마크다운 컨벤션, 인프라 측이 채널별 변환 책임" 분담 원칙.
+
 ### Strict Loop 중 Task 완료 알림 정책
 
 매 task마다 알림은 소음이 되므로 **기본 비활성**. 다음 경우에만 발송:
@@ -428,6 +454,7 @@ multi-device 환경에서 외부 작업 시나리오 (모바일에서 plan accep
 | **민감정보 금지** | 토큰, 비밀번호, 환경변수 값 등을 메시지에 포함하지 않음. |
 | **단일 명령** | `notify.sh` 호출은 한 번에 하나씩. 체이닝 금지 (agent.md §6.4). |
 | **권장안 필수** | 선택지 2개 이상이면 [권장] 반드시 포함 (agent.md §8.5). |
+| **마크다운 컨벤션** | 본문은 단일 마크다운 컨벤션 (위 "알림 메시지 마크다운 컨벤션" 섹션). Discord 가독성 회복 + Telegram 회귀 방지. |
 
 ### 알림 비활성화
 

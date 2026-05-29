@@ -123,13 +123,14 @@
 ## Task 9: CLAUDE.md fragment 컨벤션 섹션 신설 (B10 디테일 포함)
 
 ### 9-1. "알림 메시지 마크다운 컨벤션" 섹션 추가
-- [ ] `sources/claude-fragments/CLAUDE.md` 의 적절한 위치 (§10 직후 또는 "알림 정책" 표 직전) 에 신설
-- [ ] 컨벤션 표 (요소 / 마크다운 / Discord 렌더링 / Telegram 렌더링) — plan.md D 절 정확 복사
-- [ ] **B10 반영**: 코드 블록 row 의 Telegram 렌더링 컬럼에 "펜스 제거, 본문 보존, **언어 hint 도 제거**" 명시
-- [ ] **NF6 한계 반영**: 표 row 에 "CJK 혼합 시 정렬 깨짐 허용"
-- [ ] 금지 항목 + 한계 항목 (한글 셀, nested 메타문자, backtick branch) 명시
-- [ ] 기존 "알림 정책" 표와 중복 없는지 검토
-- [ ] Commit: `docs(spec-x-notify-channel-formatter): add notification markdown convention section`
+- [x] `sources/claude-fragments/CLAUDE.fragment.md` 의 §10 직후, Strict Loop 정책 직전에 신설
+- [x] 컨벤션 표 6개 row (섹션 라벨 / 강조 / 인라인 코드 / 표 / 구분선 / 코드 블록) — Discord / Telegram 렌더링 명시
+- [x] B10 반영: 코드 블록 row 의 Telegram 컬럼에 "언어 hint 도 제거" 명시
+- [x] NF6 반영: 표 row 에 "CJK 혼합 시 정렬 깨짐 허용" 명시
+- [x] 금지 3 항목 + 한계 3 항목 (한글 셀 / nested 메타문자 / backtick branch) 명시
+- [x] C12 후보 ADR (`notify-channel-adapter-responsibility`, invariant) 참고 노트 추가
+- [x] "알림 정책" 표에 "마크다운 컨벤션" row 한 줄 추가 (참조)
+- [x] Commit (다음)
 
 ---
 
