@@ -36,7 +36,7 @@
 ## Task 3: ADR-004 amendment 추가
 
 ### 3-1. ADR-004 amendment
-- [ ] `docs/decisions/ADR-004-notification-twofold-decision-flow.md` 의 Amendments 절 끝에 `### 2026-05-29 (spec-x-notify-launcher-only)` 추가 (plan.md 의 본문 사용)
+- [x] `docs/decisions/ADR-004-notification-twofold-decision-flow.md` 의 Amendments 절 끝에 `### 2026-05-29 (spec-x-notify-launcher-only)` 추가 (plan.md 의 본문 사용)
 - [ ] Commit: `docs(spec-x-notify-launcher-only): add ADR-004 amendment for launcher-only dispatch`
 
 ---
