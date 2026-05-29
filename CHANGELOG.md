@@ -3,6 +3,43 @@
 harness-kit의 주요 변경 사항을 버전별로 정리합니다.
 형식: [Semantic Versioning](https://semver.org/)
 
+> **Fork release 표기**: `0.14.0-leo.1` 부터 본 저장소 (LeoYoon7/harness-kit) 는 upstream (Changsik00/harness-kit) 과 분리된 `-leo.N` suffix 사용. `docs/release-strategy.md` §Fork 버전 suffix 참조.
+
+---
+
+## [0.14.0-leo.1] — 2026-05-29
+
+> **Fork-distinct stable release** — LeoYoon7/harness-kit (forked from Changsik00/harness-kit at `0.13.6`). `-leo.N` suffix 는 upstream 충돌 방지용 식별자이며 unstable 의미 없음.
+>
+> 본 fork 의 첫 독립 release. 알림 채널 (telegram/discord) + cross-model 코드 리뷰 (gemini) + ignore 위생 (install/uninstall 대칭성 + container 가이드) + 도그푸딩 동기화 정책 정착. ADR 3건 추가 (003 dogfood-sync, 004 notification-twofold-flow, 005 ignore-line-symmetry).
+
+### Added
+
+- **알림 채널 (telegram/discord)** — `notify.sh` dispatcher + `telegram.sh`/`discord.sh` 루트 런처 + `.env.*.example` 템플릿 install. SDD 의사결정 지점 자동 알림 + 양방향 응답 인식 (Telegram MCP reply ↔ ack flow) (#1)
+- **Gemini CLI 기반 cross-model 코드 리뷰** — `/hk-gemini-review` 슬래시 커맨드 + `hk-ship` pre-flight 리뷰 게이트. Opus self-evaluation bias 완화 목적 (#6)
+- **wiki 레이어 (문서 지식 그래프)** — `docs/wiki/` 부트스트랩 + `CLAUDE.fragment` 패턴 통합 (#153, phase-19)
+- **컨테이너 빌드 가이드** — `README.md` `Dockerfile` 사용자용 `.dockerignore` 권장 항목 섹션 (#12)
+- **`sdd doctor` 'ignore 위생' 섹션** — `.gitignore` 의 리뷰 출력 패턴 + `Dockerfile` 조건부 `.dockerignore` 점검 (관대 패턴 매칭) (#12)
+- **ADR-003 dogfood-sync-policy** (convention) — sources ↔ installed 자산 sync 의 단일 명령 (`update.sh`) SSOT 정립
+- **ADR-004 notification-twofold-decision-flow** (decision) — 알림 dispatcher 통일 + 양방향 응답 정책
+- **ADR-005 kit-managed-ignore-line-symmetry** (invariant) — `install.sh` ↔ `uninstall.sh` awk 패턴 enumeration 대칭성 invariant (#12)
+
+### Fixed
+
+- **`.gitignore` review 출력 drift** — `install.sh` 가 `specs/**/code-review*.md` 라인 자동 등록 + `# harness-kit` 헤더 self-host 강제 추가 (고아 라인 위험 차단). `uninstall.sh` awk 대칭 등재 (#12)
+- **`check-secrets.sh` `.env.*.example` false positive** — 템플릿 파일까지 시크릿으로 검출하던 패턴 좁힘 (`-leo.1` 검토 메모: `.example`/`.sample` 접미사 화이트리스트) (#3)
+- **`check-secrets.sh` `.md` secret-assignment 패턴** — 문서 컨텍스트에서 `key=value` 같은 코드 예시까지 시크릿으로 오인 → `.md` 제외 (#4)
+- **`sdd status` drift bundle** — dogfood-sync detect (sources vs installed diff) + ADR `../` 상대경로 stale 검사 제외 (가설 인용 보호) (#5)
+- **알림 hook AskUserQuestion 추출 scope** — PR #8 의 hook 정규식이 너무 광범위해 무관한 텍스트까지 옵션으로 추출하던 regression fix (#9)
+
+### Changed
+
+- **알림 의사결정 flow 양방향 강화** — §5 stop 알림에 선택지 컨텍스트 보존 + §9 사용자 응답 ack 발송. multi-device 환경에서 응답 도달 확인 (#8)
+- **응답 알림 채널 일관성** — `notify.sh` dispatcher 통일 + 단일 소스 원칙 (telegram reply 와 ack notification 중복 방지) (#10)
+- **알림 양방향 정책 전환 + AUQ 사용 제거** — AskUserQuestion 도구 회피 (multi-device 응답 호환성) + 채널 중립적 dispatcher (#11)
+- **`*.md` LF 라인 엔딩 통일** — `.gitattributes` + 전체 normalize. Windows/Unix 혼재 환경 정합성 (#7)
+- **도그푸딩 sync drift 일괄 해소** — sources ↔ installed 4 commit 일괄 동기화 (#2)
+
 ---
 
 ## [0.13.6] — 2026-05-23
