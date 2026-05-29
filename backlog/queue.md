@@ -16,6 +16,7 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
+- [ ] spec-x-notify-chunk-line-aware — notify-chunk-line-aware
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
