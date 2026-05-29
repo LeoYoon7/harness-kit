@@ -10,7 +10,7 @@
 - [x] plan.md 작성
 - [x] task.md 작성 (이 파일)
 - [-] 백로그 업데이트 — spec-x 는 phase 미소속이므로 phase.md 갱신 불필요 (constitution §5.1)
-- [ ] 사용자 Plan Accept
+- [x] 사용자 Plan Accept
 
 ---
 
@@ -29,7 +29,7 @@
 - [x] `.harness-kit/bin/notify-telegram.sh` — 동일 변경 (도그푸딩 sync)
 - [x] `diff sources/bin/notify-telegram.sh .harness-kit/bin/notify-telegram.sh` → 0 줄 확인
 - [x] 수동 검증 — 시나리오 1 (단일 청크 회귀), 2 (라인 경계 후퇴 5라인→3청크), 6 (한 라인 > CHUNK_SIZE fallback 4청크), 7 (1라인)
-- [ ] Commit: `fix(spec-x-notify-chunk-line-aware): split telegram chunks at line boundaries`
+- [x] Commit: `fix(spec-x-notify-chunk-line-aware): split telegram chunks at line boundaries`
 
 ---
 
@@ -40,7 +40,7 @@
 - [x] `.harness-kit/bin/notify-discord.sh` — 동일 변경 (도그푸딩 sync)
 - [x] `diff sources/bin/notify-discord.sh .harness-kit/bin/notify-discord.sh` → 0 줄 확인
 - [x] 수동 검증 — 시나리오 1 (단일 청크), 3 (라인 경계 후퇴 4라인→2청크), 4 (펜스 보호 SQL 3청크 각각 valid), 7 (1라인)
-- [ ] Commit: `fix(spec-x-notify-chunk-line-aware): split discord chunks at line boundaries with fence balance`
+- [x] Commit: `fix(spec-x-notify-chunk-line-aware): split discord chunks at line boundaries with fence balance`
 
 ---
 
@@ -51,12 +51,12 @@
 - [-] 코드 품질 점검 (lint / type check) — bash 스크립트 + markdown. shellcheck 미강제.
 - [-] 전체 테스트 실행 → 자동 unit test 없음. plan.md 수동 검증 시나리오를 walkthrough.md 에 기록.
 - [-] (Integration Test Required = no) 통합 테스트 생략
-- [ ] **walkthrough.md 작성** — 결정 근거 + 수동 검증 결과 + sources/.harness-kit diff 0 줄 증거 + 라이브 사례 (스크린샷) 참조
-- [ ] **pr_description.md 작성** — 템플릿 준수 (요약 / 변경 / 검증 / 리스크)
-- [ ] **Ship Commit**: `docs(spec-x-notify-chunk-line-aware): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-notify-chunk-line-aware`
-- [ ] **PR 생성**: `gh pr create`
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고 (`notify.sh ... ship` 레벨)
+- [x] **walkthrough.md 작성** — 결정 근거 + 수동 검증 결과 + sources/.harness-kit diff 0 줄 증거 + 라이브 사례 (스크린샷) 참조
+- [x] **pr_description.md 작성** — 템플릿 준수 (요약 / 변경 / 검증 / 리스크)
+- [x] **Ship Commit**: `docs(spec-x-notify): ship walkthrough and pr description` (sdd 자동 단축)
+- [x] **Push**: `git push -u origin spec-x-notify-chunk-line-aware`
+- [x] **PR 생성**: `gh pr create`
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고 (`notify.sh ... ship` 레벨)
 
 ---
 
@@ -66,5 +66,5 @@
 |---|---|
 | **총 Task 수** | 4 (브랜치 + telegram + discord + Ship) |
 | **예상 commit 수** | 3 (각 변경 task = 1 commit, 브랜치는 commit 없음) + 1 ship commit = **4** (+ scaffold + finalize = 6) |
-| **현재 단계** | Planning |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-05-29 |
