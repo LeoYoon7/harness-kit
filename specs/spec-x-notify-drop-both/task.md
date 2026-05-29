@@ -61,9 +61,9 @@
 - [x] **walkthrough.md 작성** — 결정 근거 + 수동 검증 결과 + sources/.harness-kit diff 0 줄 증거
 - [x] **pr_description.md 작성** — 템플릿 준수 (요약 / 변경 / 검증 / 리스크)
 - [x] **Ship Commit**: `docs(spec-x-notify-drop-both): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-notify-drop-both`
-- [ ] **PR 생성**: `/hk-pr-gh` (no-confirm 모드 — Plan Accept 후 자동)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고 (`notify.sh ... ship` 레벨)
+- [x] **Push**: `git push -u origin spec-x-notify-drop-both`
+- [x] **PR 생성**: https://github.com/LeoYoon7/harness-kit/pull/14
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고 (`notify.sh ... ship` 레벨)
 
 ---
 
