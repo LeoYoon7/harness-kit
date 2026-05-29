@@ -110,11 +110,13 @@
 ## Task 8: CLAUDE.md fragment §6~§10 알림 예시 마크다운화 (A5 포함)
 
 ### 8-1. §6 ship / §7 merge / §8 phase / §9 ack / §10 채널 응답 예시 본문 수정
-- [ ] `sources/claude-fragments/CLAUDE.md` 의 §6~§10 알림 예시 통일:
-  - `[권장]`, `[선택지]`, `[상황]` 라벨 일괄 bold
-  - **A5 결정 반영**: §9 의 `[ack]` 모두 `**[ack]**` 채택 (grep 호환 유지)
-  - mcp telegram reply 본문의 `[ack]` 도 동일 컨벤션
-- [ ] Commit: `refactor(spec-x-notify-channel-formatter): markdown conventions for notify examples 6-10 with ack bold`
+- [x] §6 ship: **<spec-id>** bold + Title/Base/URL bold + Base inline code
+- [x] §7 merge: **<spec-id> Merged** bold + NEXT/제안 bold + 제안 inline code
+- [x] §8 phase: **<phase-id> Phase Ship Ready** bold + 성공기준/통합테스트/Spec완료 bold + **[선택지]/[권장]** bold
+- [x] §9 ack: 모든 `[ack]` → `**[ack]**` 채택 (A5), Telegram reply 본문 + PC chat notify.sh 예시 3개 + 진행 라벨 bold
+- [x] §9 grep 호환성 명시 노트 추가 (markdown_simplify 후 `[ack]` 평문화 → 기존 정책 유지)
+- [x] §10 채널 답장 인식: 절차 설명만 있고 알림 예시 없음 — 변경 없음
+- [x] Commit (다음)
 
 ---
 

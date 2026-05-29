@@ -261,10 +261,12 @@ bash .harness-kit/bin/notify.sh "**spec-8-001 의사결정 요청**
 #### 6. `/hk-ship` 완료 — PR 생성 (ship) 【필수】
 
 ```bash
-bash .harness-kit/bin/notify.sh "<spec-id> PR 생성 완료
-Title: <pr title>
-Base: <PR_BASE>
-URL: <pr-url>
+bash .harness-kit/bin/notify.sh "**<spec-id>** PR 생성 완료
+
+**Title:** <pr title>
+**Base:** \`<PR_BASE>\`
+**URL:** <pr-url>
+
 머지 대기 중..." ship
 ```
 
@@ -273,9 +275,10 @@ URL: <pr-url>
 agent.md §6.3.1 Post-Merge Protocol. 사용자가 "머지 완료" 신호를 주면:
 
 ```bash
-bash .harness-kit/bin/notify.sh "<spec-id> Merged
-NEXT: <다음 backlog spec 또는 'Phase 완료 준비'>
-제안: <sdd spec new <slug> 또는 /hk-phase-ship>" merge
+bash .harness-kit/bin/notify.sh "**<spec-id> Merged**
+
+**NEXT:** <다음 backlog spec 또는 'Phase 완료 준비'>
+**제안:** \`<sdd spec new <slug> 또는 /hk-phase-ship>\`" merge
 ```
 
 #### 8. `/hk-phase-ship` Go/No-Go — 최종 승인 요청 (phase) 【필수】
@@ -283,17 +286,18 @@ NEXT: <다음 backlog spec 또는 'Phase 완료 준비'>
 Phase 단위 main merge는 특히 중요한 의사결정. 본 메시지는 "선택지 제시 규약" 에 따라 [권장] 을 포함합니다:
 
 ```bash
-bash .harness-kit/bin/notify.sh "<phase-id> Phase Ship Ready
-성공 기준: <N>/<M> PASS
-통합 테스트: <N>/<M> PASS
-Spec 완료: <N>/<N> Merged
+bash .harness-kit/bin/notify.sh "**<phase-id> Phase Ship Ready**
+
+**성공 기준:** <N>/<M> PASS
+**통합 테스트:** <N>/<M> PASS
+**Spec 완료:** <N>/<N> Merged
 <FAIL 항목이 있으면 상세>
 
-선택지:
+**[선택지]**
 1. Go — main 으로 merge 진행
 2. No-Go — 보류하고 추가 작업
 
-권장: <1번 또는 2번> — <FAIL 여부 및 리스크 기반 근거>" phase
+**[권장]** <1번 또는 2번> — <FAIL 여부 및 리스크 기반 근거>" phase
 ```
 
 #### 9. 사용자 응답 직후 — 진행 시작 알림 (info) 【필수】
@@ -308,17 +312,19 @@ multi-device 환경에서 PC 응답 시 모바일 측에 진행 상태를 동기
 - **Telegram 경유 응답** (`<channel source="telegram" ...>` 태그가 사용자 메시지에 포함):
   → `mcp__plugin_telegram_telegram__reply` 사용. reply 본문에 §9 의 `[ack]` 포맷 포함:
     ```
-    ✅ [ack] 사용자 응답: <선택지 요약>
-    진행: <다음 단계 요약>
+    ✅ **[ack]** 사용자 응답: <선택지 요약>
+    **진행:** <다음 단계 요약>
     ```
   → `notify.sh` 별도 발송 *생략*. reply 가 단독 ack 역할 겸함.
 
 - **PC chat 경유 응답** (채널 태그 없음):
   → `notify.sh` 로 §9 ack 발송:
     ```bash
-    bash .harness-kit/bin/notify.sh "✅ [ack] 사용자 응답: <선택지 요약>
-    진행: <다음 단계 한 줄 요약>" info
+    bash .harness-kit/bin/notify.sh "✅ **[ack]** 사용자 응답: <선택지 요약>
+    **진행:** <다음 단계 한 줄 요약>" info
     ```
+
+> **`[ack]` substring grep 호환성**: `**[ack]**` 라벨은 Discord 측에서 bold 렌더링, Telegram 측 `markdown_simplify` 가 `**` 메타문자 제거 후 평문 `[ack]` 도달 → 기존 사후 grep 추적 정책 유지 (A5 결정, spec-x-notify-channel-formatter).
 
 **Discord 의 절차**: 본 protocol 미명시. Discord MCP reply 도구가 active 화되는 시점의 별도 spec 에서 다룸. 현재는 `notify.sh` dispatcher 가 `NM_NOTIFY_CHANNEL=discord` 설정 시 Discord 도 §9 ack 도달 보장.
 
@@ -347,16 +353,16 @@ multi-device 환경에서 PC 응답 시 모바일 측에 진행 상태를 동기
 **예시 (PC chat 경유)**:
 ```bash
 # Plan Accept 응답 후
-bash .harness-kit/bin/notify.sh "✅ [ack] 사용자 응답: 1번 (Plan Accept)
-진행: Strict Loop 시작 — Task 1 브랜치 생성" info
+bash .harness-kit/bin/notify.sh "✅ **[ack]** 사용자 응답: 1번 (Plan Accept)
+**진행:** Strict Loop 시작 — Task 1 브랜치 생성" info
 
 # Reconciliation 옵션 선택 후
-bash .harness-kit/bin/notify.sh "✅ [ack] 사용자 응답: A (현재 spec 에 통합)
-진행: spec/plan/task 갱신 → Plan Accept 재요청" info
+bash .harness-kit/bin/notify.sh "✅ **[ack]** 사용자 응답: A (현재 spec 에 통합)
+**진행:** spec/plan/task 갱신 → Plan Accept 재요청" info
 
 # AskUserQuestion 응답 후
-bash .harness-kit/bin/notify.sh "✅ [ack] 사용자 응답: Repo 전체 (archive/ 포함)
-진행: spec-x-md-lf-normalize spec/plan/task 작성" info
+bash .harness-kit/bin/notify.sh "✅ **[ack]** 사용자 응답: Repo 전체 (archive/ 포함)
+**진행:** spec-x-md-lf-normalize spec/plan/task 작성" info
 ```
 
 **예시 (Telegram 경유 응답)**: `mcp__plugin_telegram_telegram__reply` 호출 시 본문에 동일 `[ack]` 포맷 포함.
