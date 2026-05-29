@@ -16,6 +16,7 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
+- [ ] spec-x-notify-channel-formatter — notify-channel-formatter
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -40,6 +41,8 @@
 - **§5 stop notification 과 AskUserQuestion 옵션 번호 불일치** — 에이전트가 AUQ 호출 시 권장안을 첫 번째에 배치 (라벨에 (권장)). 동시에 §5 stop notification 으로 동일 선택지를 Telegram 에 보낼 때는 사람이 작성한 순서 (예: 1.Gemini/2.Opus/3.Skip, 권장 3번). 두 채널의 번호가 sync 안 됨 → 사용자가 Telegram 의 "3번" (Skip) 으로 보고 Desktop 에서 3 누르면 Opus 가 선택되어 무반응/혼동. fix: (a) AUQ 호출 시 §5 stop 자동 생략 (hook (c) 가 cover) or (b) §5 stop 메시지를 AUQ 옵션 순서와 동일하게 자동 생성. spec-x-notify-ack-dedup 의 범위에 통합 후보. 사용자 보고 (Telegram msg #3084+#3086, 2026-05-28)
 - **ADR-NNN-tool-output-in-tree-vs-out-of-tree** (type: tradeoff) — harness-kit 의 도구 출력물 (review/critique vs walkthrough/pr_description) 의 위치 정책 (in-spec-dir vs `.harness-kit/cache/`) 결정 자산화. spec-x-install-ignore-coverage 의 critique (대안 A) 가 떠올린 근본 분기점. 본 spec 머지 후 별도 spec-x-adr-tool-output 또는 ADR 단독 작성. 향후 신규 산출물 (`code-review-claude.md`, `code-review-codex.md`, JSON/HTML 형식 등) 추가 시 한 페이지 참조로 결정 가능
 - **컨테이너 빌드 컨텍스트 비대칭** — `install.sh` 가 `.gitignore` 는 자동 관리하면서 `.dockerignore` 는 손대지 않음. Dockerfile 있는 프로젝트에 설치 시 `.harness-kit/`, `archive/`, `specs/`, `.env.*` 등이 빌드 컨텍스트에 포함되어 (a) WSL2 + Docker Desktop 환경에서 컨텍스트 전송 지연, (b) `COPY . .` 패턴 사용 시 `.env.telegram`/`.env.discord` 토큰이 이미지에 포함될 위험. fix 후보: `sdd doctor` 에 "Dockerfile 존재 + .dockerignore 에 `.harness-kit/` 미등재" 경고 + README 컨테이너 가이드 섹션. `install.sh` 자동 갱신은 사용자 정책 충돌 우려로 보류. 검토 메모: 토큰 유출은 대부분 프로젝트가 이미 `.env*` 차단으로 방어됨 — 진짜 비대칭 가치는 spec/archive 수백 파일로 인한 컨텍스트 비대화. Containerfile/compose.yml/Earthfile 등 다른 컨테이너 도구도 동일 함정. 권장 항목에서 `telegram.sh` 제외 (사용자 측 임의 스크립트 가능성)
+- **Discord 마크다운 포맷팅 (notify.sh 채널별 분기)** — Discord 채택 근거가 Telegram 대비 마크다운 렌더링 우위 (bold, code block, separator). 그런데 `notify.sh` 가 채널 무관 동일 plain text 발송 → Discord 의 가독성 강점 사장, Telegram-호환 최저 공통분모로 평준화. 특히 `[선택지]` / `[상황 / 맥락]` 같은 구조화 정보 (표 포함) 가 plain text 로 가독성 떨어짐. fix 후보: `notify.sh` 또는 dispatch 단에 채널별 포맷터 분기 (Discord: bold 헤더 + code-block ASCII 표 + separator, Telegram: HTML/MarkdownV2 또는 plain). `§5 stop / §9 ack / Gate 메시지` 전반 영향. 사용자 보고 (Discord screenshot, 2026-05-29)
+- **AUQ 잔존 호출 경로 추가 점검** — `spec-x-notify-bidirectional-policy` 후 "에이전트는 AskUserQuestion 사용 안 함" 정책이 있음에도, align 직후 단순 의도 확인 시 AUQ 호출 사례 발생 (2026-05-29). 정책 텍스트만으론 부족할 수 있어 보강 검토: (a) `agent.md §8.4` / CLAUDE.md fragment 의 "사용 안 함" 문구를 더 강하게 (예: "절대 금지 — 위반 시 RCA"), (b) AUQ 호출 시 사전 차단 hook 검토 가능성, (c) 메모리 보강 [[feedback-no-auq-ever]] 와 별개로 거버넌스 문서 자체 강화 필요 여부 평가
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
 - ~~접근성 개선~~ → phase-17 **spec-17-02** (accessibility-install-and-entry)
