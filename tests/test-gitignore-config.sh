@@ -188,6 +188,50 @@ fi
 echo ""
 
 # ──────────────────────────────────────────────
+# Scenario I: 다중 라운드 안정성 (update × 3회 후 .gitignore 형태 유지)
+# spec-x-install-ignore-coverage critique 보강: critique §1 의 "update 다중 라운드 검증 누락"
+# + ADR-005 의 awk 조기 종료 부작용 차단 검증.
+# FIX_A 를 재사용 — Scenario A/D/E 직후 시점이므로 install + 재설치 + update 1회까지
+# 완료된 상태. 여기서 update × 3 추가 후 라인 멱등 + 헤더 멱등 + 인접 라인 유지 확인.
+# ──────────────────────────────────────────────
+echo "▶ Scenario I: 다중 라운드 안정성 (update × 3회 후 .gitignore 형태 유지)"
+for _ in 1 2 3; do
+  bash "$UPDATE" --yes "$FIX_A" > /dev/null 2>&1
+done
+
+check
+_count=$(grep -c '^specs/\*\*/code-review\*\.md$' "$FIX_A/.gitignore" 2>/dev/null || echo "0")
+if [ "$_count" -eq 1 ]; then
+  pass "I-1: update × 3 후 'specs/**/code-review*.md' 라인 1개 (멱등 — 중복/누락 없음)"
+else
+  fail "I-1: update × 3 후 라인이 ${_count}개"
+fi
+
+check
+_hdr=$(grep -c '^# harness-kit$' "$FIX_A/.gitignore" 2>/dev/null || echo "0")
+if [ "$_hdr" -eq 1 ]; then
+  pass "I-2: update × 3 후 '# harness-kit' 헤더 1개 (멱등)"
+else
+  fail "I-2: update × 3 후 헤더가 ${_hdr}개"
+fi
+
+# I-3: 인접 라인 손상 검증 (critique 의 awk 조기 종료 부작용 시나리오)
+check
+_missing=""
+for _pat in '^\.harness-backup-\*/$' '^\.claude/state/$' '^\.env\.telegram$' '^\.env\.discord$'; do
+  if ! grep -qE "$_pat" "$FIX_A/.gitignore" 2>/dev/null; then
+    _missing="$_missing $_pat"
+  fi
+done
+if [ -z "$_missing" ]; then
+  pass "I-3: update × 3 후 인접 라인 (.harness-backup-*/, .claude/state/, .env.telegram, .env.discord) 모두 유지"
+else
+  fail "I-3: 인접 라인 손실:$_missing"
+fi
+
+echo ""
+
+# ──────────────────────────────────────────────
 # Scenario H: self-host guard — .harness-kit/ 가 git-tracked 이면 .gitignore 에 추가 안 함
 # ──────────────────────────────────────────────
 echo "▶ Scenario H: self-host guard (git-tracked .harness-kit/ 존재 시 .gitignore 추가 안 함)"
