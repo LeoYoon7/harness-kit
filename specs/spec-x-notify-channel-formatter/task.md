@@ -71,17 +71,13 @@
 ## Task 5: notify-telegram.sh markdown_simplify 회귀 테스트 (A4 강화)
 
 ### 5-1. 회귀 + edge case 테스트
-- [ ] `tests/test-notify-telegram-markdown.sh` 신규 작성 (또는 기존 확장)
-- [ ] 기본 케이스: bold / code / heading / 표 / 펜스 / link (plan.md B 절 1-6)
-- [ ] Edge case (A4):
-  - `***strong italic***` → `strong italic`
-  - `___strong___` → `strong`
-  - `**bold ** test` → 현재 동작 명시 (메타문자 잔존 fixture)
-  - `**unclosed` → 현재 동작 명시 (메타문자 잔존 fixture)
-  - `` `spec-x-notify\`test` `` (backtick 포함 branch) → 현재 동작 명시 (sed 매칭 한계 fixture)
-  - ` ```bash\n...\n``` ` → 본문만 보존, 언어 hint 제거
-- [ ] 테스트 실행 → 현재 `markdown_simplify` 로 Pass 확인 (edge case 는 *현재 동작 명시 fixture* — 수정 대상 아님)
-- [ ] Commit: `test(spec-x-notify-channel-formatter): regression test for telegram markdown_simplify with edge cases`
+- [x] notify-telegram.sh 에 NOTIFY_DRYRUN=1 모드 추가 (discord 와 대칭)
+- [x] `tests/test-notify-telegram-markdown.sh` 신규 작성
+- [x] 기본 6 케이스 (B1-B6): bold / code / heading / 표 / 펜스 / link
+- [x] Edge case 6 (E7-E12): 별표/밑줄 3겹 중첩 → 모두 제거 / unbalanced → 현재 동작 명시 / unclosed → 메타 잔존 / backtick branch → 한계 fixture / 언어 hint → 본문만 보존
+- [x] 테스트 실행 → 12/12 PASS
+- [x] Discord 회귀 재실행 → 9/9 + 4/4 PASS (회귀 없음)
+- [x] Commit (다음)
 
 ---
 

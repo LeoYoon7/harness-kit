@@ -31,18 +31,23 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 ENV_FILE="$PROJECT_ROOT/.env.telegram"
 
-# .env.telegram 없으면 조용히 종료
-[ -f "$ENV_FILE" ] || exit 0
+# NOTIFY_DRYRUN=1 — 테스트 전용 모드 (notify-discord.sh 와 동일 패턴).
+# .env 검증 우회 + API 호출 대신 청크 본문을 NUL 구분자로 stdout 출력.
+# 일반 사용 시 미설정 → 기존 동작 (silent skip / API 호출) 유지.
+if [ -z "${NOTIFY_DRYRUN:-}" ]; then
+    # .env.telegram 없으면 조용히 종료
+    [ -f "$ENV_FILE" ] || exit 0
 
-# 환경변수 로드
-set -a
-# shellcheck disable=SC1090
-source "$ENV_FILE"
-set +a
+    # 환경변수 로드
+    set -a
+    # shellcheck disable=SC1090
+    source "$ENV_FILE"
+    set +a
 
-# 필수 변수 확인
-if [ -z "${TELEGRAM_BOT_TOKEN:-}" ] || [ -z "${TELEGRAM_CHAT_ID:-}" ]; then
-    exit 0
+    # 필수 변수 확인
+    if [ -z "${TELEGRAM_BOT_TOKEN:-}" ] || [ -z "${TELEGRAM_CHAT_ID:-}" ]; then
+        exit 0
+    fi
 fi
 
 # 인자 파싱
@@ -164,23 +169,28 @@ while IFS= read -r -d '' CHUNK; do
     FULL_MESSAGE="${HEADER}
 ${CHUNK}"
 
-    # Telegram API 호출
-    # Windows Git Bash 의 `curl --data-urlencode "text=$var"` 가 한글 UTF-8 을 깨뜨려
-    # Telegram 이 400 (Bad Request: text must be encoded in UTF-8) 으로 반려하는 버그를
-    # 우회하기 위해 JSON body 를 임시 파일에 쓴 뒤 `--data-binary @file` 로 전송.
-    # parse_mode 는 사용하지 않음 — 본문에 들어가는 transcript 발췌의 `[`/`*`/`_`
-    # 메타문자가 깨지거나 파싱 실패로 메시지 전체가 거절되는 fragility 회피.
-    TMP_BODY=$(mktemp 2>/dev/null || echo "/tmp/notify-telegram.$$.$i.json")
-    jq -nc --arg c "$TELEGRAM_CHAT_ID" --arg t "$FULL_MESSAGE" \
-        '{chat_id:$c, text:$t}' > "$TMP_BODY" 2>/dev/null
-    curl -s -X POST -H "Content-Type: application/json" \
-        --data-binary "@$TMP_BODY" \
-        "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-        --max-time 5 > /dev/null 2>&1 || true
-    rm -f "$TMP_BODY" 2>/dev/null || true
+    if [ -n "${NOTIFY_DRYRUN:-}" ]; then
+        # dry-run: 청크 본문을 NUL 구분자로 stdout 출력. 테스트가 `read -d ''` 로 추출.
+        printf '%s\0' "$FULL_MESSAGE"
+    else
+        # Telegram API 호출
+        # Windows Git Bash 의 `curl --data-urlencode "text=$var"` 가 한글 UTF-8 을 깨뜨려
+        # Telegram 이 400 (Bad Request: text must be encoded in UTF-8) 으로 반려하는 버그를
+        # 우회하기 위해 JSON body 를 임시 파일에 쓴 뒤 `--data-binary @file` 로 전송.
+        # parse_mode 는 사용하지 않음 — 본문에 들어가는 transcript 발췌의 `[`/`*`/`_`
+        # 메타문자가 깨지거나 파싱 실패로 메시지 전체가 거절되는 fragility 회피.
+        TMP_BODY=$(mktemp 2>/dev/null || echo "/tmp/notify-telegram.$$.$i.json")
+        jq -nc --arg c "$TELEGRAM_CHAT_ID" --arg t "$FULL_MESSAGE" \
+            '{chat_id:$c, text:$t}' > "$TMP_BODY" 2>/dev/null
+        curl -s -X POST -H "Content-Type: application/json" \
+            --data-binary "@$TMP_BODY" \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --max-time 5 > /dev/null 2>&1 || true
+        rm -f "$TMP_BODY" 2>/dev/null || true
 
-    # Telegram rate limit (per-chat 1 msg/s) 대비 청크 사이 짧은 간격
-    [ "$((i + 1))" -lt "$NUM_CHUNKS" ] && sleep 0.3
+        # Telegram rate limit (per-chat 1 msg/s) 대비 청크 사이 짧은 간격
+        [ "$((i + 1))" -lt "$NUM_CHUNKS" ] && sleep 0.3
+    fi
 
     i=$((i + 1))
 done < "$TMP_CHUNKS"
