@@ -96,12 +96,14 @@
 ## Task 7: CLAUDE.md fragment §1~§5 알림 예시 마크다운화
 
 ### 7-1. §1 align / §2 plan / §3 accept / §4 stop / §5 ad-hoc 예시 본문 수정
-- [ ] `sources/claude-fragments/CLAUDE.md` 의 §1~§5 알림 예시들에서:
-  - 라벨 → `**[라벨]**`
-  - 선택지 본문 정렬 유지
-  - 표가 있는 경우 (없을 것으로 추정) code-block 으로 변환
-- [ ] 기존 plain 텍스트와 일관 유지 (기능적 의미 변경 금지, 가독성 강화만)
-- [ ] Commit: `refactor(spec-x-notify-channel-formatter): markdown conventions for notify examples 1-5`
+- [x] `sources/claude-fragments/CLAUDE.fragment.md` 의 §1~§5 알림 예시 6개 모두 마크다운 컨벤션 적용
+  - §1 align: **세션 시작** 라벨 + **Phase/Spec/Branch/Plan Accept** bold + Branch 값 inline code
+  - §2 plan: **<spec-id>** bold + Spec/Plan/Task 경로 inline code + **[선택지]** / **[권장]** bold
+  - §3 accept: **<spec-id> Plan Accepted** bold + **첫 Task** bold
+  - §4 stop: **<spec-id> HARD STOP** bold + **사유/상세/Branch** bold + Branch inline code
+  - §5 ad-hoc (2 예시): **<spec-id> 의사결정 요청** bold + **[상황]/[선택지]/[권장]** bold
+- [x] 기능적 의미 무변경, 가독성 강화만
+- [x] Commit (다음)
 
 ---
 

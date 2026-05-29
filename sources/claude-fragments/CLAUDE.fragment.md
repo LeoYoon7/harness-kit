@@ -140,11 +140,12 @@ bash .harness-kit/bin/notify.sh "<메시지>" <level>
 상태 요약을 사용자에게 보고한 직후, 동일 내용의 축약판을 원격 채널에도 발송:
 
 ```bash
-bash .harness-kit/bin/notify.sh "세션 시작
-Phase: <phase-id 또는 없음>
-Spec: <spec-id 또는 없음>
-Branch: <current-branch>
-Plan Accept: <yes/no>" align
+bash .harness-kit/bin/notify.sh "**세션 시작**
+
+**Phase:** <phase-id 또는 없음>
+**Spec:** <spec-id 또는 없음>
+**Branch:** \`<current-branch>\`
+**Plan Accept:** <yes/no>" align
 ```
 
 ⚠ 미완 항목이 있으면 메시지에 포함.
@@ -154,17 +155,17 @@ Plan Accept: <yes/no>" align
 agent.md §4.4 Hard Stop for Review 시점. spec.md/plan.md/task.md 작성 완료 보고와 동시에:
 
 ```bash
-bash .harness-kit/bin/notify.sh "<spec-id> 계획 작성 완료
-Spec: specs/<spec-dir>/spec.md
-Plan: specs/<spec-dir>/plan.md
-Task: specs/<spec-dir>/task.md (총 <N>개 task)
+bash .harness-kit/bin/notify.sh "**<spec-id>** 계획 작성 완료
 
-선택지:
+**Spec:** \`specs/<spec-dir>/spec.md\`
+**Plan:** \`specs/<spec-dir>/plan.md\`
+**Task:** \`specs/<spec-dir>/task.md\` (총 <N>개 task)
+
+**[선택지]**
 1. Plan Accept (/hk-plan-accept) — 즉시 실행 단계로 진입
 2. Critique (/hk-spec-critique) — 요구사항 비평 (Opus, 선택)
 
-권장: 1번 (spec/plan 품질에 확신이 있는 경우 기본 경로)
-      2번을 선택할 경우 비평 후 plan 재작성 가능
+**[권장]** 1번 (spec/plan 품질에 확신이 있는 경우 기본 경로). 2번을 선택할 경우 비평 후 plan 재작성 가능
 
 ⚠ 승인 전까지 코드 편집 금지" plan
 ```
@@ -174,9 +175,10 @@ Task: specs/<spec-dir>/task.md (총 <N>개 task)
 코드 편집이 시작되는 중요한 전환점:
 
 ```bash
-bash .harness-kit/bin/notify.sh "<spec-id> Plan Accepted
+bash .harness-kit/bin/notify.sh "**<spec-id> Plan Accepted**
+
 Strict Loop 실행을 시작합니다.
-첫 Task: <첫 번째 미완 task 제목>" accept
+**첫 Task:** <첫 번째 미완 task 제목>" accept
 ```
 
 #### 4. Hard Stop — 중단 상황 (stop) 【필수】
@@ -184,10 +186,12 @@ Strict Loop 실행을 시작합니다.
 agent.md §7 Deviation & Hard Stop 시점. 사용자 개입이 반드시 필요:
 
 ```bash
-bash .harness-kit/bin/notify.sh "<spec-id> HARD STOP
-사유: <plan 이탈 / 테스트 실패 / hook 차단 / main 커밋 시도 등>
-상세: <구체적 메시지 1-2줄>
-Branch: <current-branch>
+bash .harness-kit/bin/notify.sh "**<spec-id> HARD STOP**
+
+**사유:** <plan 이탈 / 테스트 실패 / hook 차단 / main 커밋 시도 등>
+**상세:** <구체적 메시지 1-2줄>
+**Branch:** \`<current-branch>\`
+
 재정렬이 필요합니다." stop
 ```
 
@@ -198,15 +202,16 @@ Strict Loop 진행 중 plan 에 없는 선택지가 발생해 사용자 의사�
 이 경우 **계층 1 자동 감지 알림이 먼저 발동**하지만, 에이전트는 선택지 정보를 더 구체적으로 전달하기 위해 다음 명령을 **추가로** 실행합니다. 본 메시지는 반드시 "선택지 제시 규약" (위 섹션 참조) 을 따라 [권장] 을 포함합니다:
 
 ```bash
-bash .harness-kit/bin/notify.sh "<spec-id> 의사결정 요청
-상황: <1-2줄 요약>
+bash .harness-kit/bin/notify.sh "**<spec-id> 의사결정 요청**
 
-선택지:
+**[상황]** <1-2줄 요약>
+
+**[선택지]**
 1. <옵션 1 요약>
 2. <옵션 2 요약>
 3. <옵션 3 요약>
 
-권장: <N번> — <근거: 이전 패턴 / 리스크 / 제약>" stop
+**[권장]** <N번> — <근거: 이전 패턴 / 리스크 / 제약>" stop
 ```
 
 **판단 기준**: 사용자에게 2개 이상의 선택지를 제시하거나, 기술 방향이 갈리는 결정이면 명시적 알림을 발송합니다. 단순 Yes/No 확인은 계층 1 자동 알림으로 충분합니다.
@@ -241,16 +246,16 @@ bash .harness-kit/bin/notify.sh "<spec-id> 의사결정 요청
 **예시 (Task 분해 제안)**:
 
 ```bash
-bash .harness-kit/bin/notify.sh "spec-8-001 의사결정 요청
-상황: Task 13 을 RollbackService + MigrationCliService 로 분해 제안
+bash .harness-kit/bin/notify.sh "**spec-8-001 의사결정 요청**
 
-선택지:
+**[상황]** Task 13 을 RollbackService + MigrationCliService 로 분해 제안
+
+**[선택지]**
 1. 분해 (13A → 13B 순차) — 이전 task 7/8/11 패턴과 일관
 2. 단일 Task 13 유지 — 한 commit 에 둘 다
 3. 순서 변경 — 13B 먼저
 
-권장: 1번 — 두 서비스가 구현·테스트·의존성이 독립적이고,
-           이전 복합 task 모두 분해 후 진행한 패턴을 유지" stop
+**[권장]** 1번 — 두 서비스가 구현·테스트·의존성이 독립적이고, 이전 복합 task 모두 분해 후 진행한 패턴을 유지" stop
 ```
 
 #### 6. `/hk-ship` 완료 — PR 생성 (ship) 【필수】
