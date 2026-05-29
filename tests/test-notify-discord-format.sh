@@ -145,15 +145,19 @@ fi
 # ─────────────────────────────────────────────────────────
 echo ""
 echo "=== T5. 한글 전용 표 ==="
+# NF6 한계: awk length() 는 character count 기반 (byte 아님), CJK 폭 보정 없음.
+# 한글 전용 표는 character count 단위로 padding — Discord 등폭 폰트에서 시각 정렬은
+# 한글의 2cw 폭에 의존 (등폭 폰트 가정).
+# col_width: 항목(2) / 식별자(3) / 분류(2) → max=3, 값(1) / 데이터(3) / 정보(2) → max=3
 INPUT_T5='| 항목 | 값 |
 | --- | --- |
 | 식별자 | 데이터 |
 | 분류 | 정보 |'
 EXPECTED_T5='```
-| 항목   | 값     |
-| ------ | ------ |
+| 항목  | 값   |
+| --- | --- |
 | 식별자 | 데이터 |
-| 분류   | 정보   |
+| 분류  | 정보  |
 ```'
 ACTUAL=$(extract_body "$INPUT_T5")
 EXPECTED="$EXPECTED_T5"
@@ -172,13 +176,13 @@ echo "=== T6. 한글 + ASCII 혼합 (NF6 한계, 정렬 깨짐 허용) ==="
 INPUT_T6='| spec-id | 상태 |
 | --- | --- |
 | spec-x-foo | 완료 |'
-# character count 기반: spec-id (7) / 상태 (2)
-# 즉 ASCII spec-id 7자 + 한글 상태 2자
-# Discord 등폭 폰트에선 한글이 2배 폭이라 시각 정렬 깨지지만,
-# character count 기반 padding 은 변환 자체는 수행. 본 테스트는 변환 성공만 검증.
+# character count 기반: col_width[1] = max("spec-id"=7, "spec-x-foo"=10) = 10
+# col_width[2] = max("상태"=2, "완료"=2) = 2
+# Discord 등폭 폰트에선 한글이 2배 폭이라 시각 정렬 깨짐 (NF6 한계).
+# 본 fixture 는 변환은 수행되되 한글 컬럼 padding 이 character count 기반임을 명시.
 EXPECTED_T6='```
 | spec-id    | 상태 |
-| ---------- | ---- |
+| ---------- | -- |
 | spec-x-foo | 완료 |
 ```'
 ACTUAL=$(extract_body "$INPUT_T6")

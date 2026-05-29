@@ -77,32 +77,159 @@ if [ "${HARNESS_NOTIFY_FROM_HOOK:-0}" != "1" ]; then
     date +%s > "$EXPLICIT_MARKER" 2>/dev/null || true
 fi
 
-# Discord 호환 마크다운 변환 — 비활성 (의도적)
-# Discord 는 bold/italic/code/quote/heading/bullet 등 마크다운을 네이티브 렌더링하므로
-# raw 그대로 전송하는 것이 가독성이 좋음. 이 함수는 telegram 의 markdown_simplify 와
-# 대칭 위치를 유지하기 위해 보존하지만, 실제 호출은 하지 않음.
-# (필요해지면 함수 + 아래 호출 라인 모두 주석 해제)
-# markdown_to_discord() {
-#     awk '
-#         function trim(s) { sub(/^[[:space:]]+/, "", s); sub(/[[:space:]]+$/, "", s); return s }
-#         /^[[:space:]]*\|[[:space:]:|-]+\|[[:space:]]*$/ { next }
-#         /^[[:space:]]*\|.*\|[[:space:]]*$/ {
-#             sub(/^[[:space:]]*\|/, "")
-#             sub(/\|[[:space:]]*$/, "")
-#             n = split($0, c, /\|/)
-#             out = ""
-#             for (i = 1; i <= n; i++) {
-#                 if (i > 1) out = out " — "
-#                 out = out trim(c[i])
-#             }
-#             $0 = out
-#         }
-#         { print }
-#     ' | sed -E '
-#         s/\[([^]]+)\]\(([^)]+)\)/\1 (\2)/g
-#     '
-# }
-# MESSAGE=$(printf '%s\n' "$MESSAGE" | markdown_to_discord)
+# Discord 마크다운 변환 — 표 → code-block ASCII 정렬 (spec-x-notify-channel-formatter)
+# Discord 는 표준 markdown table 미지원이라 raw 통과 시 정렬 깨짐. 본 함수는 표만 추출하여
+# code-block 안 정렬된 ASCII 표로 변환. bold/italic/code/quote 등 다른 마크다운은 raw 통과
+# (Discord 가 네이티브 렌더링).
+#
+# 알고리즘 (plan.md A 절 명세):
+#   - State machine: outside / seen_header / in_table
+#   - 셀 분할 시 `\|` escape 는 PIPE_PH placeholder 로 치환 후 출력 시 복원
+#   - 셀 폭 = max(헤더, 데이터의 awk length()) — UAX #11 CJK 보정 없음 (NF6 한계)
+#   - 좌측 정렬 padding (`printf "%-Ws"`)
+#   - 표 종료 시 펜스 닫기, 비표 라인 그대로 통과
+#
+# `[text](url)` 변환은 비활성 유지 — 현재 사례 영향 없음 (Out of Scope).
+markdown_to_discord() {
+    awk '
+        function trim(s) { sub(/^[[:space:]]+/, "", s); sub(/[[:space:]]+$/, "", s); return s }
+        function unescape_pipe(s) { gsub(PIPE_PH, "|", s); return s }
+        function is_table_row(s) { return (s ~ /^[[:space:]]*\|.*\|[[:space:]]*$/) }
+        function is_separator_row(s,    inner) {
+            if (!is_table_row(s)) return 0
+            inner = s
+            sub(/^[[:space:]]*\|/, "", inner)
+            sub(/\|[[:space:]]*$/, "", inner)
+            return (inner ~ /^[[:space:]:|*-]+$/)
+        }
+        function parse_cells(line, arr,    n, i) {
+            sub(/^[[:space:]]*\|/, "", line)
+            sub(/\|[[:space:]]*$/, "", line)
+            n = split(line, arr, /\|/)
+            for (i = 1; i <= n; i++) arr[i] = trim(arr[i])
+            return n
+        }
+        function flush_table(    i, j, line, dashes, w, val, ncols) {
+            ncols = num_cols
+            # 표 인정 조건: 헤더 + separator (table_rows 는 0 일 수 있음 — 빈 표 허용)
+            print "```"
+            # 헤더 행
+            line = "|"
+            for (j = 1; j <= ncols; j++) {
+                val = unescape_pipe(header_cells[j])
+                line = line " " sprintf("%-" col_width[j] "s", val) " |"
+            }
+            print line
+            # dash separator
+            line = "|"
+            for (j = 1; j <= ncols; j++) {
+                dashes = ""
+                w = col_width[j]
+                while (length(dashes) < w) dashes = dashes "-"
+                line = line " " dashes " |"
+            }
+            print line
+            # 데이터 행
+            for (i = 1; i <= table_rows; i++) {
+                line = "|"
+                for (j = 1; j <= ncols; j++) {
+                    val = (i SUBSEP j) in table_data ? unescape_pipe(table_data[i, j]) : ""
+                    line = line " " sprintf("%-" col_width[j] "s", val) " |"
+                }
+                print line
+            }
+            print "```"
+            # reset
+            table_rows = 0
+            num_cols = 0
+            delete header_cells
+            delete table_data
+            for (j in col_width) delete col_width[j]
+        }
+        function emit_raw(s) {
+            print unescape_pipe(s)
+        }
+        BEGIN {
+            PIPE_PH = "\001\002"
+            state = "outside"
+            table_rows = 0
+            num_cols = 0
+        }
+        {
+            line = $0
+            gsub(/\\\|/, PIPE_PH, line)
+        }
+        {
+            if (state == "outside") {
+                if (is_table_row(line) && !is_separator_row(line)) {
+                    # 헤더 후보 buffering
+                    header_line_buf = line
+                    num_cols = parse_cells(line, header_cells)
+                    for (j = 1; j <= num_cols; j++) {
+                        w = length(header_cells[j])
+                        if (w > col_width[j]) col_width[j] = w
+                    }
+                    state = "seen_header"
+                    next
+                }
+                emit_raw(line)
+                next
+            }
+            if (state == "seen_header") {
+                if (is_separator_row(line)) {
+                    state = "in_table"
+                    next
+                }
+                # separator 가 아님 → 헤더 후보 fallback (표 아님)
+                emit_raw(header_line_buf)
+                num_cols = 0
+                delete header_cells
+                for (j in col_width) delete col_width[j]
+                state = "outside"
+                # 현재 라인 재처리 — 표 행이면 다시 outside → 헤더 후보
+                if (is_table_row(line) && !is_separator_row(line)) {
+                    header_line_buf = line
+                    num_cols = parse_cells(line, header_cells)
+                    for (j = 1; j <= num_cols; j++) {
+                        w = length(header_cells[j])
+                        if (w > col_width[j]) col_width[j] = w
+                    }
+                    state = "seen_header"
+                } else {
+                    emit_raw(line)
+                }
+                next
+            }
+            if (state == "in_table") {
+                if (is_table_row(line) && !is_separator_row(line)) {
+                    table_rows++
+                    cn = parse_cells(line, row_cells)
+                    if (cn > num_cols) num_cols = cn
+                    for (j = 1; j <= cn; j++) {
+                        table_data[table_rows, j] = row_cells[j]
+                        w = length(row_cells[j])
+                        if (w > col_width[j]) col_width[j] = w
+                    }
+                    delete row_cells
+                    next
+                }
+                # 표 종료
+                flush_table()
+                state = "outside"
+                emit_raw(line)
+                next
+            }
+        }
+        END {
+            if (state == "in_table") {
+                flush_table()
+            } else if (state == "seen_header") {
+                emit_raw(header_line_buf)
+            }
+        }
+    '
+}
+MESSAGE=$(printf '%s\n' "$MESSAGE" | markdown_to_discord)
 
 # 레벨별 이모지 prefix (telegram 과 동일)
 case "$LEVEL" in
