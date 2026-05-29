@@ -78,3 +78,40 @@ Accepted (2026-05-28, spec-x-notify-choice-context 머지 시점). 첫 사용자
 **관련 spec**: `specs/spec-x-notify-channel-coherence/` — fragment §5/§9 갱신, §1-§8 의 dispatcher 통일.
 
 **상태**: Accepted (2026-05-29, spec-x-notify-channel-coherence 머지 시점).
+
+### 2026-05-29 (spec-x-notify-bidirectional-policy)
+
+**정책 전환 — 보조 채널 → 양방향 채널 + AUQ 사용 제거**
+
+**배경 — fragment 내부 모순 식별**:
+- 섹션 서두 (line 93): "원격 판단을 내릴 수 있도록 지원" (양방향 의도)
+- 정책 표 (line 379): "보조 채널 — Telegram 답장으로 명령을 수행하지 않음" (응답 차단)
+- → 정책 표 라인이 *anomaly*. 서두 의도와 모순.
+- 추가: 제목 "Telegram 의사결정..." vs Discord 병행 현실. fragment 내 18곳 Telegram 명시.
+- line 122 "에이전트는 아무것도 안 함" 도 양방향 정책과 모순 (응답 도착 시 처리 필요).
+
+**라이브 사례**:
+- Telegram msg #3054: AUQ 모달이 모바일 응답 불가 → "이런경우 상호작용 안됨"
+- Telegram msg #3113: §1.5 AUQ 알림에 선택지 미노출 → hook (c) 분기 발화 실패 가설
+
+**결정**:
+
+1. **정책 전환**: "보조 채널 (응답 비활성)" → "양방향 채널 (알림 + 응답 인식)". Telegram/Discord 답장을 *해당 의사결정 게이트의 응답* 으로 처리.
+2. **AUQ 사용 제거**: 에이전트 절차에서 AskUserQuestion 도구 호출 금지. 모든 게이트 텍스트 형식 통일. 적용: 본 에이전트 + sub-agent. 외부 도구는 OOS.
+3. **dead branch/text 솔직 인지**: hook (c) AUQ 분기 + §5 AUQ 조건부 생략 규칙 = AUQ 미사용 정책 하 *이론상 발화 불가*. "legacy 보호" 표현 대신 *dead 인지*. 6개월 누적 후 완전 제거 별도 spec 트리거.
+4. **채널 중립화 — 축소 적용**: fragment 의 Telegram 명시 7곳 (제목/정책/§10/line 122 등 핵심) 만 채널 중립화. 환경변수 예시/dedupe/비활성화 안내는 Discord active 시점 별도 spec 보호.
+5. **신규 §10**: 채널 답장 → 의사결정 응답 처리 절차 명문화. 응답 매핑 알고리즘 (숫자/권장 키워드/라벨 substring) 포함.
+6. **Layer 7 — cross-document 정합**: governance/agent.md L401 영문 출처도 채널 중립화.
+
+**Consequences 의 긍정 절 추가**:
+- multi-device 환경의 *외부 지속 작업* (사용자 원래 의도) 가 정상화. 모바일에서 plan accept, 옵션 선택 가능.
+
+**Consequences 의 부정 절 추가**:
+- AUQ 의 native UI 장점 (PC 클릭) 상실. 사용자는 텍스트 입력 필요. UX 트레이드오프.
+- 채널 응답 처리는 *에이전트 절차 의존* — MCP 신뢰 전제. 위반/race 케이스의 사후 학습.
+- **결정 ID 부재로 복수 게이트 사이 응답은 휴리스틱 매핑** — 동시 활성 게이트 다수 시 누락 위험. 본 프로젝트 규모에서 trade-off 수용 (Slack action_id / Step Functions taskToken 패턴 미도입).
+- **dead branch/text 잔존**: hook (c) AUQ 분기 + §5 의 AUQ 조건부 생략 규칙이 이론상 발화 불가 상태로 유지. 6개월 후 완전 제거 재평가.
+
+**관련 spec**: `specs/spec-x-notify-bidirectional-policy/` — fragment 전 layer 정합화.
+
+**상태**: Accepted (2026-05-29, spec-x-notify-bidirectional-policy 머지 시점).
