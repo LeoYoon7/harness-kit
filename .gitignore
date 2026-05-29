@@ -37,3 +37,12 @@ tests/fixtures/_target/
 # (#queue.md Icebox: check-secrets.sh .env.*.example 패턴 제외 fix)
 .env.telegram.example
 .env.discord.example
+
+# 리뷰 도구 출력물 (per-spec 로컬 아티팩트). /hk-code-review, /hk-gemini-review 가
+# specs/<spec-dir>/ 에 저장. PR 에 포함시키지 않는 ephemeral 산출물.
+# 패턴을 specs/ 하위로 한정해 .claude/commands/, sources/commands/ 의 슬래시 커맨드
+# 정의 파일 (code-review.md / hk-code-review.md / hk-gemini-review.md) 에 영향 없음.
+specs/**/code-review*.md
+
+# codegraph 도구 로컬 DB
+.codegraph/
