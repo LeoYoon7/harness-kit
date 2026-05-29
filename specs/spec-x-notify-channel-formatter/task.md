@@ -61,14 +61,10 @@
 ## Task 4: 표 변환 ↔ chunking 상호작용 통합 테스트 (NF4)
 
 ### 4-1. 청크 분할 + fence balance 검증
-- [ ] `tests/test-notify-discord-chunking.sh` 신규 작성 (또는 기존 chunking 테스트 확장)
-- [ ] 테스트 케이스:
-  - 3000+ byte 표 입력 (CHUNK_SIZE=1700 초과) → 2개 이상 청크 분할
-  - 각 청크가 valid 마크다운 (펜스 균형 유지)
-  - 청크 경계가 표 중간이면 양쪽 청크 모두 ` ``` ` 포함
-  - 표 변환 후 본문이 CHUNK_SIZE 이하면 단일 청크
-- [ ] 테스트 실행 → Pass 확인
-- [ ] Commit: `test(spec-x-notify-channel-formatter): verify table conversion and chunking interaction`
+- [x] `tests/test-notify-discord-chunking.sh` 신규 작성
+- [x] 테스트 케이스 C1-C4: 다중 청크 분할 / 펜스 균형 / 양쪽 청크 펜스 포함 / 작은 표 단일 청크
+- [x] 테스트 실행 → 4/4 PASS (2622 byte 입력 → 2 청크, 청크별 펜스 2개씩)
+- [x] Commit (다음)
 
 ---
 
