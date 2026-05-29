@@ -16,7 +16,6 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
-- [ ] spec-x-notify-bidirectional-policy — notify-bidirectional-policy
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -121,6 +120,7 @@
 - [x] spec-x-notify-choice-context (완료)
 - [x] spec-x-notify-auq-scope-fix (완료)
 - [x] spec-x-notify-channel-coherence (완료)
+- [x] spec-x-notify-bidirectional-policy (완료)
 <!-- sdd:done:end -->
 
 ---
