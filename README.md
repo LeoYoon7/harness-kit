@@ -121,6 +121,29 @@ bash install.sh --dry-run ~/Project/my-app
 
 ---
 
+## 🐳 컨테이너 빌드 컨텍스트 (Dockerfile 사용자)
+
+`harness-kit` 산출물은 *애플리케이션 코드가 아닌* 거버넌스 메타데이터입니다. 컨테이너 빌드 시 이미지에 포함될 필요가 없으며, 빌드 컨텍스트에 들어가면 다음 비용이 발생합니다.
+
+- `specs/`, `archive/` 의 수백 파일이 매 빌드 컨텍스트 전송 (WSL2 + Docker Desktop 환경에서 특히 느림)
+- `COPY . .` 패턴 사용 시 `.env.telegram` / `.env.discord` 토큰이 이미지에 포함될 위험
+
+프로젝트 루트에 `Dockerfile` 이 있다면 `.dockerignore` 에 다음 항목을 추가하세요.
+
+```
+.harness-kit/
+.claude/
+backlog/
+specs/
+archive/
+```
+
+> ℹ `Containerfile` (Podman), `compose.yml` (Docker Compose), `Earthfile` (Earthly) 등 다른 컨테이너 도구도 동일한 빌드 컨텍스트 정책이 필요합니다. 본 가이드는 Dockerfile 기준이며, 다른 도구는 등가 설정을 권장합니다.
+
+`bash .harness-kit/bin/sdd doctor` 가 `Dockerfile` 존재 + `.dockerignore` 미등재 상황을 자동 감지하여 경고합니다 (`ignore 위생` 섹션).
+
+---
+
 ## 🚀 시작하기: 첫 세션부터 첫 PR까지
 
 ### Step 1: Claude Code 시작 + `/hk-align`
