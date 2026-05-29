@@ -2228,6 +2228,14 @@ cmd_doctor() {
   printf "\nClaude Code 설정\n"
   _check_file ".claude/settings.json" ".claude/settings.json" "install.sh 재실행 또는 수동 생성"
 
+  printf "\nignore 위생\n"
+  # (a) .gitignore 에 리뷰 출력 패턴 등재 여부 (spec-x-install-ignore-coverage)
+  if [ -f "$SDD_ROOT/.gitignore" ] && grep -qE '^specs/\*\*/code-review\*\.md$' "$SDD_ROOT/.gitignore" 2>/dev/null; then
+    _doc_pass ".gitignore — 리뷰 출력 패턴 등재 (specs/**/code-review*.md)"
+  else
+    _doc_warn ".gitignore 에 'specs/**/code-review*.md' 미등재 — /hk-code-review, /hk-gemini-review 출력이 untracked 로 누적될 수 있음. 갱신: bash update.sh ."
+  fi
+
   printf "\n훅 파일\n"
   _check_hooks
 
