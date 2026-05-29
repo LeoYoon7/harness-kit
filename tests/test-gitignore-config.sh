@@ -71,6 +71,14 @@ else
   fail "A-3: .gitignore에 '!.harness-kit/' 가 있음 (un-ignore가 잘못 추가됨)"
 fi
 
+check
+# spec-x-install-ignore-coverage: 리뷰 도구 출력물 ignore 라인
+if grep -q '^specs/\*\*/code-review\*\.md$' "$FIX_A/.gitignore" 2>/dev/null; then
+  pass "A-4: .gitignore 에 'specs/**/code-review*.md' 포함 (리뷰 출력 ignore)"
+else
+  fail "A-4: .gitignore 에 'specs/**/code-review*.md' 없음"
+fi
+
 echo ""
 
 # ──────────────────────────────────────────────
@@ -202,12 +210,23 @@ else
   fail "H-1: self-host 감지 실패 → .gitignore 에 '.harness-kit/' 추가됨"
 fi
 
-# H-2: self-host 시 '# harness-kit' 헤더도 추가하지 않음 (header alone is cosmetic noise)
+# H-2: spec-x-install-ignore-coverage 정책 전환 — self-host 시에도 헤더 강제 추가
+# (이전 정책: 헤더 cosmetic 노이즈 회피 목적으로 skip. 신규 정책: 신규 라인의 고아 라인
+#  방지를 위해 헤더 필수. ADR-005 참조 — uninstall awk 가 헤더 시작점을 찾지 못하면
+#  신규 라인이 영원히 잔존하는 위험.)
 check
-if ! grep -qE '^# harness-kit$' "$FIX_H/.gitignore" 2>/dev/null; then
-  pass "H-2: self-host 감지 → '# harness-kit' 헤더 추가 안 함"
+if grep -qE '^# harness-kit$' "$FIX_H/.gitignore" 2>/dev/null; then
+  pass "H-2: self-host 시 '# harness-kit' 헤더 강제 추가 (고아 라인 방지)"
 else
-  fail "H-2: self-host 인데 '# harness-kit' 헤더가 추가됨"
+  fail "H-2: self-host 인데 '# harness-kit' 헤더 미추가 (신규 라인 고아화 위험)"
+fi
+
+# H-3: self-host 시 신규 라인 (specs/**/code-review*.md) 도 추가되어야 함
+check
+if grep -q '^specs/\*\*/code-review\*\.md$' "$FIX_H/.gitignore" 2>/dev/null; then
+  pass "H-3: self-host 시 'specs/**/code-review*.md' 추가됨 (always-apply)"
+else
+  fail "H-3: self-host 시 'specs/**/code-review*.md' 미추가"
 fi
 
 echo ""
