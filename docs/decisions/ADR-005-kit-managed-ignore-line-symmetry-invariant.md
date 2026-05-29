@@ -9,7 +9,16 @@ status: accepted
 
 ## 📚 Context
 
-`install.sh` 는 사용자 프로젝트의 `.gitignore` 에 `# harness-kit` 헤더 블록을 만들고 그 안에 키트 관리 라인 (`/.harness-kit/`, `.harness-backup-*/`, `.claude/state/`, `.env.telegram`, `.env.discord`, `specs/**/code-review*.md`) 을 추가한다.
+`install.sh` 는 사용자 프로젝트의 `.gitignore` 에 `# harness-kit` 헤더 블록을 만들고 그 안에 키트 관리 라인을 추가한다 (6 항목 — 6개 모두 라인별 멱등):
+
+```
+.harness-kit/             # 또는 !.harness-kit/ (옵션 토글)
+.harness-backup-*/
+.claude/state/
+.env.telegram
+.env.discord
+specs/**/code-review*.md
+```
 
 대칭 동작으로 `uninstall.sh` 는 그 블록을 *통째로* 제거해야 하지만, 구현은 `awk` 의 *알려진 패턴 enumeration* 방식이다 (`uninstall.sh:159-167`).
 
@@ -53,7 +62,7 @@ inblk==1                           { inblk=0 }
 ## 🔀 Alternatives
 
 - **awk 패턴 enumeration → 헤더~빈줄 사이 전체 제거**: awk 로직을 "헤더 발견 후 다음 빈 줄까지 모두 제거" 로 단순화. 비채택 이유: 사용자가 헤더 블록 안에 *수동 라인* 을 추가했을 때 (예: 본인이 추가한 도구 ignore) 그것까지 함께 제거되는 부작용. 현재 enumeration 방식은 사용자 수동 라인 보존이 명시적 장점.
-- **install.sh / uninstall.sh 의 라인 enumeration 을 공통 source 로 분리**: 두 스크립트가 같은 `lib/gitignore-lines.sh` 같은 파일을 source 해서 single source of truth 화. 비채택 이유: bash 의 의존성 그래프 / 설치 동선 (uninstall 은 키트 제거 후에도 동작해야 함) 복잡도 증가. 현재 규모 (라인 6개) 에서는 invariant 명시 + 회귀 테스트 강제로 충분.
+- **install.sh / uninstall.sh 의 라인 enumeration 을 공통 source 로 분리**: 두 스크립트가 같은 공통 라이브러리 파일 (예: lib/gitignore-lines.sh) 을 source 해서 single source of truth 화. 비채택 이유: bash 의 의존성 그래프 / 설치 동선 (uninstall 은 키트 제거 후에도 동작해야 함) 복잡도 증가. 현재 규모 (라인 6개) 에서는 invariant 명시 + 회귀 테스트 강제로 충분.
 - **`# harness-kit` 헤더를 self-host 시 skip 유지 (원래 정책)**: 신규 라인 추가 후에도 self-host 시 헤더 미생성 유지. 비채택 이유: 헤더 부재 시 신규 라인이 *고아 라인* (어느 도구가 관리하는지 불명 + uninstall awk 가 시작점 못 찾음) 이 되어 영원히 잔존 위험. 본 spec critique 의 핵심 발견.
 
 ## 📌 Status
