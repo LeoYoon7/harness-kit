@@ -36,10 +36,10 @@
 ## Task 3: notify-discord.sh 라인 경계 후퇴 + 코드 펜스 균형
 
 ### 3-1. discord helper 변경 (sources + 도그푸딩 동기화)
-- [ ] `sources/bin/notify-discord.sh` — chunk 분할 loop 를 awk 라인 누적 + 펜스 카운트 + 펜스 균형 자동 ` ``` ` 추가로 교체
-- [ ] `.harness-kit/bin/notify-discord.sh` — 동일 변경 (도그푸딩 sync)
-- [ ] `diff sources/bin/notify-discord.sh .harness-kit/bin/notify-discord.sh` → 0 줄 확인
-- [ ] 수동 검증 — 시나리오 1, 3 (라인 경계 후퇴 discord), 4 (펜스 보호), 6, 7
+- [x] `sources/bin/notify-discord.sh` — chunk 분할 loop 를 awk 라인 누적 + 펜스 카운트 + 펜스 균형 자동 ``` 추가로 교체
+- [x] `.harness-kit/bin/notify-discord.sh` — 동일 변경 (도그푸딩 sync)
+- [x] `diff sources/bin/notify-discord.sh .harness-kit/bin/notify-discord.sh` → 0 줄 확인
+- [x] 수동 검증 — 시나리오 1 (단일 청크), 3 (라인 경계 후퇴 4라인→2청크), 4 (펜스 보호 SQL 3청크 각각 valid), 7 (1라인)
 - [ ] Commit: `fix(spec-x-notify-chunk-line-aware): split discord chunks at line boundaries with fence balance`
 
 ---

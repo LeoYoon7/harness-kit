@@ -116,23 +116,60 @@ esac
 REPO_NAME="$(basename "$PROJECT_ROOT")"
 
 # Discord 한 메시지 본문 2000자 제한 대응 — chunking 으로 분할 전송.
-# 본문(MESSAGE)을 CHUNK_SIZE 단위로 쪼개 각 청크에 헤더(`prefix [repo] [N/M]`) prepend.
-# jq 의 .[a:b] 는 unicode code point 단위라 UTF-8 byte boundary 손상 없음.
-# 안전 마진: 헤더 약 60자 여유 → 본문 1700자.
+# 본문(MESSAGE)을 라인 단위로 누적해 CHUNK_SIZE 초과 직전마다 청크 emit.
+# 추가로 코드 펜스(```) 균형을 보장 — 청크 끝 시점에 펜스가 열려 있으면
+# 자동으로 ``` 닫고 다음 청크 시작에 ``` 재오픈해 두 청크 모두 valid 마크다운.
+# 한 라인이 CHUNK_SIZE 를 넘는 예외 케이스는 단순 절단 fallback.
+# (spec-x-notify-chunk-line-aware)
+# 안전 마진: 헤더 약 60자 여유 → 본문 1700 byte (awk length 는 byte 단위).
 CHUNK_SIZE=1700
 
 command -v jq >/dev/null 2>&1 || exit 0
 
-TOTAL_LEN=$(jq -nr --arg s "$MESSAGE" '$s | length')
-NUM_CHUNKS=$(( (TOTAL_LEN + CHUNK_SIZE - 1) / CHUNK_SIZE ))
+# awk 로 라인 누적 + 펜스 카운트 + NUL 구분자 출력.
+# 임시 파일에 써서 bash 의 `read -d ''` 로 한 청크씩 추출 — bash 3.2 호환.
+TMP_CHUNKS=$(mktemp 2>/dev/null || echo "/tmp/notify-discord.$$.chunks")
+printf '%s\n' "$MESSAGE" | awk -v CS="$CHUNK_SIZE" '
+    BEGIN { acc = ""; n = 0; fence_open = 0 }
+    {
+        line_len = length($0) + 1
+        is_fence = ($0 ~ /^[[:space:]]*```/) ? 1 : 0
+        if (n + line_len > CS && n > 0) {
+            # 청크 emit — 펜스 열려 있으면 닫고 다음 청크 ``` 재오픈
+            if (fence_open) {
+                printf "%s```\n%c", acc, 0
+                acc = "```\n"
+                n = 4
+            } else {
+                printf "%s%c", acc, 0
+                acc = ""
+                n = 0
+            }
+        }
+        if (line_len > CS) {
+            # 한 라인 fallback — 펜스 보호 포기, 단순 절단
+            while (length($0) >= CS) {
+                printf "%s\n%c", substr($0, 1, CS - 1), 0
+                $0 = substr($0, CS)
+            }
+            acc = acc $0 "\n"
+            n = length(acc)
+            next
+        }
+        acc = acc $0 "\n"
+        n += line_len
+        if (is_fence) {
+            fence_open = !fence_open
+        }
+    }
+    END { if (acc != "") printf "%s%c", acc, 0 }
+' > "$TMP_CHUNKS"
+
+NUM_CHUNKS=$(tr -cd '\0' < "$TMP_CHUNKS" | wc -c | tr -d ' ')
 [ "$NUM_CHUNKS" -lt 1 ] && NUM_CHUNKS=1
 
 i=0
-while [ "$i" -lt "$NUM_CHUNKS" ]; do
-    START=$(( i * CHUNK_SIZE ))
-    END=$(( (i + 1) * CHUNK_SIZE ))
-    CHUNK=$(jq -nr --arg s "$MESSAGE" --argjson a $START --argjson b $END '$s[$a:$b]')
-
+while IFS= read -r -d '' CHUNK; do
     if [ "$NUM_CHUNKS" -eq 1 ]; then
         HEADER="${PREFIX} **[${REPO_NAME}]**"
     else
@@ -158,6 +195,8 @@ ${CHUNK}"
     [ "$((i + 1))" -lt "$NUM_CHUNKS" ] && sleep 0.3
 
     i=$((i + 1))
-done
+done < "$TMP_CHUNKS"
+
+rm -f "$TMP_CHUNKS" 2>/dev/null || true
 
 exit 0
