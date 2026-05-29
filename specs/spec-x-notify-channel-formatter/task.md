@@ -84,13 +84,12 @@
 ## Task 6: notify-on-input-wait.sh 본문 마크다운화
 
 ### 6-1. (a)/(b)/(c) 본문 분기에 bold 라벨 적용
-- [ ] `sources/hooks/notify-on-input-wait.sh` 의 NOTIFY_BODY 분기 수정:
-  - (a) 권한 승인: `**권한 승인 대기**` + `**Branch:** \`$BRANCH\``
-  - (b) 텍스트 선택지: `**사용자 선택 대기**` + `**[최근 Claude 메시지]**`
-  - (c) AskUserQuestion (legacy): `**사용자 질문 대기**`
-  - 일반: `**사용자 입력 대기 중**` + `**[최근 Claude 메시지 일부]**`
-- [ ] 본 hook 자체는 단위 테스트 없음 (Task 10 통합 테스트에서 시각 검증)
-- [ ] Commit: `refactor(spec-x-notify-channel-formatter): apply markdown labels to hook notification body`
+- [x] `sources/hooks/notify-on-input-wait.sh` 의 NOTIFY_BODY 분기 수정 — 4 분기 + 일반 분기 모두 마크다운 컨벤션 적용
+- [x] 상태 라벨 (`**사용자 ... 대기**`, `**권한 승인 대기**`) bold
+- [x] Branch 값 inline code (`` `$BRANCH` ``)
+- [x] 섹션 라벨 (`**[최근 Claude 메시지]**`, `**[최근 Claude 메시지 일부]**`) bold
+- [x] 본 hook 자체는 단위 테스트 없음 (Task 12 통합 테스트에서 시각 검증)
+- [x] Commit (다음)
 
 ---
 
