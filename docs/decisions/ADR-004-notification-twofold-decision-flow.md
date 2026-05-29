@@ -127,3 +127,22 @@ Accepted (2026-05-28, spec-x-notify-choice-context 머지 시점). 첫 사용자
 **관련 spec**: `specs/spec-x-notify-drop-both/` — dispatcher + fragment §9 정합.
 
 **상태**: Accepted (2026-05-29, spec-x-notify-drop-both 머지 시점).
+
+### 2026-05-29 (spec-x-notify-launcher-only)
+
+**발송 측 명시성 원칙 — launcher 가 명시 선언한 경우만 발송**
+
+**배경**: 이전 정책은 `NM_NOTIFY_CHANNEL` 미설정 시 telegram fallback. launcher (`./telegram.sh` / `./discord.sh`) 선택의 명시성이 발송 정책에 반영되지 않음 — `.env.telegram` 만 있어도 직접 `claude` 실행이 발송 결과를 만들어 의도 불투명. 직전 amendment (drop-both) 가 응답 측 단일 채널을 강화했으나, 발송 측에는 "launcher 가 명시 선언했을 때만 발송" 같은 대칭 원칙이 없는 비대칭이 남음.
+
+**결정**: `notify.sh` 의 default 를 `${NM_NOTIFY_CHANNEL:-telegram}` → `:-none}` 으로 전환. 알 수 없는 값 fallback (`*) telegram`) 도 silent skip 으로 통합. launcher 가 `NM_NOTIFY_CHANNEL=telegram` / `discord` 를 명시 export 한 경우에만 발송. 발송 측 의도 표현이 환경변수 명시 설정 한 가지로 좁혀짐. ADR-004 의 응답 측 단일 소스 원칙과 *대칭* 되는 발송 측 명시성 원칙.
+
+**Consequences/긍정 절 추가**:
+- 직접 `claude` 실행 시 silent skip — `.env.telegram` 존재가 의도 미명시 발송을 트리거하지 않음. launcher 선택이 발송 의도의 *유일한 표현 경로*.
+
+**Consequences/부정 절 추가**:
+- **Behavior break**: `.env.telegram` 만 있고 직접 `claude` 로 세션 시작하던 사용자는 알림이 끊긴다. 마이그레이션은 `./telegram.sh` / `./discord.sh` 사용. 의도된 break — 사용자 명시 의도가 발송 측 정책에 반영되어야 한다는 결정의 결과.
+- 오타/잘못된 `NM_NOTIFY_CHANNEL` 값도 silent skip → 사용자가 자기 의도와 다른 채널로 흘러간다는 *false confidence* 가 사라지는 대신, 발송이 안 됐다는 사실을 알아채야 한다.
+
+**관련 spec**: `specs/spec-x-notify-launcher-only/` — dispatcher default 전환.
+
+**상태**: Accepted (2026-05-29, spec-x-notify-launcher-only 머지 시점).

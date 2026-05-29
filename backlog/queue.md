@@ -16,6 +16,7 @@
 <!-- sdd:specx:start -->
 없음
 - [ ] spec-x-sdd-bugfix — sdd-bugfix
+- [ ] spec-x-notify-launcher-only — notify-launcher-only
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
