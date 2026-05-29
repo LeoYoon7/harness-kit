@@ -315,7 +315,7 @@ multi-device 환경에서 PC 응답 시 모바일 측에 진행 상태를 동기
     진행: <다음 단계 한 줄 요약>" info
     ```
 
-**Discord 의 절차**: 본 protocol 미명시. Discord MCP reply 도구가 active 화되는 시점의 별도 spec 에서 다룸. 현재는 `notify.sh` dispatcher 가 `NM_NOTIFY_CHANNEL` (예: `both`) 설정 시 Discord 도 §9 ack 도달 보장.
+**Discord 의 절차**: 본 protocol 미명시. Discord MCP reply 도구가 active 화되는 시점의 별도 spec 에서 다룸. 현재는 `notify.sh` dispatcher 가 `NM_NOTIFY_CHANNEL=discord` 설정 시 Discord 도 §9 ack 도달 보장.
 
 **근거**: 이중 발송 (reply + notify.sh) 시 같은 ack 가 양쪽 채널로 도달 → 노이즈. PR #9 직후 사용자 보고 (mcp reply "Plan Accepted..." + 당시 `notify-telegram.sh` 의 "[ack] 사용자 응답..." 둘 다 발송) 의 라이브 사례. ADR-004 Amendment 참조.
 

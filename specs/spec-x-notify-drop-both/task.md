@@ -36,10 +36,10 @@
 ## Task 3: fragment §9 ack note 정합 갱신
 
 ### 3-1. fragment 변경 (sources + 도그푸딩 동기화)
-- [ ] `sources/claude-fragments/CLAUDE.fragment.md` line 318 — "(예: `both`)" → `NM_NOTIFY_CHANNEL=discord` 표현으로 정합 갱신
-- [ ] `.harness-kit/CLAUDE.fragment.md` 동일 변경 (도그푸딩 sync)
-- [ ] `diff sources/claude-fragments/CLAUDE.fragment.md .harness-kit/CLAUDE.fragment.md` → 0 줄 확인
-- [ ] Commit: `docs(spec-x-notify-drop-both): drop 'both' mention from fragment §9 ack note`
+- [x] `sources/claude-fragments/CLAUDE.fragment.md` line 318 — "(예: `both`)" → `NM_NOTIFY_CHANNEL=discord` 표현으로 정합 갱신
+- [x] `.harness-kit/CLAUDE.fragment.md` 동일 변경 (도그푸딩 sync)
+- [x] `diff sources/claude-fragments/CLAUDE.fragment.md .harness-kit/CLAUDE.fragment.md` → 0 줄 확인
+- [x] Commit: `docs(spec-x-notify-drop-both): drop 'both' mention from fragment §9 ack note`
 
 ---
 
