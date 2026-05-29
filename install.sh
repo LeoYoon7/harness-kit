@@ -510,19 +510,25 @@ else
     _hk_self_host=1
   fi
 
-  # 헤더 — 부재 시 빈 줄 + 헤더 (단, self-host 면 헤더만 추가되는 cosmetic 잡음 방지를 위해 건너뜀)
-  if [ "$_hk_self_host" -eq 0 ] && ! grep -qE '^# harness-kit$' "$GI" 2>/dev/null; then
+  # 헤더 — 부재 시 빈 줄 + 헤더. self-host 케이스도 헤더 강제 추가 (정책 전환 —
+  # spec-x-install-ignore-coverage / ADR-005). 신규 라인 (specs/**/code-review*.md 등)
+  # 이 헤더 없이 추가되면 uninstall.sh awk 가 시작점을 못 찾아 영원히 잔존 위험.
+  if ! grep -qE '^# harness-kit$' "$GI" 2>/dev/null; then
     [ -s "$GI" ] && echo "" >> "$GI"
     echo "# harness-kit" >> "$GI"
   fi
 
-  # 4 라인 각각 라인별 ensure
+  # 옵션 토글 라인 (self-host 시 .harness-kit/ 추적 의도이므로 skip)
   [ "$_hk_self_host" -eq 0 ] && _gi_ensure "$_hk_pat" "$_hk_line"
   _gi_ensure '^\.harness-backup-\*/$'  '.harness-backup-*/'
   _gi_ensure '^\.claude/state/$'       '.claude/state/'
   # 알림 채널 토큰 파일 — 실수 커밋 방지 (uninstall.sh §7 이 함께 제거)
   _gi_ensure '^\.env\.telegram$'       '.env.telegram'
   _gi_ensure '^\.env\.discord$'        '.env.discord'
+  # 리뷰 도구 출력물 — /hk-code-review, /hk-gemini-review 가 매 review 마다 생성하는
+  # ephemeral 산출물. specs/ 하위로 한정해 .claude/commands/, sources/commands/ 의
+  # 슬래시 커맨드 정의 파일에는 영향 없음. uninstall.sh awk 도 대칭 등재 필수 (ADR-005).
+  _gi_ensure '^specs/\*\*/code-review\*\.md$' 'specs/**/code-review*.md'
 
   ok ".gitignore 갱신"
 fi

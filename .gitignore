@@ -46,3 +46,5 @@ specs/**/code-review*.md
 
 # codegraph 도구 로컬 DB
 .codegraph/
+
+# harness-kit

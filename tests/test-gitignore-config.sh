@@ -71,6 +71,14 @@ else
   fail "A-3: .gitignore에 '!.harness-kit/' 가 있음 (un-ignore가 잘못 추가됨)"
 fi
 
+check
+# spec-x-install-ignore-coverage: 리뷰 도구 출력물 ignore 라인
+if grep -q '^specs/\*\*/code-review\*\.md$' "$FIX_A/.gitignore" 2>/dev/null; then
+  pass "A-4: .gitignore 에 'specs/**/code-review*.md' 포함 (리뷰 출력 ignore)"
+else
+  fail "A-4: .gitignore 에 'specs/**/code-review*.md' 없음"
+fi
+
 echo ""
 
 # ──────────────────────────────────────────────
@@ -180,6 +188,50 @@ fi
 echo ""
 
 # ──────────────────────────────────────────────
+# Scenario I: 다중 라운드 안정성 (update × 3회 후 .gitignore 형태 유지)
+# spec-x-install-ignore-coverage critique 보강: critique §1 의 "update 다중 라운드 검증 누락"
+# + ADR-005 의 awk 조기 종료 부작용 차단 검증.
+# FIX_A 를 재사용 — Scenario A/D/E 직후 시점이므로 install + 재설치 + update 1회까지
+# 완료된 상태. 여기서 update × 3 추가 후 라인 멱등 + 헤더 멱등 + 인접 라인 유지 확인.
+# ──────────────────────────────────────────────
+echo "▶ Scenario I: 다중 라운드 안정성 (update × 3회 후 .gitignore 형태 유지)"
+for _ in 1 2 3; do
+  bash "$UPDATE" --yes "$FIX_A" > /dev/null 2>&1
+done
+
+check
+_count=$(grep -c '^specs/\*\*/code-review\*\.md$' "$FIX_A/.gitignore" 2>/dev/null || echo "0")
+if [ "$_count" -eq 1 ]; then
+  pass "I-1: update × 3 후 'specs/**/code-review*.md' 라인 1개 (멱등 — 중복/누락 없음)"
+else
+  fail "I-1: update × 3 후 라인이 ${_count}개"
+fi
+
+check
+_hdr=$(grep -c '^# harness-kit$' "$FIX_A/.gitignore" 2>/dev/null || echo "0")
+if [ "$_hdr" -eq 1 ]; then
+  pass "I-2: update × 3 후 '# harness-kit' 헤더 1개 (멱등)"
+else
+  fail "I-2: update × 3 후 헤더가 ${_hdr}개"
+fi
+
+# I-3: 인접 라인 손상 검증 (critique 의 awk 조기 종료 부작용 시나리오)
+check
+_missing=""
+for _pat in '^\.harness-backup-\*/$' '^\.claude/state/$' '^\.env\.telegram$' '^\.env\.discord$'; do
+  if ! grep -qE "$_pat" "$FIX_A/.gitignore" 2>/dev/null; then
+    _missing="$_missing $_pat"
+  fi
+done
+if [ -z "$_missing" ]; then
+  pass "I-3: update × 3 후 인접 라인 (.harness-backup-*/, .claude/state/, .env.telegram, .env.discord) 모두 유지"
+else
+  fail "I-3: 인접 라인 손실:$_missing"
+fi
+
+echo ""
+
+# ──────────────────────────────────────────────
 # Scenario H: self-host guard — .harness-kit/ 가 git-tracked 이면 .gitignore 에 추가 안 함
 # ──────────────────────────────────────────────
 echo "▶ Scenario H: self-host guard (git-tracked .harness-kit/ 존재 시 .gitignore 추가 안 함)"
@@ -202,12 +254,69 @@ else
   fail "H-1: self-host 감지 실패 → .gitignore 에 '.harness-kit/' 추가됨"
 fi
 
-# H-2: self-host 시 '# harness-kit' 헤더도 추가하지 않음 (header alone is cosmetic noise)
+# H-2: spec-x-install-ignore-coverage 정책 전환 — self-host 시에도 헤더 강제 추가
+# (이전 정책: 헤더 cosmetic 노이즈 회피 목적으로 skip. 신규 정책: 신규 라인의 고아 라인
+#  방지를 위해 헤더 필수. ADR-005 참조 — uninstall awk 가 헤더 시작점을 찾지 못하면
+#  신규 라인이 영원히 잔존하는 위험.)
 check
-if ! grep -qE '^# harness-kit$' "$FIX_H/.gitignore" 2>/dev/null; then
-  pass "H-2: self-host 감지 → '# harness-kit' 헤더 추가 안 함"
+if grep -qE '^# harness-kit$' "$FIX_H/.gitignore" 2>/dev/null; then
+  pass "H-2: self-host 시 '# harness-kit' 헤더 강제 추가 (고아 라인 방지)"
 else
-  fail "H-2: self-host 인데 '# harness-kit' 헤더가 추가됨"
+  fail "H-2: self-host 인데 '# harness-kit' 헤더 미추가 (신규 라인 고아화 위험)"
+fi
+
+# H-3: self-host 시 신규 라인 (specs/**/code-review*.md) 도 추가되어야 함
+check
+if grep -q '^specs/\*\*/code-review\*\.md$' "$FIX_H/.gitignore" 2>/dev/null; then
+  pass "H-3: self-host 시 'specs/**/code-review*.md' 추가됨 (always-apply)"
+else
+  fail "H-3: self-host 시 'specs/**/code-review*.md' 미추가"
+fi
+
+echo ""
+
+# ──────────────────────────────────────────────
+# Scenario J: uninstall.sh awk 대칭성 — install 추가 라인은 uninstall 도 제거 (ADR-005)
+# spec-x-install-ignore-coverage critique 보강: install 추가 라인이 uninstall awk 의
+# 알려진 패턴 enumeration 에 등재 안 되면 stale 잔존 + 인접 라인 조기 종료 부작용.
+# ──────────────────────────────────────────────
+echo "▶ Scenario J: uninstall.sh awk 대칭성 (install 추가 라인 모두 제거)"
+FIX_J="$(make_fixture)"
+UNINSTALL="$ROOT/uninstall.sh"
+trap 'rm -rf "$FIX_A" "$FIX_B" "$FIX_C" "$FIX_H" "$FIX_J"' EXIT
+
+# install → uninstall
+bash "$INSTALL" --yes "$FIX_J" > /dev/null 2>&1
+bash "$UNINSTALL" --yes "$FIX_J" > /dev/null 2>&1
+
+# J-1: '# harness-kit' 헤더가 제거됐는가
+check
+if ! grep -qE '^# harness-kit$' "$FIX_J/.gitignore" 2>/dev/null; then
+  pass "J-1: uninstall 후 '# harness-kit' 헤더 제거"
+else
+  fail "J-1: uninstall 후 '# harness-kit' 헤더 잔존"
+fi
+
+# J-2: 신규 라인 (specs/**/code-review*.md) 가 제거됐는가 — install/uninstall 대칭성
+check
+if ! grep -q '^specs/\*\*/code-review\*\.md$' "$FIX_J/.gitignore" 2>/dev/null; then
+  pass "J-2: uninstall 후 'specs/**/code-review*.md' 제거 (대칭성 invariant)"
+else
+  fail "J-2: uninstall 후 'specs/**/code-review*.md' 잔존 (uninstall awk 패턴 누락 — ADR-005 위반)"
+fi
+
+# J-3: 기존 알려진 라인들도 모두 제거됐는가 (회귀 보장)
+check
+_leftovers=""
+for _pat in '^\.harness-kit/$' '^\.harness-backup-\*/$' '^\.claude/state/$' '^\.env\.telegram$' '^\.env\.discord$'; do
+  if grep -qE "$_pat" "$FIX_J/.gitignore" 2>/dev/null; then
+    _leftovers="$_leftovers $_pat"
+  fi
+done
+if [ -z "$_leftovers" ]; then
+  pass "J-3: uninstall 후 기존 5개 라인 모두 제거 (회귀 없음)"
+else
+  fail "J-3: uninstall 후 잔존 라인:$_leftovers"
 fi
 
 echo ""
