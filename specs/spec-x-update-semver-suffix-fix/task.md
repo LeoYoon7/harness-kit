@@ -23,9 +23,9 @@
 
 ## Task 2: 단위 테스트 작성 (TDD Red)
 
-- [ ] `tests/test-update-semver.sh` 신규 작성 — `update.sh` 에서 `semver_lt` awk 추출 후 source, plan.md 6개 케이스 검증
-- [ ] `bash tests/test-update-semver.sh` 실행 → suffix 케이스에서 FAIL/에러(Red) 확인
-- [ ] Commit: `test(spec-x-update-semver-suffix-fix): add semver_lt suffix crash test`
+- [x] `tests/test-update-semver.sh` 신규 작성 — `update.sh` 에서 `semver_lt` awk 추출 후 source, plan.md 6개 케이스 검증
+- [x] `bash tests/test-update-semver.sh` 실행 → suffix 케이스에서 `leo: unbound variable` crash(Red) 확인
+- [x] Commit: `test(spec-x-update-semver-suffix-fix): add semver_lt suffix crash test`
 
 ---
 
