@@ -7,6 +7,24 @@ harness-kit의 주요 변경 사항을 버전별로 정리합니다.
 
 ---
 
+## [0.15.1-leo.1] — 2026-06-02
+
+> **Fork-distinct stable release** — LeoYoon7/harness-kit (forked from Changsik00/harness-kit).
+> `-leo.N` suffix 는 upstream 충돌 방지용 식별자이며 unstable 의미 없음.
+>
+> Windows (git-bash) 환경의 멀티바이트 처리 결함 2건 + Discord 알림 포맷터 일관화. 비-ASCII PR 본문 / 버전 비교 / Discord 알림이 깨지던 문제 해소.
+
+### Fixed
+
+- **`bb-pr` 비-ASCII (한글/emoji) PR 본문 HTTP 400** — payload 생성을 `jq -n` → `jq -an` (`--ascii-output`) 로 변경. git-bash 가 멀티바이트 `-d` 인자를 네이티브 `curl.exe` 로 넘길 때 시스템 ANSI 코드페이지 (한글 Windows = CP949) 로 변환해 본문이 깨지고 (emoji → `??`) Bitbucket 이 HTTP 400 을 반환하던 문제. `\uXXXX` ASCII escape 는 코드페이지 변환에 불변이라 서버가 원문을 정상 복원. macOS/Linux 는 argv 가 raw 바이트라 no-op (#20)
+- **`update.sh` `semver_lt` 의 pre-release suffix 오비교** — `-leo.N` 같은 suffix 를 버전 비교 시 strip 하도록 수정. `0.15.0-leo.1` 류 비교에서 잘못된 다운그레이드 경고가 뜨던 문제 방지 (#19)
+
+### Changed
+
+- **Discord 알림 마크다운 가독성 회복 + 채널 포맷터 일관화** — `notify.sh` dispatcher 의 채널별 포맷 분기 정리. Discord 마크다운 렌더링 정상화 (#18)
+
+---
+
 ## [0.15.0-leo.1] — 2026-05-29
 
 > **Fork-distinct stable release** — LeoYoon7/harness-kit (forked from Changsik00/harness-kit).
