@@ -31,9 +31,9 @@
 
 ## Task 3: semver_lt fix 구현 (TDD Green)
 
-- [ ] `update.sh` 의 `semver_lt` 에 선행 숫자 정규화 2줄 추가 (`${x%%[!0-9]*}` + `:-0` fallback)
-- [ ] `bash tests/test-update-semver.sh` 실행 → ALL PASS(Green) 확인
-- [ ] Commit: `fix(spec-x-update-semver-suffix-fix): strip pre-release suffix in semver_lt`
+- [x] `update.sh` 의 `semver_lt` 에 선행 숫자 정규화 2줄 추가 (`${x%%[!0-9]*}` + `:-0` fallback)
+- [x] `bash tests/test-update-semver.sh` 실행 → ALL PASS(6/6, Green) 확인
+- [x] Commit: `fix(spec-x-update-semver-suffix-fix): strip pre-release suffix in semver_lt`
 
 ---
 

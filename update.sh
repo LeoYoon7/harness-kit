@@ -82,6 +82,8 @@ semver_lt() {
   local a=($1) b=($2)
   for ((i=0; i<3; i++)); do
     local x=${a[i]:-0} y=${b[i]:-0}
+    x=${x%%[!0-9]*}; x=${x:-0}   # pre-release suffix 제거: '0-leo' → '0', 빈 값 → '0'
+    y=${y%%[!0-9]*}; y=${y:-0}
     if ((x < y)); then return 0; fi
     if ((x > y)); then return 1; fi
   done
