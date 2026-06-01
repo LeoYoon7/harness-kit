@@ -39,10 +39,10 @@
 
 ## Task 4: 회귀 + Ship
 
-- [ ] `bash .harness-kit/bin/sdd test passed` → 회귀 PASS
-- [ ] **walkthrough.md 작성** (증거 로그)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-x-update-semver-suffix-fix): ship walkthrough and pr description`
+- [x] `bash tests/test-update-semver.sh` PASS + `sdd test passed` 기록 (`sdd run-test` 인자 파싱 이슈로 직접 실행) + `bash -n update.sh` 문법 정상
+- [x] **walkthrough.md 작성** (증거 로그)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `docs(spec-x-update-semver-suffix-fix): ship walkthrough and pr description`
 - [ ] **Push**: `git push -u origin spec-x-update-semver-suffix-fix`
 - [ ] **PR 생성**: `/hk-pr-gh` 또는 `gh pr create` (base = fork main)
 - [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
