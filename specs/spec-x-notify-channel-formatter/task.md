@@ -188,10 +188,10 @@
 - [x] **walkthrough.md 작성** — 결정 9 + 사용자 협의 4 + 검증 + 발견 + 이월 4. C13 (discord-table-rendering-policy) tradeoff 한 단락 기록
 - [x] **pr_description.md 작성** — Summary + Key Review Points 6 + Verification + Files Changed
 - [x] **사용자 응답 반영**: 컨벤션 섹션에 "모바일 셀 폭 한계" 추가 + Icebox `spec-x-notify-discord-embed` 등록
-- [ ] **Ship Commit**: `docs(spec-x-notify-channel-formatter): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-notify-channel-formatter`
-- [ ] **PR 생성**: `gh pr create` (base: fork main — 메모리 [[harness-kit-pr-target-fork]] 참조)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고 (`notify.sh ... ship`)
+- [x] **Ship Commit**: bc7a49a `docs(spec-x-notify-channel-formatter): ship walkthrough and pr description`
+- [x] **Push**: `spec-x-notify-channel-formatter -> origin/spec-x-notify-channel-formatter`
+- [x] **PR 생성**: https://github.com/LeoYoon7/harness-kit/pull/18 (base: LeoYoon7/harness-kit:main)
+- [x] **사용자 알림**: ship notification 발송 (다음)
 
 ---
 
