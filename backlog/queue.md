@@ -24,8 +24,7 @@
 
 - kit 새 버전 알림이 `sdd status` drift 섹션 한 줄에 그쳐 사용자 도달이 약함 — SessionStart 시 자동 노출 또는 알림 시각 강화 필요
 - (phase-16 W9) ADR 승격 가이드 ROI metric — *측정 누적 (3 개월+) 선행 필요*. phase-17 종료 후 spec 의 ADR 승격 ratio 데이터 보고 결정
-- `sdd specx new` 버그 — 생성된 spec.md 의 Branch 필드에 slug 가 중복 입력됨 (예: `spec-x-foo-foo`). 단순 변수 치환 오류로 추정
-- `tests/test-uninstall-cmd-list.sh` Scenario 1 pre-existing FAIL — `find sources/commands -name 'hk-*.md'` 가 `hk.md` (no dash) 를 제외하는 반면 install.sh 는 `*.md` 로 모두 포함. 글롭 패턴 통일 필요 (phase-17 의 `hk.md` 도입 시점부터 노출됨)
+- `tests/test-uninstall-cmd-list.sh` Scenario 2 FAIL — uninstall 후 `hk-*.md` 커맨드가 하나도 제거되지 않고 15개 전부 잔존. Windows(Git Bash) 환경에서 `uninstall.sh` 의 파일 삭제 미동작 의심 (macOS 1차 타깃). spec-x-sdd-bugfix 재검증 (2026-06-01) 중 발견. 원인 범위 (환경 의존 vs uninstall 로직 회귀) 확인 필요
 - 거버넌스 문서 단어 수 한계 초과 — `tests/test-governance-dedup.sh` 가 상한 6000w 인데 현재 6418w. 한계 재설정 또는 거버넌스 다이어트 검토
 - **hk-wiki-ingest 슬래시 커맨드** — archive 후 Claude가 wiki를 갱신하는 표준 워크플로. `sources/commands/hk-wiki-ingest.md` + 템플릿에 `[[wikilinks]]` 관련 문서 섹션 추가. (phase-19 spec-19-02 deferred)
 - **sdd doctor wiki 점검 3종** — wiki 고아 링크 감지, stale ADR/RCA 90일+ 경고, governance 단어 수 상한 경고. (phase-19 spec-19-03 deferred)
