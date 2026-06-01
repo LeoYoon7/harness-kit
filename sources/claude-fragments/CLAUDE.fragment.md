@@ -417,10 +417,11 @@ multi-device 환경에서 외부 작업 시나리오 (모바일에서 plan accep
 - bold/italic 메타문자 (`**`, `*`, `_`) 를 평문 의도로 사용 (Telegram 평문화로 의도 손실)
 - 라벨 없이 본문만 나열 (구조화 손실)
 
-**한계 (NF6 / A4 명시)**:
+**한계 (NF6 / A4 / 모바일 명시)**:
 - 한글 셀과 ASCII 셀이 혼합된 표는 Discord 등폭 폰트에서 정렬 보장 미흡 (Unicode UAX #11 East Asian Width 미적용). 한글 전용 / ASCII 전용 표는 정렬 보존.
 - `***nested***`, `**unbalanced ** text` 같은 중첩·비균형 메타문자는 Telegram 측 `markdown_simplify` 에 일부 메타문자 잔존 가능 — 단순 `**[라벨]**` 만 사용 권장.
 - Branch 이름·식별자 등에 backtick (`` ` ``) 포함 금지 — `markdown_simplify` 의 inline-code sed 매칭이 깨짐 (Git 자체도 backtick branch 권장 안 함).
+- **모바일 화면 폭 한계 (실증 2026-05-29)**: Discord 모바일 클라이언트의 좁은 화면에서 *한 행이 약 40 chars 초과* 하면 code-block 안에서도 자동 줄바꿈으로 시각 정렬 깨짐. 표 셀 값은 가능한 한 짧게 (셀 < 20 chars 권장). 긴 식별자가 필요하면 표 대신 *섹션 라벨 + 줄별 key: value 나열* 형태로 작성. embed 기반 구조화 메시지는 별도 spec (`spec-x-notify-discord-embed` 후보, Icebox) 의 surface.
 
 **참고 ADR (트리거 대기)**:
 - `notify-channel-adapter-responsibility` (type: **invariant**) — 신규 채널 추가 spec 트리거 시 작성. "발신 측은 단일 마크다운 컨벤션, 인프라 측이 채널별 변환 책임" 분담 원칙.

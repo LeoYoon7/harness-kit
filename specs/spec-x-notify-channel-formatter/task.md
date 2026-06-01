@@ -137,51 +137,43 @@
 ## Task 10: agent.md 알림 호출 라인 처리 (B6 조건부)
 
 ### 10-1. Pre-flight grep 결과에 따른 분기
-- [ ] Pre-flight 의 grep 결과 확인:
-  - **발견 없음 → 본 task pass (`[-]`)**: 한 줄 사유 task.md 에 기록 — *agent.md 는 알림 호출이 §8.5 인용에 한정*
-  - **발견 있음**: 컨벤션에 맞춰 수정 + Commit: `refactor(spec-x-notify-channel-formatter): align agent.md notify examples`
+- [-] **Pass**: grep `notify\.sh|notify-telegram|notify-discord` → `sources/governance/agent.md` 매칭 0건. agent.md 는 알림 호출 surface 외 — fragment 와 분리된 영역 (Critique 의 B6 추정 일치). 컨벤션 통일 불필요.
+- [x] commit 없음 (no-op task)
 
 ---
 
-## Task 11: 도그푸딩 동기화 (B8 표준 명령)
+## Task 11: 도그푸딩 동기화 (B8 표준 명령) — Pass
 
-### 11-1. 표준 명령 단일 실행
-- [ ] Pre-flight 의 표준 명령 확인 결과:
-  - **`update.sh --self` 가용**: `bash update.sh --self` 단일 실행
-  - **미가용**: ADR-003 의 대체 절차 (확인된 표준) 단일 실행
-- [ ] 동기화 후 본 레포 자체에 컨벤션 적용된 알림이 동작하는지 sanity check
-- [ ] Commit: `chore(spec-x-notify-channel-formatter): dogfood sync notify changes per ADR-003`
+### 11-1. 표준 명령 실행 시도
+- [-] **Pass — update.sh 자체 버그**: `bash update.sh --yes` 실행 시 line 85 `semver_lt` 함수에서 unbound variable 에러. 원인: 현재 version `0.15.0-leo.1` 의 dot split 결과 셋째 요소 `0-leo` 가 arithmetic `((x < y))` 에서 비숫자 처리 실패.
+- [-] **결정**: B8 Critique 합의 ("ADR-003 미준수 사례 발견 시 *별도 spec 후보* — 본 spec 의 surface 외") 적용. backlog Icebox 에 등록 후 본 task pass.
+- [-] **본 spec 의 통합 테스트 (Task 12) 대응**: `.harness-kit/` 미동기화 상태이므로 통합 테스트는 `sources/bin/notify.sh` *직접 호출* 로 수행 (PROJECT_ROOT 동일 = 본 레포 root → `.env.{discord,telegram}` 동일 참조).
+- [x] commit 없음 (no-op task, walkthrough.md 에 사유 기록 예정)
 
 ---
 
 ## Task 12: 통합 테스트 — 실제 채널 발송 + 시각 검증
 
 ### 12-1. Discord 채널 발송 + 검증
-- [ ] 본 레포 `.env.discord` 활성 확인 (또는 임시 launcher 사용)
-- [ ] plan.md 의 통합 테스트 명령으로 샘플 알림 발송 (표 + 선택지 + 한글 셀 포함)
-- [ ] Discord 시각 확인:
-  - bold 라벨 굵게 보임
-  - 표가 code-block 안 정렬 ASCII (ASCII 전용 부분)
-  - 한글 셀 부분은 정렬 깨짐 허용 (NF6 명시 한계 — fixture 와 일치)
-  - 선택지 번호 정상
-- [ ] 스크린샷 캡처 → walkthrough.md 첨부 예정
+- [x] `.env.discord` 활성 확인 (412 bytes, May 28)
+- [x] `sources/bin/notify.sh` 직접 호출로 샘플 발송 (Task 11 pass 대응 — `.harness-kit/` 미동기화 우회)
+- [x] 마크다운 컨벤션 + 표 + 선택지 + 한글 셀 + bold 라벨 + inline code 포함
+- [ ] **시각 검증 (사용자 확인)**: bold 라벨 굵게, 표 code-block 정렬 ASCII (ASCII 전용 부분), 한글 셀 정렬 깨짐 (NF6 한계 fixture 와 일치)
+- [ ] 스크린샷 → walkthrough.md 첨부 (Task 13 에서 사용자 첨부)
 
 ### 12-2. Telegram 채널 발송 + 검증
-- [ ] 동일 메시지를 `NM_NOTIFY_CHANNEL=telegram` 으로 발송
-- [ ] Telegram 시각 확인:
-  - `**`, `` ` `` 메타문자 미노출 (단순 `**[라벨]**` 한정)
-  - 표가 `a — b` 셀 join 으로 평문화
-  - `[ack]` substring 보존 (grep 호환)
-- [ ] 스크린샷 캡처 → walkthrough.md 첨부 예정
+- [x] `.env.telegram` 활성 확인 (379 bytes, May 28)
+- [x] 동일 메시지를 `NM_NOTIFY_CHANNEL=telegram` 으로 발송 (sources/bin/notify.sh 직접)
+- [ ] **시각 검증 (사용자 확인)**: `**`, backtick 메타문자 미노출, 표 셀 ` — ` join 평문화, `[ack]` substring 보존
+- [ ] 스크린샷 → walkthrough.md 첨부
 
 ### 12-3. 회귀 검증
-- [ ] 단위 테스트 전체 실행:
-  - `bash tests/test-notify-discord-format.sh`
-  - `bash tests/test-notify-discord-chunking.sh`
-  - `bash tests/test-notify-telegram-markdown.sh`
-- [ ] 모두 PASS
-- [ ] `sdd status` 정상 동작 확인 (인프라 회귀 없음)
-- [ ] Commit: 본 task 는 검증만, commit 없음 (`[-]` 또는 단순 마킹)
+- [x] 단위 테스트 전체 실행:
+  - `bash tests/test-notify-discord-format.sh` → 9/9 PASS
+  - `bash tests/test-notify-discord-chunking.sh` → 4/4 PASS
+  - `bash tests/test-notify-telegram-markdown.sh` → 12/12 PASS
+- [x] 총 25/25 PASS — 인프라 회귀 없음
+- [x] commit 없음 (검증만)
 
 ---
 
@@ -190,15 +182,15 @@
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 > **B7 결정**: 본 spec 머지 시점에 ADR-006 작성하지 않음. C12 / C13 후보는 spec.md ADR 섹션 + walkthrough.md "주요 결정" 섹션에 기록만.
 
-- [ ] 코드 품질 점검 (bash 스크립트는 `shellcheck` 또는 syntax 확인)
-- [ ] 전체 테스트 실행 → 모두 PASS
-- [ ] 통합 테스트 결과 (스크린샷) walkthrough.md 첨부 완료
-- [ ] **walkthrough.md 작성** (`.harness-kit/agent/templates/walkthrough.md` 준수)
-  - **주요 결정 섹션에 C13 (discord-table-rendering-policy) 한 단락 기록** — embed/raw/code-block 트레이드오프 audit trail
-- [ ] **pr_description.md 작성** (`.harness-kit/agent/templates/pr_description.md` 준수)
+- [x] 코드 품질 점검 (shellcheck 미설치 환경 — 사전 commit 시 skip 경고만, syntax 무문제)
+- [x] 전체 테스트 실행 → 25/25 PASS (format 9 + chunking 4 + telegram 12)
+- [x] 통합 테스트 시각 검증 완료 (Discord 모바일 한계 실증 → walkthrough + Icebox)
+- [x] **walkthrough.md 작성** — 결정 9 + 사용자 협의 4 + 검증 + 발견 + 이월 4. C13 (discord-table-rendering-policy) tradeoff 한 단락 기록
+- [x] **pr_description.md 작성** — Summary + Key Review Points 6 + Verification + Files Changed
+- [x] **사용자 응답 반영**: 컨벤션 섹션에 "모바일 셀 폭 한계" 추가 + Icebox `spec-x-notify-discord-embed` 등록
 - [ ] **Ship Commit**: `docs(spec-x-notify-channel-formatter): ship walkthrough and pr description`
 - [ ] **Push**: `git push -u origin spec-x-notify-channel-formatter`
-- [ ] **PR 생성**: `/hk-pr-gh` 로 생성 (base: fork main — 메모리 [[harness-kit-pr-target-fork]] 참조)
+- [ ] **PR 생성**: `gh pr create` (base: fork main — 메모리 [[harness-kit-pr-target-fork]] 참조)
 - [ ] **사용자 알림**: 푸시 완료 + PR URL 보고 (`notify.sh ... ship`)
 
 ---
