@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-update-semver-suffix-fix — update-semver-suffix-fix
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -132,6 +131,7 @@
 - [x] spec-x-notify-launcher-only (완료)
 - [x] spec-x-notify-chunk-line-aware (완료)
 - [x] spec-x-notify-channel-formatter (완료)
+- [x] spec-x-update-semver-suffix-fix (완료)
 <!-- sdd:done:end -->
 
 ---
