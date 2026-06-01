@@ -176,7 +176,7 @@ DESCRIPTION="$(awk 'BEGIN { found=0 }
 
 # ─── 6. payload 생성 ──────────────────────────────────────
 if [ $DRAFT -eq 1 ]; then DRAFT_BOOL=true; else DRAFT_BOOL=false; fi
-PAYLOAD="$(jq -n \
+PAYLOAD="$(jq -an \
   --arg title "$TITLE" \
   --arg desc "$DESCRIPTION" \
   --arg src "$SOURCE" \
