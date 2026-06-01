@@ -109,31 +109,35 @@ fi
 BRANCH=$(git -C "$PROJECT_ROOT" branch --show-current 2>/dev/null || echo "unknown")
 
 # 알림 본문 분기 — 우선순위: (c) > (b) > (a) > 일반
+# 마크다운 컨벤션 (spec-x-notify-channel-formatter):
+#   - 상태 라벨 `**...**` bold (Discord 강조 / Telegram markdown_simplify 후 평문)
+#   - Branch 값 `` `...` `` inline code (Discord code 강조 / Telegram 평문)
+#   - 섹션 라벨 `**[...]**` bold + 빈 줄 + 본문
 if [ -n "$ASK_USER_Q_BODY" ]; then
-    NOTIFY_BODY="사용자 질문 대기
-Branch: $BRANCH
+    NOTIFY_BODY="**사용자 질문 대기**
+**Branch:** \`$BRANCH\`
 
 $ASK_USER_Q_BODY"
 elif [ "$HAS_TEXT_CHOICE" = "1" ]; then
-    NOTIFY_BODY="사용자 선택 대기
-Branch: $BRANCH
+    NOTIFY_BODY="**사용자 선택 대기**
+**Branch:** \`$BRANCH\`
 
-[최근 Claude 메시지]
+**[최근 Claude 메시지]**
 $CONTEXT"
 elif [ "$IS_PERMISSION" = "1" ]; then
-    NOTIFY_BODY="권한 승인 대기
-Branch: $BRANCH
+    NOTIFY_BODY="**권한 승인 대기**
+**Branch:** \`$BRANCH\`
 $HOOK_MSG"
 elif [ -n "$CONTEXT" ]; then
-    NOTIFY_BODY="사용자 입력 대기 중
-Branch: $BRANCH
+    NOTIFY_BODY="**사용자 입력 대기 중**
+**Branch:** \`$BRANCH\`
 
-[최근 Claude 메시지 일부]
+**[최근 Claude 메시지 일부]**
 $CONTEXT"
 else
-    NOTIFY_BODY="사용자 입력 대기 중
-Branch: $BRANCH
-Message: $HOOK_MSG"
+    NOTIFY_BODY="**사용자 입력 대기 중**
+**Branch:** \`$BRANCH\`
+**Message:** $HOOK_MSG"
 fi
 
 # Dedupe — Notification + Stop 양쪽 hook 발화로 인한 같은 본문 중복 차단
