@@ -47,6 +47,15 @@
 2. **Action**: `bash .harness-kit/bin/sdd test passed`
    - **Result**: ✓ lastTestPass = 2026-06-01T04:20:23Z 기록
 
+### 3. Cross-model 리뷰 (Gemini)
+
+- **명령**: `/hk-gemini-review` (`bash .harness-kit/bin/gemini-review.sh`)
+- **결과**: ✅ **Approve** (Critical 0 / Major 0 / Minor 2) — 전문: `code-review-gemini.md`
+- **반영 (commit `d60467c`)**:
+  - Minor #2 `tests/test-update-semver.sh` awk 패턴 → `[[:space:]]*` 로 robust 화 (함수 선언 포맷 변경 내성)
+  - 권고 `update.sh` fix 주석에 bash 3.2 호환성 명시 (`[[ =~ ]]` 리팩토링 방지)
+- **제외**: Minor #1 `update.sh:83` 인용부호 없는 배열 할당 → 원본 코드 + glob 위험 "매우 낮음" + SC2206 disable 기존재. Surgical Changes 원칙으로 본 spec 변경 범위 밖.
+
 ## 🔍 발견 사항
 
 - `sdd run-test "bash tests/test-update-semver.sh"` 가 따옴표로 묶은 명령을 단일 토큰(파일명)으로 해석해 exit 127. 직접 실행 + `sdd test passed` 로 우회. → `sdd run-test` 인자 파싱 개선 여지 (별도 검토 후보).
