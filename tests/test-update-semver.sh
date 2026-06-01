@@ -10,7 +10,7 @@ UPDATE_SH="$ROOT/update.sh"
 # update.sh 는 source 시 uninstall/install 부작용이 있으므로 semver_lt 함수만 추출해 로드
 TMP="$(mktemp)"
 trap 'rm -f "$TMP"' EXIT
-awk '/^semver_lt\(\) \{/,/^\}/' "$UPDATE_SH" > "$TMP"
+awk '/^semver_lt[[:space:]]*\(\)[[:space:]]*\{/,/^\}/' "$UPDATE_SH" > "$TMP"
 [ -s "$TMP" ] || { echo "✗ semver_lt 함수 추출 실패"; exit 1; }
 # shellcheck disable=SC1090
 source "$TMP"
