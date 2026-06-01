@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-update-semver-suffix-fix — update-semver-suffix-fix
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox

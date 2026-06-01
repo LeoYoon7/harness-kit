@@ -82,6 +82,9 @@ semver_lt() {
   local a=($1) b=($2)
   for ((i=0; i<3; i++)); do
     local x=${a[i]:-0} y=${b[i]:-0}
+    # pre-release suffix 제거 ('0-leo'→'0', 빈 값→'0'). POSIX param expansion — bash 3.2 호환 (`[[ =~ ]]` 등 bash 4+ 문법 금지)
+    x=${x%%[!0-9]*}; x=${x:-0}
+    y=${y%%[!0-9]*}; y=${y:-0}
     if ((x < y)); then return 0; fi
     if ((x > y)); then return 1; fi
   done
