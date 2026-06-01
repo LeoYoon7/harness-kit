@@ -50,8 +50,8 @@ Accepted (2026-05-28, spec-x-notify-choice-context 머지 시점). 첫 사용자
 
 ## 🔗 Related
 
-- Spec: `specs/spec-x-notify-choice-context/spec.md`
-- Critique: `specs/spec-x-notify-choice-context/critique.md` — 대안 B/C 의 자세한 트레이드오프 분석
+- Spec: `archive/specs/spec-x-notify-choice-context/spec.md`
+- Critique: `archive/specs/spec-x-notify-choice-context/critique.md` — 대안 B/C 의 자세한 트레이드오프 분석
 - Hook 구현: `sources/hooks/notify-on-input-wait.sh` — (a)/(b)/(c) 본문 분기
 - Fragment §9: `sources/claude-fragments/CLAUDE.fragment.md` — 응답 측 절차 정의
 
@@ -75,7 +75,7 @@ Accepted (2026-05-28, spec-x-notify-choice-context 머지 시점). 첫 사용자
 **Consequences/부정 절 추가**:
 - **단일 소스 위반 위험**: 같은 의사결정에 대해 *복수 채널/포맷* (예: §5 stop + AUQ, mcp reply + §9 ack) 으로 발산 시 *번호/내용 충돌*. multi-device 사용자가 본 라벨과 다른 선택 의도를 가져 잘못된 응답 → *회복 어려움*. 단일 sink 원칙 + 옵션 순서 sync fallback 의 이중화로 차단.
 
-**관련 spec**: `specs/spec-x-notify-channel-coherence/` — fragment §5/§9 갱신, §1-§8 의 dispatcher 통일.
+**관련 spec**: `archive/specs/spec-x-notify-channel-coherence/` — fragment §5/§9 갱신, §1-§8 의 dispatcher 통일.
 
 **상태**: Accepted (2026-05-29, spec-x-notify-channel-coherence 머지 시점).
 
@@ -112,7 +112,7 @@ Accepted (2026-05-28, spec-x-notify-choice-context 머지 시점). 첫 사용자
 - **결정 ID 부재로 복수 게이트 사이 응답은 휴리스틱 매핑** — 동시 활성 게이트 다수 시 누락 위험. 본 프로젝트 규모에서 trade-off 수용 (Slack action_id / Step Functions taskToken 패턴 미도입).
 - **dead branch/text 잔존**: hook (c) AUQ 분기 + §5 의 AUQ 조건부 생략 규칙이 이론상 발화 불가 상태로 유지. 6개월 후 완전 제거 재평가.
 
-**관련 spec**: `specs/spec-x-notify-bidirectional-policy/` — fragment 전 layer 정합화.
+**관련 spec**: `archive/specs/spec-x-notify-bidirectional-policy/` — fragment 전 layer 정합화.
 
 **상태**: Accepted (2026-05-29, spec-x-notify-bidirectional-policy 머지 시점).
 
@@ -124,7 +124,7 @@ Accepted (2026-05-28, spec-x-notify-choice-context 머지 시점). 첫 사용자
 
 **결정**: `notify.sh` 의 `both` case 제거. 라우팅은 `telegram` / `discord` / `none` 만 남기고, 미지정/알 수 없는 값 (과거 `both` 포함) 은 `telegram` fallback 으로 흡수 (backward compatible). fragment §9 ack note 의 "예: `both`" 표현도 정합 갱신. Redundancy 가 필요한 경우 외부 wrapper 로 두 helper 를 직접 호출 (본 키트 surface 외).
 
-**관련 spec**: `specs/spec-x-notify-drop-both/` — dispatcher + fragment §9 정합.
+**관련 spec**: `archive/specs/spec-x-notify-drop-both/` — dispatcher + fragment §9 정합.
 
 **상태**: Accepted (2026-05-29, spec-x-notify-drop-both 머지 시점).
 
@@ -143,6 +143,6 @@ Accepted (2026-05-28, spec-x-notify-choice-context 머지 시점). 첫 사용자
 - **Behavior break**: `.env.telegram` 만 있고 직접 `claude` 로 세션 시작하던 사용자는 알림이 끊긴다. 마이그레이션은 `./telegram.sh` / `./discord.sh` 사용. 의도된 break — 사용자 명시 의도가 발송 측 정책에 반영되어야 한다는 결정의 결과.
 - 오타/잘못된 `NM_NOTIFY_CHANNEL` 값도 silent skip → 사용자가 자기 의도와 다른 채널로 흘러간다는 *false confidence* 가 사라지는 대신, 발송이 안 됐다는 사실을 알아채야 한다.
 
-**관련 spec**: `specs/spec-x-notify-launcher-only/` — dispatcher default 전환.
+**관련 spec**: `archive/specs/spec-x-notify-launcher-only/` — dispatcher default 전환.
 
 **상태**: Accepted (2026-05-29, spec-x-notify-launcher-only 머지 시점).

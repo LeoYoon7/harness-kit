@@ -72,5 +72,5 @@ Accepted (2026-05-29, `spec-x-install-ignore-coverage` 머지 시점). 첫 적�
 ## 🔗 Related
 
 - `spec-x-install-ignore-coverage` — 본 invariant 의 발견 spec + 첫 적용
-- `specs/spec-x-install-ignore-coverage/critique.md` §1 (유사 기법 조사 시사점) — *루트 침입형* `.gitignore` 갱신의 위험 분석
+- `archive/specs/spec-x-install-ignore-coverage/critique.md` §1 (유사 기법 조사 시사점) — *루트 침입형* `.gitignore` 갱신의 위험 분석
 - `tests/test-gitignore-config.sh` Scenario I (다중 라운드) + Scenario J (uninstall 대칭성) — invariant 회귀 강제

@@ -45,8 +45,8 @@ harness-kit 는 자기 자신에게 키트를 install 해 도그푸딩한다 (CL
 
 ## 🔗 Related
 
-- Spec: `specs/spec-x-dogfood-sync/spec.md`
-- Walkthrough: `specs/spec-x-dogfood-sync/walkthrough.md`
-- Critique: `specs/spec-x-dogfood-sync/critique.md` (대안 분석 원본)
+- Spec: `archive/specs/spec-x-dogfood-sync/spec.md`
+- Walkthrough: `archive/specs/spec-x-dogfood-sync/walkthrough.md`
+- Critique: `archive/specs/spec-x-dogfood-sync/critique.md` (대안 분석 원본)
 - PR: `LeoYoon7/harness-kit#2`
 - 후속: queue.md Icebox 의 "도그푸딩 sync 자동화" / "check-secrets.sh `.env.*.example` 패턴 제외 fix"
