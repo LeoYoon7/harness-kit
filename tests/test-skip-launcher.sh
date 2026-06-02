@@ -15,6 +15,7 @@ ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 INSTALL="$ROOT/install.sh"
 UPDATE="$ROOT/update.sh"
 UNINSTALL="$ROOT/uninstall.sh"
+SDD="$ROOT/sources/bin/sdd"
 
 LAUNCHER="claude-dangerously-skip-permissions.sh"
 GI_PAT="^/claude-dangerously-skip-permissions\.sh$"
@@ -191,6 +192,36 @@ if [ "$_cnt_e" -eq 0 ]; then
   pass "E-2: uninstall 후 .gitignore 런처 라인 제거"
 else
   fail "E-2: uninstall 후 .gitignore 런처 라인 $_cnt_e 회 잔존 (orphan)"
+fi
+
+echo ""
+
+# ──────────────────────────────────────────────
+# Scenario F: sdd doctor .dockerignore 경고 (Dockerfile 존재 시)
+# ──────────────────────────────────────────────
+echo "▶ Scenario F: doctor .dockerignore 경고"
+FIX_F="$(mk)"; _CLEAN="$_CLEAN $FIX_F"
+bash "$INSTALL" --yes --with-skip-launcher "$FIX_F" > /dev/null 2>&1 || true
+printf 'FROM scratch\n' > "$FIX_F/Dockerfile"
+rm -f "$FIX_F/.dockerignore"
+
+# F-1: 런처 설치 + Dockerfile + .dockerignore 미등재 → WARN
+out_f1="$(cd "$FIX_F" && bash "$SDD" doctor 2>/dev/null || true)"
+check
+if printf '%s' "$out_f1" | grep -q "권한 우회 런처 설치됨"; then
+  pass "F-1: 런처+Dockerfile+미등재 → doctor WARN 검출"
+else
+  fail "F-1: WARN 미검출"
+fi
+
+# F-2: .dockerignore 에 런처 등재 → PASS 라인
+printf 'claude-dangerously-skip-permissions.sh\n' > "$FIX_F/.dockerignore"
+out_f2="$(cd "$FIX_F" && bash "$SDD" doctor 2>/dev/null || true)"
+check
+if printf '%s' "$out_f2" | grep -q "권한 우회 런처 등재"; then
+  pass "F-2: .dockerignore 등재 → doctor PASS 라인 검출"
+else
+  fail "F-2: PASS 라인 미검출"
 fi
 
 echo ""
