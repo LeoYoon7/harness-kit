@@ -275,6 +275,8 @@ Generic agent behavior patterns that improve UX, latency, and cost without per-t
 
 **Version + CHANGELOG paired update**: When `version.json` changes, `CHANGELOG.md` MUST gain a corresponding entry in the same commit. Conversely, never bump version without summarizing changes since the last release.
 
+**Native feature gate-preservation**: Claude Code native features that introduce autonomy, session-splitting, or web hand-off (`/goal`, `/effort ultracode`, `/fewer-permission-prompts`, `/code-review` [incl. ultra], `/ultraplan`, the skill system) MAY be used ONLY under gate-preservation conditions — each MUST stop and report at every decision gate (§8.5, Plan Accept) instead of running past them, so text-gate and §10 bidirectional-notification response opportunities are never bypassed. In particular: `/goal` is bounded to one spec/phase's acceptance criteria with an explicit "stop and report at each gate" clause; `/effort ultracode` only inside a confirmed implementation phase (never the whole project); `/ultraplan` output MUST be re-gated through `/hk-plan-accept`; `/fewer-permission-prompts` allowlists are reviewed before commit. Per-feature conditions and rationale: ADR-007 (native-feature-adoption-policy).
+
 ## 7. Deviation & Hard Stop
 
 The Agent MUST immediately **STOP** execution and request re-alignment if:

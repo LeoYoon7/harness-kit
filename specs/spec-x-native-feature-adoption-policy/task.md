@@ -28,8 +28,8 @@
 
 ## Task 2: agent.md 정책 요지 추가 (전파, 안 A)
 
-- [ ] `sources/governance/agent.md` §6.7 에 "네이티브 기능 게이트 보존" 항목 1개 추가 — 자족 요지 + ADR-007 근거 참조
-- [ ] Commit: `docs(spec-x-native-feature-adoption-policy): add native feature gate-preservation note to agent.md`
+- [x] `sources/governance/agent.md` §6.7 에 "네이티브 기능 게이트 보존" 항목 1개 추가 — 자족 요지 + ADR-007 근거 참조
+- [x] Commit: `docs(spec-x-native-feature-adoption-policy): add native feature gate-preservation note to agent.md`
 
 ---
 
