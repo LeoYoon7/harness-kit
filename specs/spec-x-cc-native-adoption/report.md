@@ -195,4 +195,27 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 
 ## 7. 후속 spec 후보
 
-<!-- Task 4: queue.md Icebox 등록 대상 -->
+본 조사 결과를 실행으로 옮기는 후속 작업. `backlog/queue.md` Icebox 에 등록한다(실행 불가 메모, 승격 시 spec 화).
+
+| # | 후속 항목 | 성격 | 대상 기능 | 비고 |
+|---|---|---|---|---|
+| 1 | **1단계 즉시 채택** | 운영 관행 (spec 불필요) | ✅군 9종 | 별도 spec 없이 세션 관행으로. 필요 시 CLAUDE.md 한 줄 메모만 |
+| 2 | **`spec-x-native-feature-adoption-policy`** | 정책 spec (2단계) | `/goal` `/effort ultracode` `/fewer-permission-prompts` `/code-review ultra` `/ultraplan` 스킬 | 게이트 보존 조건을 agent.md 가이드 1절 + ADR(`native-feature-adoption-policy`, convention)로 명문화 |
+| 3 | **`spec-x-native-session-feature-verify`** | 검증 spec (3단계) | `/background` `/branch` | 알림 타이밍·상태 승계 실측 (검증 테스트 1·4). Research 성격 |
+| 4 | **`/batch` Bitbucket 정합성** | 보류 (조건 해소 시) | `/batch` | target Bitbucket 에서 자동 PR off + worktree diff → `/hk-pr-bb` 경로. 검증 테스트 2·3·5 |
+
+**우선순위 권장**: 2번(정책 spec) > 3번(검증 spec) > 4번(`/batch`, 조건부). 1번은 비용이 0 이라 본 spec 머지 직후 바로 관행화 가능.
+
+---
+
+## 부록 A. 검증 체크리스트 (3단계 spec 으로 이관)
+
+문서 2의 검증 체크리스트 7종 중 본 조사가 *실측 대상*으로 분류한 것. 후속 검증 spec(§7-3)에서 실행한다.
+
+1. `/background` 실행 중 input-wait 알림이 채널로 정상 도착하는가? (축 B)
+2. `/batch` 다수 서브에이전트에서 `notify.sh` 중복/누락 양상 (축 B)
+3. `/batch` 워커가 공유 글로벌 config 한계에 걸리는가? (축 E)
+4. `/branch` 포크 세션이 §8.5·hook·멀티모델 상태를 승계하는가? (`CLAUDE_CODE_FORK_SUBAGENT` 유무별) (축 A/F/C)
+5. `gh` 미설정 상태에서 `/batch` 자동 PR 동작/실패 (축 D, Bitbucket 정합)
+6. `/effort ultracode` 가 phase별 모델 지정을 덮어쓰는가? (축 C)
+7. 클라우드 기능(`/ultraplan`·`/ultrareview`·`/team-onboarding` 링크)이 Windows/네트워크에서 정상 동작하는가? (가로지르는 리스크 6)

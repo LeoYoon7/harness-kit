@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-cc-native-adoption — cc-native-adoption
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -44,6 +45,10 @@
 - **`update.sh` semver_lt 함수 leo suffix 버그** — `bash update.sh --yes` 실행 시 line 85 `((x < y))` 에서 unbound variable. 원인: version `0.15.0-leo.1` 의 dot split 셋째 요소 `0-leo` 가 arithmetic 비숫자 처리 실패. 영향: ADR-003 SSOT (도그푸딩 sync) 가 leo fork 환경에서 호출 불가. 본 사건 (spec-x-notify-channel-formatter 의 Task 11) 에서 노출되어 task pass 처리됨. fix 후보: (a) `local x=${a[i]:-0}` 의 fallback 을 numeric 검증 후 적용 (예: `x=${x%%[!0-9]*}`), (b) `0-leo` 같은 suffix 가 들어오면 0 으로 간주, (c) semver pre-release suffix (PEP 440 / SemVer 2 spec) 정식 처리. **별도 spec-x-update-semver-suffix-fix 후보**
 - **Discord embed 기반 구조화 메시지 (`spec-x-notify-discord-embed`)** — `spec-x-notify-channel-formatter` 의 시각 검증 (2026-05-29) 에서 *모바일 좁은 화면* 의 code-block 표가 *긴 셀* (예: 31 chars `spec-x-notify-channel-formatter`) 일 때 자동 word wrap → 정렬 깨짐 실증. Critique 의 *대안 B (embed)* 가 결정적 — title/description/fields 분리로 모바일 가독성 우위. surface: `notify-discord.sh` 의 `content` 송신 → `embeds` JSON 으로 확장, embed 본문 4096자 / field name 256 / value 1024 / 총 6000자 제한 (Discord API), chunking 재설계. ADR-006 `discord-table-rendering-policy` (type: tradeoff) 본 spec 트리거 시 작성. *직전 spec 의 한계가 다음 spec 의 정확한 ROI* — 문제-실증 기반 spec 정신
 - **stale ADR 오탐 근본책 (sdd drift 가 archive/ 미탐색)** — `sdd status` 의 stale ADR 검사가 `[ -e "$token" ]` 로 repo 루트만 확인 → ADR 이 참조하는 spec 이 archive 되면 경로가 깨져 false-positive 재발. 본 사건 (2026-06-01 ADR-003/004/005 경로 갱신) 의 근본 원인. fix 후보: (a) drift 검사 시 `archive/` 도 탐색 (`[ -e "$token" ] || [ -e "archive/$token" ]`), (b) ADR 템플릿이 spec 참조 시 처음부터 영구 식별자(PR 링크 / commit hash) 권장. 별도 spec-x 후보
+- **CC 네이티브 기능 도입 — 2단계 정책 spec** (`native-feature-adoption-policy`) — `/goal`·`/effort ultracode`·`/fewer-permission-prompts`·`/code-review ultra`·`/ultraplan`·스킬 시스템의 게이트 보존 조건을 agent.md 가이드 1절 + ADR(type: convention)로 명문화. (조사: `spec-x-cc-native-adoption` report §7-2)
+- **CC 네이티브 세션 기능 검증 spec** — `/background`·`/branch` 의 알림 타이밍·hook/§8.5/멀티모델 상태 승계 실측 (검증 테스트 1·4, Research 성격). (조사: report §7-3, 부록 A)
+- **`/batch` Bitbucket 정합성** — target Bitbucket 에서 `/batch` 자동 PR off + worktree diff → `/hk-pr-bb` 경로. 검증 테스트 2·3·5 해소 전 보류. 도그푸딩(GitHub) 시점엔 정합하나 키트 배포 대상 중립성 우선. (조사: report §5 보류)
+- **CC 네이티브 1단계 9종 즉시 채택** — `/deep-research`·`/workflows`·`/copy`·`/rewind`·`/team-onboarding`·`/powerup`·`/radio`·`/btw` 는 거버넌스 직교라 spec 불필요. 운영 관행 또는 CLAUDE.md 한 줄 메모로 승격 검토. (조사: report §5 1단계)
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
 - ~~접근성 개선~~ → phase-17 **spec-17-02** (accessibility-install-and-entry)

@@ -49,8 +49,8 @@
 
 ## Task 4: 후속 spec 후보 Icebox 등록
 
-- [ ] `backlog/queue.md` Icebox 에 도입 가치 확인 항목을 후속 spec 후보로 한 줄씩 등록
-- [ ] Commit: `docs(spec-x-cc-native-adoption): register follow-up adoption candidates to icebox`
+- [x] `backlog/queue.md` Icebox 에 도입 가치 확인 항목을 후속 spec 후보로 한 줄씩 등록
+- [x] Commit: `docs(spec-x-cc-native-adoption): register follow-up adoption candidates to icebox`
 
 ---
 
