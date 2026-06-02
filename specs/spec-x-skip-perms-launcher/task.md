@@ -108,9 +108,9 @@
 - [x] **pr_description.md 작성** (템플릿 준수)
 - [x] 이월 항목 Icebox 등재 (telegram/discord dockerignore 갭)
 - [x] **Ship Commit**: `docs(spec-x-skip-perms-launcher): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-skip-perms-launcher`
-- [ ] **PR 생성**: `/hk-pr-gh` (base = fork main)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] **Push**: `git push -u origin spec-x-skip-perms-launcher` (origin = LeoYoon7 fork. upstream remote 는 삭제됨)
+- [x] **PR 생성**: `gh pr create --repo LeoYoon7/harness-kit --base main` → PR #23 (isCrossRepository=false, fork 내부 확인)
+- [x] **사용자 알림**: PR URL 보고 + 머지 대기
 
 ---
 
