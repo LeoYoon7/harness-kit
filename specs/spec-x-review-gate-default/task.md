@@ -60,10 +60,10 @@
 > 정책 결정 기록 (FR 4).
 
 ### 5-1. ADR 작성
-- [ ] `.harness-kit/agent/templates/adr.md` 템플릿 읽기
-- [ ] `docs/decisions/ADR-006-code-review-gate-default-run.md` 작성 (type: decision, 기각 대안 포함)
-- [ ] 정적 검증: `grep -nE "^type:\s*decision" docs/decisions/ADR-006-code-review-gate-default-run.md` → 매치
-- [ ] Commit: `docs(spec-x-review-gate-default): ADR-006 코드 리뷰 게이트 기본 실행 정책 기록`
+- [x] `.harness-kit/agent/templates/adr.md` 템플릿 읽기
+- [x] `docs/decisions/ADR-006-code-review-gate-default-run.md` 작성 (type: decision, 기각 대안 포함)
+- [x] 정적 검증: `grep -nE "^type:\s*decision" docs/decisions/ADR-006-code-review-gate-default-run.md` → 매치
+- [x] Commit: `docs(spec-x-review-gate-default): ADR-006 코드 리뷰 게이트 기본 실행 정책 기록`
 
 ---
 
