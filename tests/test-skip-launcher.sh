@@ -98,7 +98,7 @@ else
 fi
 
 check
-_cnt_b=$(grep -cE "$GI_PAT" "$FIX_B/.gitignore" 2>/dev/null || echo 0)
+_cnt_b=$(grep -cE "$GI_PAT" "$FIX_B/.gitignore" 2>/dev/null || true)
 if [ "$_cnt_b" -eq 1 ]; then
   pass "B-2: .gitignore 에 런처 라인 1회 등재"
 else
@@ -129,7 +129,7 @@ echo "▶ Scenario C: --with-skip-launcher 재설치 멱등"
 bash "$INSTALL" --yes --with-skip-launcher "$FIX_B" > /dev/null 2>&1 || true
 
 check
-_cnt_c=$(grep -cE "$GI_PAT" "$FIX_B/.gitignore" 2>/dev/null || echo 0)
+_cnt_c=$(grep -cE "$GI_PAT" "$FIX_B/.gitignore" 2>/dev/null || true)
 if [ "$_cnt_c" -eq 1 ]; then
   pass "C-1: 재설치 후 .gitignore 런처 라인 정확히 1회"
 else
@@ -161,7 +161,7 @@ else
 fi
 
 check
-_cnt_d=$(grep -cE "$GI_PAT" "$FIX_B/.gitignore" 2>/dev/null || echo 0)
+_cnt_d=$(grep -cE "$GI_PAT" "$FIX_B/.gitignore" 2>/dev/null || true)
 if [ "$_cnt_d" -ge 1 ]; then
   pass "D-3: update 후 .gitignore 런처 라인 보존"
 else
@@ -186,7 +186,7 @@ else
 fi
 
 check
-_cnt_e=$(grep -cE "$GI_PAT" "$FIX_E/.gitignore" 2>/dev/null || echo 0)
+_cnt_e=$(grep -cE "$GI_PAT" "$FIX_E/.gitignore" 2>/dev/null || true)
 if [ "$_cnt_e" -eq 0 ]; then
   pass "E-2: uninstall 후 .gitignore 런처 라인 제거"
 else
