@@ -1,94 +1,64 @@
 # Walkthrough: spec-x-native-feature-usage
 
 > 본 문서는 *작업 기록* 입니다. 결정 과정, 사용자 협의, 검증 결과를 미래의 자신과 리뷰어에게 남깁니다.
-> 작업을 진행하는 동안 *지속적으로* 갱신하세요. 마지막에 한 번에 작성하지 마세요.
 
 ## 📌 결정 기록
 
-> 작업 중 이슈가 발생했을 때, 어떤 선택지가 있었고 왜 이 방향을 결정했는지 기록합니다.
-
 | 이슈 | 선택지 | 결정 | 이유 |
 |---|---|---|---|
-| <이슈 1> | A 또는 B | A | <이유> |
+| 산출물 위치 | docs/(미배포) / ADR-007 내부 / 배포(sources/) | **docs/native-feature-usage.md (미배포)** | governance 단어수(7021w 초과) 회피 + ADR-007 "상세 kit repo, 요지만 배포" 패턴 일관. ADR 은 decision-record라 playbook 과 안 맞음. 배포는 중립성 우려 |
+| 구성 | 기능별 / tier별 / **상황별** | **상황(when) 우선** | "어떤 상황에 어떻게" 요청에 직접 부합 |
+| 조건 출처 | 본 문서에 재작성 / ADR-007 발췌 참조 | **ADR-007 발췌 + 정본 명시** | 중복 표현 drift 방지 — 모순 시 ADR-007 우선 명문화 |
+| discoverability | agent.md §6.7 편집 / ADR-007 Related만 | **ADR-007 Related만** | agent.md 편집 시 단어수 추가 악화. §6.7 → ADR-007 → 본 문서 체인으로 충분 |
+| 1단계 6종 공식화 | 별도 FF 메모 / 본 spec 흡수 | **본 spec 흡수** | 지난 턴 후보(D2)를 별도 처리 없이 playbook 이 담음 |
 
 ### ADR 승격 가이드
 
-> 위 결정 중 *cross-spec / long-lived* 인 것이 있다면 ADR 로 승격합니다 (constitution §6.3).
->
-> 승격 기준:
-> - 다른 spec 의 작업이 본 결정에 의존하는가?
-> - 6 개월 이상 유지될 가능성이 높은가?
-> - frontmatter `type:` 어휘 (`decision` / `invariant` / `convention` / `tradeoff`) 중 하나에 해당하는가?
->
-> 셋 중 둘 이상이면 ADR 후보. 비강제 — 미체크여도 ship 차단 없음.
-
-- [ ] ADR 승격 대상 있음 → 작성됨: `docs/decisions/ADR-<NNN>-<slug>.md`
-- [ ] 없음
+- [ ] ADR 승격 대상 있음
+- [x] 없음 — 신규 결정 없음(기존 ADR-007 합성). 본 문서는 reference playbook이며 ADR-007 이 정본.
 
 ## 💬 사용자 협의
 
-> 사용자와 논의한 내용과 합의 사항을 기록합니다.
-
-- **주제**: <논의 주제>
-  - **사용자 의견**: <사용자가 제시한 방향>
-  - **합의**: <최종 합의 내용>
+- **주제**: 다음 작업 후보 중 CC 네이티브 도입
+  - **사용자 의견**: "네이티브 기능을 어떤 상황에 어떻게 사용할 것인지 정리"
+  - **합의**: 흩어진 사용 지침(report/ADR-007/agent.md §6.7)을 상황-우선 playbook 으로 통합. SDD-x, 위치 A(docs/), 상황-우선 구성. "진행" 승인 → Plan Accept
 
 ## 🧪 검증 결과
 
 ### 1. 자동화 테스트
-
-#### 단위 테스트
-- **명령**: `<프로젝트의 단위 테스트 명령>`
-- **결과**: ✅ Passed (X tests in Y.Y s) / ❌ Failed (자세한 내용 아래)
-- **로그 요약**:
-```text
-(핵심 로그 붙여넣기)
-```
-
-#### 통합 테스트 (Integration Test Required = yes 인 경우)
-- **명령**: `<프로젝트의 통합 테스트 명령>`
-- **결과**: ✅ Passed / ❌ Failed
-- **로그 요약**:
-```text
-(핵심 로그 붙여넣기)
-```
+- **명령**: 해당 없음 — docs-only spec (production 코드 변경 없음, constitution §9.1 justified). agent.md/constitution 미편집이라 `test-governance-dedup` 회귀 무관.
 
 ### 2. 수동 검증
 
-> 에이전트가 실행한 단계와 결과를 시간순으로 기록.
-
-1. **Action**: `<실행한 명령 또는 행동>`
-   - **Result**: <관찰된 결과>
+1. **Action**: playbook 의 전 기능을 ADR-007 / report 등급·조건과 대조
+   - **Result**: 1단계 6종 + 2단계 7종 + 3단계 2종(15종) + 보류(/batch) + N-A(/powerup·/radio) 전부 수록. 조건이 ADR-007 표·Amendment 와 일치. 모순 없음
+2. **Action**: ADR-007 Related 포인터가 `docs/native-feature-usage.md` 를 정확히 가리키는지 확인
+   - **Result**: ✅ 추가됨 (역방향: 본 문서 머리말이 ADR-007 을 정본으로 인용)
 
 ## 🔍 코드 리뷰
 
-> ship 직전 코드 리뷰 게이트 기록 (agent.md §6.3-8, hk-ship §1.5).
-> **기본은 실행**. Skip 시 사유 한 줄 기록 필수 — docs/markdown-only 변경은 `docs-only` 로 충분.
-
 | 항목 | 값 |
 |---|---|
-| **수행 여부** | 실행 (Gemini / Opus) / Skip |
-| **결과 파일** | `specs/<spec-dir>/code-review-gemini.md` 또는 `code-review.md` (실행 시) |
-| **요약** | 전체 평가 / Critical N / Major N / Minor N (실행 시) |
-| **Skip 사유** | <한 줄 사유> (Skip 시에만 — 예: `docs-only`) |
+| **수행 여부** | Skip |
+| **결과 파일** | N/A |
+| **요약** | N/A |
+| **Skip 사유** | `docs-only` — 신규 reference 문서 1개 + ADR-007 포인터 1줄, 실행 코드 변경 없음 (agent.md §6.3.8) |
 
 ## 🔍 발견 사항
 
-<!-- 작업 중 발견한 흥미로운 점, 사이드 이슈, 다음 SPEC 후보 -->
+- **단일 출처 원칙의 실천**: 조건을 본 문서에 재작성하면 ADR-007 과 drift 한다. "정본=ADR-007, 모순 시 ADR-007 우선" 명시 + 발췌 참조로 해소.
+- **상황-우선 구성의 가치**: 같은 기능도 "언제 쓰나"로 진입하면 tier/조건이 자연히 따라온다 — decision-record(ADR) 가 못 주는 사용성.
+- **CC 네이티브 도입 arc 완결**: 조사(#25) → 정책(#26) → 검증(#27) → 사용 playbook(본 spec). 1단계 6종 공식화로 17종 전부 처리(보류 /batch 제외).
 
-- <발견 1>
-- <발견 2>
+## 🚧 이월 항목
 
-## 🚧 이월 항목 (Optional)
-
-> 본 SPEC 범위를 벗어나 다음 작업으로 미룬 항목.
-
-- <항목 1> → `backlog/queue.md` 에 추가됨
+- **`/batch` Bitbucket 정합성** — 여전히 보류(Icebox). 조건(검증 2·3·5 + Bitbucket 중립성) 해소 시 별도 spec. playbook §4 각주에 경계만 표시.
+- **거버넌스 다이어트** (7021w) — 본 spec 과 무관(agent.md 미편집)하나 별도 Icebox 항목으로 잔존.
 
 ## 📅 메타
 
 | 항목 | 값 |
 |---|---|
-| **작성자** | Agent + <user> |
-| **작성 기간** | YYYY-MM-DD ~ YYYY-MM-DD |
-| **최종 commit** | `<short hash>` |
+| **작성자** | Agent + Leo |
+| **작성 기간** | 2026-06-02 ~ 2026-06-02 |
+| **최종 commit** | ship commit (push 직전) |
