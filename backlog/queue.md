@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-skip-perms-launcher — skip-perms-launcher
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
