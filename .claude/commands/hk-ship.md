@@ -18,23 +18,24 @@ description: 현재 SPEC 작업 종료 — walkthrough/pr_description 검증 후
 
 부족한 부분이 있으면 사용자에게 정확히 무엇이 부족한지 보고하고 멈춥니다.
 
-## 1.5 코드 리뷰 게이트 (선택)
+## 1.5 코드 리뷰 게이트 (기본 실행 · Skip 시 사유 기록)
 
-Push/PR 직전 cross-model 또는 self-model 코드 리뷰를 옵션으로 제공합니다.
+Push/PR 직전 cross-model 또는 self-model 코드 리뷰를 수행합니다. **기본 동작은 "리뷰 실행"** 이며, Skip 은 가능하지만 *공짜가 아닙니다* — `walkthrough.md` 의 코드 리뷰 칸에 한 줄 사유 기록이 필요합니다 (agent.md §6.3-8). 이로써 "리뷰 안 함" 을 침묵이 아닌 *기록되는 의도적 결정* 으로 만듭니다.
+
 사용자에게 다음 선택지를 제시하고 응답을 대기합니다 (CLAUDE.fragment.md 선택지 제시 규약 — [권장] 포함):
 
 ```
 [상황 / 맥락]
-Ship 직전 코드 리뷰 옵션 — push/PR 후에는 리뷰 비용이 커집니다.
+Ship 직전 코드 리뷰 — 기본은 실행입니다. push/PR 후에는 리뷰 비용이 커집니다.
 
 [선택지]
 1. Gemini (cross-model, 다른 모델 관점) — bash .harness-kit/bin/gemini-review.sh
 2. Opus (기존 /hk-code-review)
-3. Skip — 리뷰 없이 §2 품질 게이트로 진행
+3. Skip — 리뷰 생략 (walkthrough 코드 리뷰 칸에 한 줄 사유 기록 필요)
 
 [권장]
 1 — cross-model 리뷰가 self-evaluation 편향을 줄입니다 (LLM-as-judge 연구 일관).
-    gemini CLI 미설치 또는 빠른 ship 필요 시 3.
+    gemini CLI 미설치 시 2. 정말 불필요할 때만 3 (사유 기록).
 
 [의사결정 요청]
 어떤 리뷰로 진행할까요?
@@ -43,7 +44,7 @@ Ship 직전 코드 리뷰 옵션 — push/PR 후에는 리뷰 비용이 커집�
 사용자 응답:
 - `1` / `gemini` → `bash .harness-kit/bin/gemini-review.sh` 실행. 결과는 `specs/<spec-dir>/code-review-gemini.md`.
 - `2` / `opus` → `/hk-code-review` 절차 실행. 결과는 `specs/<spec-dir>/code-review.md`.
-- `3` / `skip` → 바로 §2 로 진행.
+- `3` / `skip` → 사용자에게 한 줄 사유를 받아(예: `docs-only`, "직전 spec 과 동일 패턴") `walkthrough.md` 의 🔍 코드 리뷰 칸에 기록한 뒤 §2 로 진행. docs/markdown-only 변경은 사유 `docs-only` 한 단어로 충분.
 
 **Critical 이슈 발견 시**: 리뷰 결과의 `Critical: N` 이 0 보다 크면 사용자에게 보고 후 다음 선택지를 추가로 제시합니다.
 

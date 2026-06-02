@@ -2244,6 +2244,15 @@ cmd_doctor() {
     else
       _doc_warn "Dockerfile 존재 but .dockerignore 에 '.harness-kit' 관련 항목 미등재 — 빌드 컨텍스트 비대화/토큰 유출 위험. README '컨테이너 빌드 가이드' 참조."
     fi
+    # (c) (opt-in) 권한 우회 런처 설치 시 .dockerignore 등재 여부 (Dockerfile 존재 시에만).
+    # 런처는 .gitignore 대상이라 clean 체크아웃엔 부재하나, 로컬 빌드 컨텍스트 유입 방지 안내.
+    if [ -f "$SDD_ROOT/claude-dangerously-skip-permissions.sh" ]; then
+      if [ -f "$SDD_ROOT/.dockerignore" ] && grep -qE '(^|/)claude-dangerously-skip-permissions\.sh$' "$SDD_ROOT/.dockerignore" 2>/dev/null; then
+        _doc_pass ".dockerignore — 권한 우회 런처 등재 (빌드 컨텍스트 안전)"
+      else
+        _doc_warn "권한 우회 런처 설치됨 but .dockerignore 미등재 — 로컬 빌드 컨텍스트 유입 위험. .dockerignore 에 'claude-dangerously-skip-permissions.sh' 추가 권장."
+      fi
+    fi
   fi
 
   printf "\n훅 파일\n"

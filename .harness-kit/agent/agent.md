@@ -215,7 +215,7 @@ When passing a task with `[-]`, the Agent MUST:
     5. **Push**: `git push -u origin spec-{phaseN}-{seq}-{slug}`.
     6. **Ship**: Push and create PR automatically. Report the PR URL to the User and wait for merge.
     7. **Review pivots by scope**: `walkthrough.md` (default), `plan.md` (substantial change), ADR (architectural). Push before merge (→ §5.6, §6.3).
-    8. **Code Review Gate (optional)**: Before push, `/hk-ship` pre-flight (§1.5) offers a review choice — `/hk-gemini-review` (cross-model, recommended), `/hk-code-review` (Opus same-model), or Skip. Cross-model reduces self-evaluation bias (LLM-as-judge research). Results saved to `code-review-gemini.md` / `code-review.md` respectively.
+    8. **Code Review Gate (default-run, auditable skip)**: Before push, `/hk-ship` pre-flight (§1.5) presents a review choice — `/hk-gemini-review` (cross-model, recommended), `/hk-code-review` (Opus same-model), or Skip. The default is to **run** a review (Gemini recommended); Skip is allowed but is **not free** — the Agent MUST record a one-line reason in the `walkthrough.md` 코드 리뷰 (Code Review) field. This turns "not reviewing" into a deliberate, auditable act instead of a silent default — closing the gap where `optional` collapsed to always-skip. Docs/markdown-only changes may use `docs-only` as the reason. Cross-model reduces self-evaluation bias (LLM-as-judge research). Results saved to `code-review-gemini.md` / `code-review.md` respectively.
 
 ### 6.3.1 Post-Merge Protocol
 
