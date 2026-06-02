@@ -49,9 +49,9 @@
 > 감사 기록 surface 신설 (FR 3).
 
 ### 4-1. 템플릿 칸 추가
-- [ ] `sources/templates/walkthrough.md` 에 "🔍 코드 리뷰" 칸 신설 (수행/Skip 두 경우 커버)
-- [ ] 정적 검증: `grep -nE "코드 리뷰" sources/templates/walkthrough.md` → 매치
-- [ ] Commit: `docs(spec-x-review-gate-default): walkthrough 템플릿에 코드 리뷰 기록 칸 추가`
+- [x] `sources/templates/walkthrough.md` 에 "🔍 코드 리뷰" 칸 신설 (수행/Skip 두 경우 커버)
+- [x] 정적 검증: `grep -nE "코드 리뷰" sources/templates/walkthrough.md` → 매치
+- [x] Commit: `docs(spec-x-review-gate-default): walkthrough 템플릿에 코드 리뷰 기록 칸 추가`
 
 ---
 

@@ -60,6 +60,18 @@
 1. **Action**: `<실행한 명령 또는 행동>`
    - **Result**: <관찰된 결과>
 
+## 🔍 코드 리뷰
+
+> ship 직전 코드 리뷰 게이트 기록 (agent.md §6.3-8, hk-ship §1.5).
+> **기본은 실행**. Skip 시 사유 한 줄 기록 필수 — docs/markdown-only 변경은 `docs-only` 로 충분.
+
+| 항목 | 값 |
+|---|---|
+| **수행 여부** | 실행 (Gemini / Opus) / Skip |
+| **결과 파일** | `specs/<spec-dir>/code-review-gemini.md` 또는 `code-review.md` (실행 시) |
+| **요약** | 전체 평가 / Critical N / Major N / Minor N (실행 시) |
+| **Skip 사유** | <한 줄 사유> (Skip 시에만 — 예: `docs-only`) |
+
 ## 🔍 발견 사항
 
 <!-- 작업 중 발견한 흥미로운 점, 사이드 이슈, 다음 SPEC 후보 -->
