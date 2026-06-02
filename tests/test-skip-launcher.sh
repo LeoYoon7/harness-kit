@@ -171,6 +171,31 @@ fi
 echo ""
 
 # ──────────────────────────────────────────────
+# Scenario E: uninstall 대칭 제거 (ADR-005)
+# ──────────────────────────────────────────────
+echo "▶ Scenario E: uninstall 대칭 제거"
+FIX_E="$(mk)"; _CLEAN="$_CLEAN $FIX_E"
+bash "$INSTALL" --yes --with-skip-launcher "$FIX_E" > /dev/null 2>&1 || true
+bash "$UNINSTALL" --yes "$FIX_E" > /dev/null 2>&1 || true
+
+check
+if [ ! -f "$FIX_E/$LAUNCHER" ]; then
+  pass "E-1: uninstall 후 런처 파일 제거"
+else
+  fail "E-1: uninstall 후 런처 파일 잔존"
+fi
+
+check
+_cnt_e=$(grep -cE "$GI_PAT" "$FIX_E/.gitignore" 2>/dev/null || echo 0)
+if [ "$_cnt_e" -eq 0 ]; then
+  pass "E-2: uninstall 후 .gitignore 런처 라인 제거"
+else
+  fail "E-2: uninstall 후 .gitignore 런처 라인 $_cnt_e 회 잔존 (orphan)"
+fi
+
+echo ""
+
+# ──────────────────────────────────────────────
 # 결과
 # ──────────────────────────────────────────────
 echo "═══════════════════════════════════════════"
