@@ -17,12 +17,12 @@
 ## Task 1: 브랜치 생성 + ADR-007 작성
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-x-native-feature-adoption-policy`
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-x-native-feature-adoption-policy`
+- [x] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. ADR-007 작성
-- [ ] `docs/decisions/ADR-007-native-feature-adoption-policy.md` — 7종 게이트 보존 조건 + 근거(축 충돌) + 대안 (type: convention, status: accepted)
-- [ ] Commit: `docs(spec-x-native-feature-adoption-policy): add ADR-007 native feature adoption policy`
+- [x] `docs/decisions/ADR-007-native-feature-adoption-policy.md` — 7종 게이트 보존 조건 + 근거(축 충돌) + 대안 (type: convention, status: accepted)
+- [x] Commit: `docs(spec-x-native-feature-adoption-policy): add ADR-007 native feature adoption policy`
 
 ---
 
