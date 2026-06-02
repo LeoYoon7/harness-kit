@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-review-gate-default — review-gate-default
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
