@@ -44,10 +44,10 @@
 ## Task 4: Ship (필수)
 
 - [-] 코드 품질 점검 (lint / type check) — docs-only 라 해당 없음
-- [ ] 거버넌스 단어 수 테스트 결과 walkthrough 기록 (PASS/기존 초과 유지)
-- [ ] **walkthrough.md 작성** (결정·검증 기록)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-x-native-feature-adoption-policy): ship walkthrough and pr description`
+- [x] 거버넌스 단어 수 테스트 결과 walkthrough 기록 (Check 2 OK / Check 3 기존 초과 유지)
+- [x] **walkthrough.md 작성** (결정·검증 기록)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `docs(spec-x-native-feature-adoption-policy): ship walkthrough and pr description`
 - [ ] **Push**: `git push -u origin spec-x-native-feature-adoption-policy`
 - [ ] **코드 리뷰 게이트** — `docs-only` 사유로 skip 가능 (agent.md §6.3.8). 단 거버넌스 변경이라 사용자 검토 권장
 - [ ] **PR 생성**: `/hk-pr-gh` (base = fork main)
@@ -61,5 +61,5 @@
 |---|---|
 | **총 Task 수** | 4 |
 | **예상 commit 수** | 4 (ADR + agent.md + 동기화 + ship) |
-| **현재 단계** | Planning |
+| **현재 단계** | Ship (push/PR 사용자 확인 대기 — 거버넌스 변경) |
 | **마지막 업데이트** | 2026-06-02 |
