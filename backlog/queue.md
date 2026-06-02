@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-cc-native-adoption — cc-native-adoption
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -140,6 +139,7 @@
 - [x] spec-x-update-semver-suffix-fix (완료)
 - [x] spec-x-skip-perms-launcher (완료)
 - [x] spec-x-review-gate-default (완료)
+- [x] spec-x-cc-native-adoption (완료)
 <!-- sdd:done:end -->
 
 ---
