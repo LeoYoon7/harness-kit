@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-native-session-feature-verify — native-session-feature-verify
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -45,7 +46,7 @@
 - **Discord embed 기반 구조화 메시지 (`spec-x-notify-discord-embed`)** — `spec-x-notify-channel-formatter` 의 시각 검증 (2026-05-29) 에서 *모바일 좁은 화면* 의 code-block 표가 *긴 셀* (예: 31 chars `spec-x-notify-channel-formatter`) 일 때 자동 word wrap → 정렬 깨짐 실증. Critique 의 *대안 B (embed)* 가 결정적 — title/description/fields 분리로 모바일 가독성 우위. surface: `notify-discord.sh` 의 `content` 송신 → `embeds` JSON 으로 확장, embed 본문 4096자 / field name 256 / value 1024 / 총 6000자 제한 (Discord API), chunking 재설계. ADR-006 `discord-table-rendering-policy` (type: tradeoff) 본 spec 트리거 시 작성. *직전 spec 의 한계가 다음 spec 의 정확한 ROI* — 문제-실증 기반 spec 정신
 - **stale ADR 오탐 근본책 (sdd drift 가 archive/ 미탐색)** — `sdd status` 의 stale ADR 검사가 `[ -e "$token" ]` 로 repo 루트만 확인 → ADR 이 참조하는 spec 이 archive 되면 경로가 깨져 false-positive 재발. 본 사건 (2026-06-01 ADR-003/004/005 경로 갱신) 의 근본 원인. fix 후보: (a) drift 검사 시 `archive/` 도 탐색 (`[ -e "$token" ] || [ -e "archive/$token" ]`), (b) ADR 템플릿이 spec 참조 시 처음부터 영구 식별자(PR 링크 / commit hash) 권장. 별도 spec-x 후보
 - **CC 네이티브 기능 도입 — 2단계 정책 spec** (`native-feature-adoption-policy`) — `/goal`·`/effort ultracode`·`/fewer-permission-prompts`·`/code-review ultra`·`/ultraplan`·스킬 시스템의 게이트 보존 조건을 agent.md 가이드 1절 + ADR(type: convention)로 명문화. (조사: `spec-x-cc-native-adoption` report §7-2)
-- **CC 네이티브 세션 기능 검증 spec** — `/background`·`/branch` 의 알림 타이밍·hook/§8.5/멀티모델 상태 승계 실측 (검증 테스트 1·4, Research 성격). (조사: report §7-3, 부록 A)
+- ~~**CC 네이티브 세션 기능 검증 spec**~~ → ✓ `spec-x-native-session-feature-verify` 로 검증 (2026-06-02): `/background`·`/branch` 문서+정적 분석 → 조건부 Go(2단계) 승격, ADR-007 Amendment 반영. 잔여 라이브 test 1(계층 1 자동 알림)은 사용자 체크리스트로 분리(Done 조건 아님)
 - **`/batch` Bitbucket 정합성** — target Bitbucket 에서 `/batch` 자동 PR off + worktree diff → `/hk-pr-bb` 경로. 검증 테스트 2·3·5 해소 전 보류. 도그푸딩(GitHub) 시점엔 정합하나 키트 배포 대상 중립성 우선. (조사: report §5 보류)
 - **CC 네이티브 1단계 6종 즉시 채택** — `/deep-research`·`/workflows`·`/copy`·`/rewind`·`/team-onboarding`·`/btw` 는 거버넌스 직교라 spec 불필요 (`/powerup`·`/radio` 는 거버넌스 무관 — 개인 사용, 도입 논의 밖). 운영 관행 또는 CLAUDE.md 한 줄 메모로 승격 검토. (조사: report §5 1단계)
 
