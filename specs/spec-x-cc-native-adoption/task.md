@@ -60,9 +60,9 @@
 
 - [-] 코드 품질 점검 (lint / type check) — docs-only 라 해당 없음
 - [-] 전체 테스트 실행 — docs-only 라 해당 없음 (constitution §9.1 예외)
-- [ ] **walkthrough.md 작성** (조사 결정·발견 기록)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-x-cc-native-adoption): ship walkthrough and pr description`
+- [x] **walkthrough.md 작성** (조사 결정·발견 기록)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `docs(spec-x-cc-native-adoption): ship walkthrough and pr description`
 - [ ] **Push**: `git push -u origin spec-x-cc-native-adoption`
 - [ ] **코드 리뷰 게이트** — docs-only 변경이므로 `docs-only` 사유로 skip 가능 (agent.md §6.3.8)
 - [ ] **PR 생성**: `/hk-pr-gh` 로 생성 (base = fork main)
@@ -76,5 +76,5 @@
 |---|---|
 | **총 Task 수** | 5 |
 | **예상 commit 수** | 6 (report 골격 + 분석 + 로드맵 + Icebox + ship) |
-| **현재 단계** | Planning |
+| **현재 단계** | Ship (push/PR 사용자 확인 대기) |
 | **마지막 업데이트** | 2026-06-02 |
