@@ -44,6 +44,9 @@ tests/fixtures/_target/
 # 정의 파일 (code-review.md / hk-code-review.md / hk-gemini-review.md) 에 영향 없음.
 specs/**/code-review*.md
 
+# (opt-in) 권한 우회 런처 — 커밋 차단 (install --with-skip-launcher 대칭)
+/claude-dangerously-skip-permissions.sh
+
 # codegraph 도구 로컬 DB
 .codegraph/
 
