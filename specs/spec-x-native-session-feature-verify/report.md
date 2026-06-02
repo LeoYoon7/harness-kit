@@ -64,7 +64,37 @@
 
 ## 3. `/branch` (`/fork`) 검증
 
-> (Task 3 에서 작성)
+### 3.1 동작 (확정 — sessions.md / how-claude-code-works.md)
+
+- 현재 대화를 **새 session ID 로 복사(fork)** 한다. 원본 세션은 불변·재개 가능. fork 세션은 독립적이라 한쪽 변경이 다른 쪽에 영향을 주지 않는다. CLI: `claude --continue --fork-session`. 이름 지정 가능: `/branch try-streaming-approach`.
+
+### 3.2 승계 (확정 — sessions.md / agent-view.md)
+
+| 구분 | 항목 |
+|---|---|
+| **승계함** | fork 시점까지의 대화 히스토리(전체 컨텍스트), 프로젝트 디렉토리 + git 상태(같은 working dir/worktree), **부모 모델 선택**(settings override 없으면), CLAUDE.md instructions, **project/user settings(= hook 설정 포함)**, fork 시점 MCP 서버 |
+| **승계 안 함** | "이 세션 동안 허용" 권한 승인 → fork 세션에서 재승인 필요 |
+
+### 3.3 축 A/F/C 판정
+
+- **축 F (git hook)** — fork 는 부모와 *같은 working dir/worktree* 에서 동작 → `check-branch`·`check-commit-msg`·`check-plan-accept`·`check-scope` 등 `PreToolUse` hook + git branch protection 이 그대로 적용된다. ✅ **확정**. main 직접 작업 금지(§10.1)·커밋 포맷 강제가 fork 에서도 보존.
+- **축 C (멀티모델)** — 부모의 모델 선택을 승계. fork 내부 서브에이전트 dispatch(§6.6 model override)도 동일하게 작동. ✅ **확정**.
+- **축 A (텍스트 게이트)** — `CLAUDE_CODE_FORK_SUBAGENT` 미설정 시 fork 는 *peer 대화형 세션* 이므로 §8.5 텍스트 게이트·Plan Accept 가 정상 발화한다. settings(hook 배선 포함)가 명시적으로 승계되므로 계층 1 알림 hook 발화도 부모와 동일하다고 **강하게 추론**된다(문서가 hook 발화를 콕 집어 명시하진 않음 → ⚠️→✅ 근접).
+
+### 3.4 `CLAUDE_CODE_FORK_SUBAGENT` (확정 — env-vars)
+
+- `=1` 설정 시 `/fork` 가 `/branch` 의 alias 가 아니라 **forked subagent** 를 spawn 한다(부모 컨텍스트 전체 승계, **백그라운드 실행**). 미설정 시 `/fork` = `/branch`(peer 세션 fork).
+- **함의**: `=1` 경로는 백그라운드 subagent 이므로 §2(`/background`)의 계층 1 자동 알림 불확실성을 그대로 **상속**한다. 게이트가 예상되는 작업에 `=1` fork 를 쓰면 §2.2 와 동일한 주의(계층 2 명시 알림 의존)가 필요하다. peer fork(미설정)는 대화형이라 게이트가 보존된다.
+
+### 3.5 확정 vs 라이브 필요 (정리)
+
+| 항목 | 판정 |
+|---|---|
+| fork 동작·컨텍스트/모델/CLAUDE.md/settings(hook 배선)/MCP 승계 | ✅ 확정 (문서) |
+| 같은 working dir → git hook·branch protection 적용 (축 F) | ✅ 확정 |
+| 부모 모델 승계 (축 C) | ✅ 확정 |
+| peer fork 세션의 계층 1 알림 hook 실제 발화 (축 A) | ⚠️ settings 승계로 강한 추론 — 라이브 권장(필수 아님, test 4) |
+| `FORK_SUBAGENT=1` 경로의 알림 발화 | ⚠️ §2 test 1 과 동일 (백그라운드) |
 
 ## 4. Go/No-Go 종합
 
