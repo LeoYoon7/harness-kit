@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-native-session-feature-verify — native-session-feature-verify
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
