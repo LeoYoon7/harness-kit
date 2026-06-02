@@ -66,6 +66,7 @@ Accepted (2026-06-02, `spec-x-native-feature-adoption-policy` 머지 시점). �
 ## 🔗 Related
 
 - 조사: `spec-x-cc-native-adoption` (PR #25) — 8충돌축 매트릭스 + Go/No-Go 종합
+- **사용 playbook**: `docs/native-feature-usage.md` — 상황→기능→조건 합성 (정본은 본 ADR; 1단계 6종 채택 공식화)
 - 검증: `spec-x-native-session-feature-verify` — `/background`·`/branch` 실측(문서+정적) → 본 ADR Amendment
 - ADR-006 (code-review-gate-default-run) — cross-model 리뷰 게이트
 - 검증 후속(Icebox): `/batch` Bitbucket 정합성 (세션 기능 2종은 본 Amendment 로 해소)
