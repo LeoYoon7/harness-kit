@@ -133,11 +133,65 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 
 ## 5. 단계별 도입 로드맵
 
-<!-- Task 3: 1단계(즉시) / 2단계(게이트 통합) / 3단계(검증 후) / 보류 -->
+문서 2의 4단계 로드맵을 실제 harness-kit 상태로 교정한 결과다. 교정점은 각 단계에 표기한다.
+
+### 1단계 — 즉시 도입 (별도 spec 불필요, 운영 관행으로 채택)
+
+거버넌스와 직교하고 코드/state 변경이 없는 9종. 도입에 spec 이 필요 없으며, *세션 운영 관행*으로 바로 쓸 수 있다.
+
+- `/deep-research`, `/workflows`, `/copy`, `/rewind`, `/team-onboarding`, `/powerup`, `/radio` (문서 2 1단계와 동일)
+- **(교정 추가) `/btw`** — 정보성 질문 한정. 새 작업 아이디어는 Idea Capture Gate 로.
+- **(조건 명시) `/rewind`** — 코드 롤백은 `git status` 확인 후, conversation 롤백 위주.
+
+### 2단계 — 게이트 통합 후 (정책 spec 1개로 묶음 권장)
+
+자율성·권한·모델을 건드려 *조건부 도입*이 필요한 5종. 아래를 **하나의 도입 spec**(`native-feature-adoption-policy` ADR + agent.md 가이드 1절)으로 묶으면 ceremony 가 절감된다.
+
+- `/goal` — 조건 = 단일 spec/phase 의 acceptance criteria + "각 게이트에서 멈추고 보고" 명시. phase 경계 불가침.
+- `/effort ultracode` — 구현 phase 내부 한정. 전체 프로젝트 ⛔.
+- `/fewer-permission-prompts` — 생성 allowlist 커밋 전 검토. `.env*`/`~/.ssh` 가드 우회 금지.
+- `/code-review ultra` — 중요 PR 의 ship 직전 보강(무료 3회 후 유료). **(교정)** 역할은 이미 `/hk-gemini-review` 로 정의됨 — *대체 아닌 보강*.
+- **(교정 추가) 스킬 시스템** — `/hk-*` 와 중복 안 되는 개인 반복 작업 한정. 컨텍스트 비용 3순위 인지.
+
+### 3단계 — 검증 테스트 통과 후
+
+세션 라이프사이클/공유 config 실측이 선행되어야 하는 3종. 실측은 별도 검증 spec.
+
+- `/background` — 검증: 백그라운드 중 input-wait 알림 도달 여부(테스트 1).
+- `/branch` — 검증: 포크 세션의 hook·§8.5·멀티모델 상태 승계(테스트 4).
+- `/ultraplan` — **(교정)** 복귀 플랜을 `/hk-plan-accept` 로 재게이팅하는 조건이면 2단계(⚠️)로 승격 가능. 그 전엔 3단계.
+
+### 보류 / 도입 불요
+
+- **`/batch` — 보류** — Bitbucket PR 자동생성 정합성(target) + worktree 병렬·알림 한계(테스트 2·3·5) 해결 전까지. 도그푸딩(GitHub)에선 자동 PR 이 정합하나, *키트가 배포되는 target 이 Bitbucket* 이므로 키트 차원의 권장은 보류.
+- **`/code-review` (기본형) — 도입 불요** — `/hk-code-review` 와 중복.
+
+### 문서 2 로드맵과의 차이 (교정 요약)
+
+| 항목 | 문서 2 | 본 조사 (교정) | 근거 |
+|---|---|---|---|
+| `/code-review ultra` 역할 | "Codex 와 중복, 정의 필요" | 보강으로 위치 확정 | 교정 3.3 (`/hk-gemini-review` 기존 통합) |
+| `/code-review` 기본형 | 미분리 | 도입 불요(중복) 명시 | 축 G |
+| `/ultraplan` 단계 | 3단계 고정 | 재게이팅 조건 시 2단계 | 축 A 회복 경로 |
+| 스킬 시스템 | 미분류 | 2단계 조건부 | 축 G + 컨텍스트 비용 |
+| `/btw` | 미분류 | 1단계 (Idea Gate 주의) | §5.5 상호작용 |
+| `/batch` PR 충돌 | "Bitbucket 불일치" 단정 | *시점 분기* (도그푸딩 GitHub 정합 / target Bitbucket 불일치) | 교정 3.2 |
 
 ## 6. 결론 — Go/No-Go 종합
 
-<!-- Task 3 -->
+**핵심 판단**: 17개 중 **9종은 즉시 Go**(거버넌스 직교), **6종은 조건부 Go**(게이트 보존 조건 명문화 필요), **`/background`·`/branch` 2종은 검증 후 결정**, **`/batch` 1종은 보류**, **`/code-review` 기본형은 도입 불요**.
+
+| 판단 | 기능 | 후속 액션 |
+|---|---|---|
+| **즉시 Go** (9) | `/deep-research` `/workflows` `/copy` `/rewind` `/team-onboarding` `/powerup` `/radio` `/btw` | 운영 관행 채택. spec 불필요 |
+| **조건부 Go** (6) | `/goal` `/effort ultracode` `/fewer-permission-prompts` `/code-review ultra` `/ultraplan` 스킬시스템 | 정책 spec 1개로 묶어 게이트 조건 명문화 |
+| **검증 후** (2) | `/background` `/branch` | 검증 테스트 spec (실측) 선행 |
+| **보류** (1) | `/batch` | Bitbucket 정합 + 병렬/알림 해결 후 재평가 |
+| **도입 불요** (1) | `/code-review` 기본형 | `/hk-code-review` 로 충분 |
+
+**두 시점 관점** (CLAUDE.md): `gh` 전제 기능(`/batch` 자동 PR, `/code-review --comment`)은 *도그푸딩 시점*(본 repo, GitHub)에선 정합하나 *적용 결과 시점*(target nextmarket-api, Bitbucket)에선 불일치한다. 키트가 다른 프로젝트에 배포되는 메타 도구임을 고려하면, 이들 기능의 키트 차원 권장은 target 플랫폼 중립성을 우선해 보수적으로 둔다.
+
+**권장 실행 순서**: 1단계(즉시 채택, 무비용) → 2단계 정책 spec 1개(게이트 조건 명문화) → 3단계 검증 spec(실측) → `/batch` 는 Bitbucket 정합성 확보 후. 각 단계는 §7 의 후속 spec 후보로 Icebox 에 등록한다.
 
 ## 7. 후속 spec 후보
 

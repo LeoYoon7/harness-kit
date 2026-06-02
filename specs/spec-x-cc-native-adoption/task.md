@@ -41,9 +41,9 @@
 
 ## Task 3: 단계별 도입 로드맵 + Go/No-Go 종합
 
-- [ ] report.md 에 1단계(즉시) / 2단계(게이트 통합) / 3단계(검증 후) / 보류 로드맵 작성
-- [ ] 문서 2 로드맵과의 차이(교정점)를 근거와 함께 표기
-- [ ] Commit: `docs(spec-x-cc-native-adoption): staged adoption roadmap and go/no-go summary`
+- [x] report.md 에 1단계(즉시) / 2단계(게이트 통합) / 3단계(검증 후) / 보류 로드맵 작성
+- [x] 문서 2 로드맵과의 차이(교정점)를 근거와 함께 표기
+- [x] Commit: `docs(spec-x-cc-native-adoption): staged adoption roadmap and go/no-go summary`
 
 ---
 
