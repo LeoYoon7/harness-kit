@@ -11,19 +11,19 @@
 - [x] plan.md 작성
 - [x] task.md 작성 (이 파일)
 - [-] 백로그 phase.md 표 갱신 — spec-x 는 phase 비소속이라 해당 없음
-- [ ] 사용자 Plan Accept
+- [x] 사용자 Plan Accept
 
 ---
 
 ## Task 1: 브랜치 생성 + report.md 골격
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-x-cc-native-adoption`
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-x-cc-native-adoption`
+- [x] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. report.md 골격 작성
-- [ ] `specs/spec-x-cc-native-adoption/report.md` 생성 — 조사 배경 + 분석 프레임(7축) + 문서 가정 교정 4건
-- [ ] Commit: `docs(spec-x-cc-native-adoption): add research report skeleton and framing`
+- [x] `specs/spec-x-cc-native-adoption/report.md` 생성 — 조사 배경 + 분석 프레임(7축) + 문서 가정 교정 4건
+- [x] Commit: `docs(spec-x-cc-native-adoption): add research report skeleton and framing`
 
 ---
 
@@ -31,11 +31,11 @@
 
 > report.md 본문 — 고유 기능 17개를 7개 충돌 축으로 재검증, 각 기능에 재검증 등급(✅/⚠️/🔍/⛔) + Go/No-Go 부여.
 
-- [ ] ✅군 분석: `/deep-research`, `/workflows`, `/copy`, `/rewind`, `/team-onboarding`, `/powerup`, `/radio`
-- [ ] ⚠️군 분석: `/goal`, `/effort ultracode`, `/fewer-permission-prompts`, `/code-review`(ultra 포함)
-- [ ] 🔍군 분석: `/background`, `/batch`, `/branch`, `/ultraplan`
-- [ ] 등급표 미수록 2종 분석: `/btw`, 스킬 시스템(`/skills`)
-- [ ] Commit: `docs(spec-x-cc-native-adoption): per-feature fitness analysis (17 features x 7 axes)`
+- [x] ✅군 분석: `/deep-research`, `/workflows`, `/copy`, `/rewind`, `/team-onboarding`, `/powerup`, `/radio`
+- [x] ⚠️군 분석: `/goal`, `/effort ultracode`, `/fewer-permission-prompts`, `/code-review`(ultra 포함)
+- [x] 🔍군 분석: `/background`, `/batch`, `/branch`, `/ultraplan`
+- [x] 등급표 미수록 2종 분석: `/btw`, 스킬 시스템(`/skills`)
+- [x] Commit: `docs(spec-x-cc-native-adoption): per-feature fitness analysis (17 features x 7 axes)`
 
 ---
 
