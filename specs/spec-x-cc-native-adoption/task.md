@@ -76,8 +76,8 @@
 
 - [x] report.md 정정 — 8번째 축 H(사용 제한) + `/code-review` 기본형 보조 도입 + `/powerup`·`/radio` N/A 재분류 + §4.5 사용 제한 매트릭스 + Go/No-Go 갱신
 - [x] Commit: `docs(spec-x-cc-native-adoption): correct code-review judgment, add usage-limit axis, reclassify radio/powerup`
-- [ ] plan/walkthrough/queue/pr 동기화
-- [ ] Commit: `docs(spec-x-cc-native-adoption): sync artifacts after feedback correction`
+- [x] plan/walkthrough/queue/pr 동기화
+- [x] Commit: `docs(spec-x-cc-native-adoption): sync artifacts after feedback correction`
 
 ---
 

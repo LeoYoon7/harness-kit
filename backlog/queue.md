@@ -48,7 +48,7 @@
 - **CC 네이티브 기능 도입 — 2단계 정책 spec** (`native-feature-adoption-policy`) — `/goal`·`/effort ultracode`·`/fewer-permission-prompts`·`/code-review ultra`·`/ultraplan`·스킬 시스템의 게이트 보존 조건을 agent.md 가이드 1절 + ADR(type: convention)로 명문화. (조사: `spec-x-cc-native-adoption` report §7-2)
 - **CC 네이티브 세션 기능 검증 spec** — `/background`·`/branch` 의 알림 타이밍·hook/§8.5/멀티모델 상태 승계 실측 (검증 테스트 1·4, Research 성격). (조사: report §7-3, 부록 A)
 - **`/batch` Bitbucket 정합성** — target Bitbucket 에서 `/batch` 자동 PR off + worktree diff → `/hk-pr-bb` 경로. 검증 테스트 2·3·5 해소 전 보류. 도그푸딩(GitHub) 시점엔 정합하나 키트 배포 대상 중립성 우선. (조사: report §5 보류)
-- **CC 네이티브 1단계 9종 즉시 채택** — `/deep-research`·`/workflows`·`/copy`·`/rewind`·`/team-onboarding`·`/powerup`·`/radio`·`/btw` 는 거버넌스 직교라 spec 불필요. 운영 관행 또는 CLAUDE.md 한 줄 메모로 승격 검토. (조사: report §5 1단계)
+- **CC 네이티브 1단계 6종 즉시 채택** — `/deep-research`·`/workflows`·`/copy`·`/rewind`·`/team-onboarding`·`/btw` 는 거버넌스 직교라 spec 불필요 (`/powerup`·`/radio` 는 거버넌스 무관 — 개인 사용, 도입 논의 밖). 운영 관행 또는 CLAUDE.md 한 줄 메모로 승격 검토. (조사: report §5 1단계)
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
 - ~~접근성 개선~~ → phase-17 **spec-17-02** (accessibility-install-and-entry)

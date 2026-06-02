@@ -8,8 +8,9 @@ Claude Code 네이티브 슬래시 명령(23개, 고유 기능 17개)을 harness
 
 ### 주요 변경 사항
 
-- [x] `report.md` 신규 — 17개 고유 기능 × 7개 충돌 축 매트릭스, 4등급 재검증, 단계별 로드맵, Go/No-Go 종합
+- [x] `report.md` 신규 — 17개 고유 기능 × **8개 충돌 축** 매트릭스, 4등급 재검증(+N/A), 단계별 로드맵, Go/No-Go 종합
 - [x] 문서 가정 교정 4건 — 알림 구조 / PR 플랫폼 / cross-model 리뷰 / AUQ 정책
+- [x] 사용자 피드백 정정 — `/code-review` 보조 도입(중복 아님) + 사용 제한 축 H(§4.5) + `/powerup`·`/radio` N/A 재분류
 - [x] `queue.md` Icebox 후속 spec 후보 4종 등록
 - [x] 거버넌스/코드 무수정 — 순수 분석
 
@@ -20,7 +21,7 @@ Claude Code 네이티브 슬래시 명령(23개, 고유 기능 17개)을 harness
 ## 🎯 Key Review Points
 
 1. **문서 가정 교정 4건 (report §3)**: 외부 문서를 그대로 수용하지 않고 실제 소스와 대조한 부분. 특히 cross-model 리뷰는 `/hk-gemini-review` 로 이미 통합됨.
-2. **7충돌축 프레임 (report §2)**: 게이트/알림/멀티모델/PR플랫폼/세션라이프사이클/git hook/기존자산중복. 등급 판단의 추적 근거.
+2. **8충돌축 프레임 (report §2)**: 게이트/알림/멀티모델/PR플랫폼/세션라이프사이클/git hook/기존자산중복/**사용제한**. 등급 판단의 추적 근거.
 3. **두 시점 분기 (report §6)**: `gh` 전제 기능이 도그푸딩(GitHub)/target(Bitbucket)에서 갈림 — 키트 중립성 판단.
 4. **Go/No-Go 종합 (report §6)**: 즉시 Go 9 / 조건부 Go 6 / 검증 후 2 / 보류 1 / 도입 불요 1.
 
