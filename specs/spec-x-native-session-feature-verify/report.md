@@ -98,7 +98,35 @@
 
 ## 4. Go/No-Go 종합
 
-> (Task 4 에서 작성)
+| 기능 | 판정 | 핵심 근거 | 등급 변화 |
+|---|---|---|---|
+| `/branch` (peer fork) | **조건부 Go** | 컨텍스트·모델·CLAUDE.md·settings(hook)·git 상태 승계 + 같은 working dir → 게이트(축 A/F/C) 보존 doc-확정 | 3단계 → 2단계 |
+| `/background` | **조건부 Go (제한적)** | 동작·worktree 격리·계층 2 알림 확정. 계층 1 자동 알림만 미확정 → 게이트 없는 구간 한정 + 계층 2 필수로 리스크 한정 | 3단계 → 2단계 (라이브 확인 권장) |
+
+### 4.1 `/branch` — 조건부 Go
+
+- **선택지 비교**
+  1. *조건부 채택*: 대안 탐색용 컨텍스트 보존 분기. 게이트 보존이 doc-확정. peer fork 는 대화형이라 텍스트 게이트 정상.
+  2. *보류 유지*: 라이브 미실측 리스크 회피. 그러나 doc 근거가 강해 보류 ROI 낮음.
+  - → **1 채택**.
+- **조건**
+  1. 기본은 peer fork(`CLAUDE_CODE_FORK_SUBAGENT` 미설정) — 대화형 게이트 보존.
+  2. `CLAUDE_CODE_FORK_SUBAGENT=1`(백그라운드 subagent) 경로는 `/background` 조건(§4.2)을 따른다.
+  3. fork 세션은 세션 범위 권한 재승인이 필요함을 인지.
+
+### 4.2 `/background` — 조건부 Go (제한적)
+
+- **선택지 비교**
+  1. *조건부 채택*: 긴 mechanical 실행(테스트 수트·대량 수정)을 백그라운드로 → 생산성. 단 계층 1 자동 알림 미확정.
+  2. *보류 유지*: 알림 누락(축 B, §9 비대칭 비용) 회피. 그러나 계층 2 명시 알림으로 게이트 도달 보장 가능 → 완전 보류는 과함.
+  - → **1 채택, 단 조건 강화**.
+- **조건**
+  1. background 는 *게이트가 예상되지 않는 mechanical 자동 실행 구간* 한정(ADR-007 의 `/goal` 정신과 동일). 게이트(§8.5/Plan Accept) 예상 구간은 foreground.
+  2. background 중 게이트 발생 시 계층 2 명시 `notify.sh` 를 반드시 발송(계층 1 자동 hook 의존 금지).
+  3. worktree 격리가 SDD 단일 체크아웃 모델과 어긋날 수 있음 — `bgIsolation` 설정 인지(§2.4).
+  4. in-flight 서브에이전트·워크플로·백그라운드 셸이 있으면 backgrounding 실패함을 인지.
+  5. singleton MCP 채널 동시성 미검증 — 다중 background 세션이 채널 응답(§10)을 동시 소비하는 시나리오 주의.
+- **잔여 라이브 (test 1)**: 계층 1 자동 hook 발화 여부는 §6 체크리스트로 1회 확인 권장. 발화 확인 시 조건 2 완화 가능.
 
 ## 5. 정책 반영 결론
 
@@ -106,4 +134,12 @@
 
 ## 6. 부록 — 사용자 실행용 라이브 확인 체크리스트 (선택)
 
-> (Task 4 에서 작성. 본 spec 의 Done 조건 아님.)
+> 본 spec 의 Done 조건이 **아니다**. 사용자가 라이브 세션에서 실행해 판정을 경험적으로 보강할 때만 사용한다. 각 항목은 §2·§3 의 ⚠️(라이브 필요) 항목과 1:1 대응한다.
+
+1. **test 1 — `/background` 계층 1 알림** (축 B): foreground 세션에서 게이트 직전 `/background` 로 분리 → 에이전트가 입력 대기 진입 → Telegram/Discord 에 `notify-on-input-wait.sh` 자동 알림 도달 여부 확인.
+   - 기대: 도달(조건 §4.2-2 완화 가능) / 미도달(축 B 위험 실증 → 계층 2 필수 유지).
+2. **test 4-a — `/branch` git hook 승계** (축 F): `/branch` fork 후 fork 세션에서 `main` 체크아웃 상태로 커밋 시도 → `check-branch` hook 차단 확인. 기대: 차단.
+3. **test 4-b — `/branch` 텍스트 게이트 알림** (축 A): peer fork 세션에서 §8.5 선택지 제시 상황 → 계층 1 알림 hook 발화 확인. 기대: 발화(settings 승계).
+4. **test 4-c — `FORK_SUBAGENT=1`**: `CLAUDE_CODE_FORK_SUBAGENT=1` 설정 후 `/fork` → 백그라운드 subagent spawn 확인 + 알림 동작이 test 1 과 동일한지 확인.
+
+> 결과는 본 spec 머지 후 별도 메모(또는 RCA — 알림 누락이 반복 관측되면) 로 환류한다.
