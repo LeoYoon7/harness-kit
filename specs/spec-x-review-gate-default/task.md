@@ -71,15 +71,16 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 정적 검증 4종 (plan.md 검증 계획) 모두 통과
-- [ ] (docs-only — 단위/통합 테스트 N/A)
-- [ ] **walkthrough.md 작성** (증거 로그, 신설된 코드 리뷰 칸 포함)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-x-review-gate-default): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-review-gate-default`
-- [ ] **PR 생성**: `/hk-pr-gh --no-confirm` (base = main)
-- [ ] **spec-x 완료 처리**: `sdd specx done review-gate-default`
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 정적 검증 4종 (plan.md 검증 계획) 모두 통과
+- [-] (docs-only — 단위/통합 테스트 N/A)
+- [x] 코드 리뷰 게이트(§1.5): Skip (사유 `docs-only`) — walkthrough 코드 리뷰 칸 기록
+- [x] **walkthrough.md 작성** (증거 로그, 신설된 코드 리뷰 칸 포함)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `sdd ship` (commit a2885ac)
+- [x] **Push**: `git push -u origin spec-x-review-gate-default`
+- [x] **PR 생성**: gh api (base=main, 한글 제목 argv 우회) → PR #24
+- [-] **spec-x 완료 처리**: `sdd specx done review-gate-default` — 머지 후 main 에서 실행 (post-merge)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -89,5 +90,5 @@
 |---|---|
 | **총 Task 수** | 6 (브랜치 + 4 변경 + ship) |
 | **예상 commit 수** | 5 (Task 2~5 각 1 + ship 1) |
-| **현재 단계** | Planning |
+| **현재 단계** | Ship 완료 — PR #24 머지 대기 |
 | **마지막 업데이트** | 2026-06-02 |
