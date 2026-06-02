@@ -58,7 +58,7 @@ fi
 TS="$(date +%Y%m%d-%H%M%S)"
 BACKUP="$TARGET/.harness-uninstall-backup-$TS"
 mkdir -p "$BACKUP"
-for p in .harness-kit .claude CLAUDE.md telegram.sh discord.sh .env.telegram.example .env.discord.example; do
+for p in .harness-kit .claude CLAUDE.md telegram.sh discord.sh claude-dangerously-skip-permissions.sh .env.telegram.example .env.discord.example; do
   [ -e "$TARGET/$p" ] && cp -rf "$TARGET/$p" "$BACKUP/" 2>/dev/null || true
 done
 log "안전 백업: $BACKUP"
@@ -81,9 +81,10 @@ if [ -d "$TARGET/scripts/harness" ]; then
 fi
 
 # 2. 루트 런처 + env 템플릿 제거 (실제 토큰 파일은 보존)
-#    telegram.sh/discord.sh/.env.*.example 는 키트가 설치한 것 → 제거.
+#    telegram.sh/discord.sh/claude-dangerously-skip-permissions.sh/.env.*.example 는
+#    키트가 설치한 것 → 제거. (런처는 --with-skip-launcher opt-in 이지만 있으면 제거)
 #    실제 .env.telegram / .env.discord 는 사용자 시크릿이므로 절대 건드리지 않음.
-for rf in telegram.sh discord.sh .env.telegram.example .env.discord.example; do
+for rf in telegram.sh discord.sh claude-dangerously-skip-permissions.sh .env.telegram.example .env.discord.example; do
   if [ -f "$TARGET/$rf" ]; then
     rm -f "$TARGET/$rf"
     ok "루트 파일 제거: $rf"
@@ -164,6 +165,7 @@ if [ -f "$TARGET/.gitignore" ]; then
     inblk==1 && /^\.env\.telegram$/     { next }
     inblk==1 && /^\.env\.discord$/      { next }
     inblk==1 && /^specs\/\*\*\/code-review\*\.md$/ { next }
+    inblk==1 && /^\/claude-dangerously-skip-permissions\.sh$/ { next }
     inblk==1                           { inblk=0 }
     { print }
   ' "$TARGET/.gitignore" > "$tmp"

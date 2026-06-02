@@ -17,6 +17,7 @@
 #   ./install.sh --yes                 # 모든 프롬프트 생략
 #   ./install.sh --gitignore           # .harness-kit/을 .gitignore에 추가 (기본값)
 #   ./install.sh --no-gitignore        # .harness-kit/을 .gitignore에 추가하지 않고 un-ignore 처리
+#   ./install.sh --with-skip-launcher  # claude --dangerously-skip-permissions 런처 설치 (opt-in, 권한 우회)
 #   ./install.sh --export-format=cursor   # .cursorrules 생성 (Cursor IDE용)
 #   ./install.sh --export-format=copilot  # .github/copilot-instructions.md 생성
 #
@@ -52,6 +53,7 @@ ASSUME_YES=0
 HK_PREFIX=""
 HK_GITIGNORE=-1   # -1=미결정, 1=추가, 0=un-ignore
 EXPORT_FORMAT=""  # cursor | copilot | none (기본: 없음 = none)
+HK_SKIP_LAUNCHER=0   # 1=권한 우회 런처 설치 (opt-in, --with-skip-launcher)
 _PREV_ARG=""
 
 for arg in "$@"; do
@@ -70,6 +72,7 @@ for arg in "$@"; do
     --prefix)   _PREV_ARG="--prefix" ;;
     --gitignore)    HK_GITIGNORE=1 ;;
     --no-gitignore) HK_GITIGNORE=0 ;;
+    --with-skip-launcher) HK_SKIP_LAUNCHER=1 ;;
     --export-format=*) EXPORT_FORMAT="${arg#--export-format=}" ;;
     -h|--help)
       sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'
@@ -146,6 +149,8 @@ fi
 # ============================================================
 # 4. 설치 계획 출력
 # ============================================================
+_launcher_plan=""
+[ "$HK_SKIP_LAUNCHER" -eq 1 ] && _launcher_plan=$'\n  - claude-dangerously-skip-permissions.sh  (권한 우회 런처, opt-in, 루트)'
 cat <<EOF
 
 ${C_BLU}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${C_RST}
@@ -165,7 +170,7 @@ ${C_BLU}━━━━━━━━━━━━━━━━━━━━━━━━
   - .harness-kit/installed.json         (설치 버전 기록)
   - telegram.sh / discord.sh            (알림 채널 런처, 프로젝트 루트)
   - .env.telegram.example               (텔레그램 토큰 템플릿, 루트)
-  - .env.discord.example                (디스코드 토큰 템플릿, 루트)
+  - .env.discord.example                (디스코드 토큰 템플릿, 루트)${_launcher_plan}
 
 머지/추가할 파일:
   - .claude/settings.json               (jq 머지)
@@ -387,6 +392,22 @@ ENVEOF
 fi
 
 # ============================================================
+# 12c. (opt-in) 권한 우회 런처 설치 — --with-skip-launcher 시에만
+# ============================================================
+# sources/optional/ 의 런처는 기본 미설치. 플래그가 켜진 경우에만 대상 루트로
+# 복사한다. Claude Code 권한 시스템을 우회하므로 .gitignore 등재(§16)로 커밋을
+# 차단하고, harness.config.json(§17)에 선택을 영속화해 update 가 보존한다.
+if [ "$HK_SKIP_LAUNCHER" -eq 1 ] && [ -d "$KIT_DIR/sources/optional" ]; then
+  log "(opt-in) 권한 우회 런처 설치"
+  for f in "$KIT_DIR/sources/optional"/*.sh; do
+    [ -e "$f" ] || continue
+    _of="$TARGET/$(basename "$f")"
+    do_cp "$f" "$_of"
+    do_run "chmod +x '$_of'"
+  done
+fi
+
+# ============================================================
 # 13. .claude/settings.json 머지
 # ============================================================
 log ".claude/settings.json 머지"
@@ -529,6 +550,9 @@ else
   # ephemeral 산출물. specs/ 하위로 한정해 .claude/commands/, sources/commands/ 의
   # 슬래시 커맨드 정의 파일에는 영향 없음. uninstall.sh awk 도 대칭 등재 필수 (ADR-005).
   _gi_ensure '^specs/\*\*/code-review\*\.md$' 'specs/**/code-review*.md'
+  # (opt-in) 권한 우회 런처 — 설치 시에만 등재해 대상 repo 커밋 차단.
+  # uninstall.sh §7 awk 에도 대칭 패턴 등록 필수 (ADR-005 orphan 방지).
+  [ "$HK_SKIP_LAUNCHER" -eq 1 ] && _gi_ensure '^/claude-dangerously-skip-permissions\.sh$' '/claude-dangerously-skip-permissions.sh'
 
   ok ".gitignore 갱신"
 fi
@@ -573,11 +597,12 @@ if [ $DRY_RUN -eq 1 ]; then
   echo "${C_DIM}[dry-run]${C_RST} write $HK_CONFIG"
 else
   _gi_bool="true"; [ $HK_GITIGNORE -eq 0 ] && _gi_bool="false"
+  _sl_bool="false"; [ "$HK_SKIP_LAUNCHER" -eq 1 ] && _sl_bool="true"
   if [ -n "$HK_PREFIX" ]; then
-    printf '{"backlogDir":"%s","specsDir":"%s","gitignore":%s}\n' \
-      "$BACKLOG_DIR" "$SPECS_DIR" "$_gi_bool" > "$HK_CONFIG"
+    printf '{"backlogDir":"%s","specsDir":"%s","gitignore":%s,"skipLauncher":%s}\n' \
+      "$BACKLOG_DIR" "$SPECS_DIR" "$_gi_bool" "$_sl_bool" > "$HK_CONFIG"
   else
-    printf '{"gitignore":%s}\n' "$_gi_bool" > "$HK_CONFIG"
+    printf '{"gitignore":%s,"skipLauncher":%s}\n' "$_gi_bool" "$_sl_bool" > "$HK_CONFIG"
   fi
   ok "harness.config.json 작성 완료"
 fi

@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-skip-perms-launcher — skip-perms-launcher
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -27,6 +28,7 @@
 - 거버넌스 문서 단어 수 한계 초과 — `tests/test-governance-dedup.sh` 가 상한 6000w 인데 현재 6418w. 한계 재설정 또는 거버넌스 다이어트 검토
 - **hk-wiki-ingest 슬래시 커맨드** — archive 후 Claude가 wiki를 갱신하는 표준 워크플로. `sources/commands/hk-wiki-ingest.md` + 템플릿에 `[[wikilinks]]` 관련 문서 섹션 추가. (phase-19 spec-19-02 deferred)
 - **sdd doctor wiki 점검 3종** — wiki 고아 링크 감지, stale ADR/RCA 90일+ 경고, governance 단어 수 상한 경고. (phase-19 spec-19-03 deferred)
+- 기존 루트 런처(`telegram.sh`/`discord.sh`)의 `.dockerignore` 미커버 — spec-x-skip-perms-launcher 는 신규 권한 우회 런처만 doctor 점검 추가. 동일 갭이 telegram/discord 에도 존재. doctor 점검 확장 또는 컨테이너 가이드 항목 추가 검토
 - **root CLAUDE.md 슬림화** — 릴리스 전략 등 저빈도 내용을 `docs/release-strategy.md` 로 분리, root 는 포인터만. 항상-온 컨텍스트 토큰 절감 (Claude Code harness 기사 인사이트 #1)
 - **분기별 governance prune protocol** — 거버넌스 ratchet 누적 방지. `/hk-governance-refresh` 또는 sdd 진단에 "rule age > 6mo" 경고. 모델 진화에 맞춰 stale rule 제거 메커니즘 부재 (기사 인사이트 #2)
 - **하위 디렉토리 CLAUDE.md** — `sources/CLAUDE.md` (키트 원본 시점) / `specs/CLAUDE.md` (작업 로그 시점) 분리로 두 시점 혼동 방지 (기사 인사이트 #3)

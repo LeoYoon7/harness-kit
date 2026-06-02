@@ -53,6 +53,7 @@ NEW_VER=$(jq -r '.version' "$KIT_DIR/version.json")
 
 HK_PREFIX=""
 HK_GITIGNORE_ARG=""
+HK_SKIP_LAUNCHER_ARG=""
 _CONFIG="$TARGET/.harness-kit/harness.config.json"
 if [ -f "$_CONFIG" ] && command -v jq >/dev/null 2>&1; then
   _bd=$(jq -r '.backlogDir // empty' "$_CONFIG" 2>/dev/null || true)
@@ -67,6 +68,9 @@ if [ -f "$_CONFIG" ] && command -v jq >/dev/null 2>&1; then
   else
     HK_GITIGNORE_ARG="--gitignore"
   fi
+  # skipLauncher (opt-in 권한 우회 런처) 보존 — 이전에 켜져 있었으면 재전달
+  _sl=$(jq -r 'if has("skipLauncher") then (.skipLauncher | tostring) else "false" end' "$_CONFIG" 2>/dev/null || echo "false")
+  [ "$_sl" = "true" ] && HK_SKIP_LAUNCHER_ARG="--with-skip-launcher"
 fi
 
 echo ""
@@ -138,7 +142,7 @@ log "재설치 중..."
 PREFIX_ARG=""
 [ -n "$HK_PREFIX" ] && PREFIX_ARG="--prefix $HK_PREFIX"
 # shellcheck disable=SC2086
-"$KIT_DIR/install.sh" --yes $PREFIX_ARG $HK_GITIGNORE_ARG "$TARGET"
+"$KIT_DIR/install.sh" --yes $PREFIX_ARG $HK_GITIGNORE_ARG $HK_SKIP_LAUNCHER_ARG "$TARGET"
 
 # ── 4. state 복원 (jq * merge 로 백업 객체를 새 state 위에 덮어씀) ─
 # 백업에 없는 키 (kitVersion, installedAt) 는 install 이 쓴 새 값을 유지.

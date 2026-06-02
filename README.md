@@ -117,7 +117,12 @@ bash install.sh --export-format=copilot ~/Project/my-app
 
 # 미리 보기 (변경 없음)
 bash install.sh --dry-run ~/Project/my-app
+
+# (opt-in) claude --dangerously-skip-permissions 런처 설치 — 아래 보안 주의 참조
+bash install.sh --with-skip-launcher ~/Project/my-app
 ```
+
+> ⚠️ **`--with-skip-launcher`**: `claude --dangerously-skip-permissions` 를 실행하는 `claude-dangerously-skip-permissions.sh` 런처를 프로젝트 루트에 설치합니다. **Claude Code 권한 시스템을 전면 우회**하므로 기본 비활성(opt-in)이며, 설치 시 대상 `.gitignore` 에 등재되어 커밋되지 않습니다 (개인 로컬 전용). `update.sh` 가 이 선택을 보존하고, `uninstall.sh` 가 런처와 ignore 라인을 함께 제거합니다.
 
 ---
 
@@ -140,7 +145,9 @@ archive/
 
 > ℹ `Containerfile` (Podman), `compose.yml` (Docker Compose), `Earthfile` (Earthly) 등 다른 컨테이너 도구도 동일한 빌드 컨텍스트 정책이 필요합니다. 본 가이드는 Dockerfile 기준이며, 다른 도구는 등가 설정을 권장합니다.
 
-`bash .harness-kit/bin/sdd doctor` 가 `Dockerfile` 존재 + `.dockerignore` 미등재 상황을 자동 감지하여 경고합니다 (`ignore 위생` 섹션).
+`--with-skip-launcher` 로 런처를 설치했다면 `claude-dangerously-skip-permissions.sh` 도 `.dockerignore` 에 추가하세요.
+
+`bash .harness-kit/bin/sdd doctor` 가 `Dockerfile` 존재 + `.dockerignore` 미등재 상황을 자동 감지하여 경고합니다 (`ignore 위생` 섹션). 위 `.harness-kit/` 항목과 (런처 설치 시) 런처 파일을 모두 점검합니다.
 
 ---
 
@@ -361,7 +368,7 @@ sdd archive --keep=2
 
 | 명령 | 설명 |
 |---|---|
-| `install.sh [TARGET]` | 설치 (`--dry-run`, `--force`, `--yes`, `--no-gitignore`, `--export-format=cursor\|copilot`) |
+| `install.sh [TARGET]` | 설치 (`--dry-run`, `--force`, `--yes`, `--no-gitignore`, `--with-skip-launcher`, `--export-format=cursor\|copilot`) |
 | `bash <(curl ... get.sh) --update` | **권장** — 원격에서 직접 갱신 (로컬 clone 불필요) |
 | `update.sh [TARGET]` | 로컬 clone 보유 시 갱신 (state 보존) |
 | `uninstall.sh [TARGET]` | 제거 (작업 산출물 보존) |
