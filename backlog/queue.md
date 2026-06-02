@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-native-feature-usage — native-feature-usage
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
