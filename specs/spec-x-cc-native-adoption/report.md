@@ -33,6 +33,7 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 | **E. 세션/config** | 추가 세션·worktree 가 공유 글로벌 config 병렬 제약에 걸리는가? | 멀티세션 제약 (운영 메모리) |
 | **F. git hook** | check-branch / check-plan-accept / check-test-passed 등 게이트와 어긋나는가? | sources/hooks/* |
 | **G. 기존 자산** | 이미 있는 `/hk-*` 자산(특히 `/hk-gemini-review`)·AUQ 금지 정책과 중복/충돌하는가? | agent.md §6.3, 메모리 |
+| **H. 사용 제한** | 플랜·사용량·크레딧·백엔드 제약이 *가용성*을 막는가? | 입력 문서 + CC 플랜 정책 |
 
 > **두 시점 주의** (CLAUDE.md): 충돌이 *키트 원본 작업 시점*의 것인지, *도그푸딩/적용 결과 시점*의 것인지 구분하여 표기한다. 특히 축 D(PR 플랫폼)는 시점에 따라 충돌 양상이 다르다 — 본 repo 도그푸딩은 GitHub, target(nextmarket-api)은 Bitbucket.
 
@@ -68,41 +69,41 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 
 ### 4.0 요약 매트릭스
 
-> 등급: ✅ 바로 도입 / ⚠️ 게이트 안쪽에서만 / 🔍 검증 필요 / ⛔ 현 상태 지양. "주요 충돌 축"은 §2 의 A~G.
+> 등급: ✅ 바로 도입 / ⚠️ 게이트 안쪽에서만 / 🔍 검증 필요 / ⛔ 현 상태 지양 / **N/A 거버넌스 무관(개인 사용, 도입 판단 대상 아님)**. "주요 충돌 축"은 §2 의 A~H. 사용 제한 상세는 §4.5.
 
 | # | 기능 (alias) | 주요 충돌 축 | 재검증 등급 | 판단 |
 |---|---|---|:---:|---|
-| 1 | `/deep-research` | (없음, 읽기전용) | ✅ | Go — align/spec 근거 수집 |
+| 1 | `/deep-research` | H(사용량) | ✅ | Go — 근거 수집. 사용량 큼(확인 필요) |
 | 2 | `/workflows` | (없음) | ✅ | Go — 워크플로 관찰 |
 | 3 | `/copy` | (없음) | ✅ | Go — 산출물 이관 |
 | 4 | `/rewind` (`/checkpoint`·`/undo`) | F | ✅\* | Go — 코드 롤백만 git 상태 확인 후 |
-| 5 | `/team-onboarding` | G(순기능) | ✅ | Go — SDD 전파에 유리 |
-| 6 | `/powerup` | (없음) | ✅ | Go — 학습 |
-| 7 | `/radio` | (없음) | ✅ | Go — BGM |
+| 5 | `/team-onboarding` | G(순기능), H | ✅ | Go — 공유 링크 Pro/Max/Team/Ent 한정 |
+| 6 | `/powerup` | — | **N/A** | 거버넌스 무관 — 개인 학습, 도입 대상 아님 |
+| 7 | `/radio` | H(백엔드) | **N/A** | 거버넌스 무관 — BGM. Bedrock·Vertex·Foundry 미지원 |
 | 8 | `/goal` | **A**, C | ⚠️ | 조건부 — 게이트 보존 조건 하 |
-| 9 | `/effort ultracode` | **C**, A | ⚠️ | 조건부 — 구현 phase 한정 |
+| 9 | `/effort ultracode` | **C**, A, H | ⚠️ | 조건부 — 구현 phase 한정. 토큰 소모 큼 |
 | 10 | `/fewer-permission-prompts` | F, 거버넌스 | ⚠️ | 조건부 — 검토 커밋 |
-| 11 | `/code-review ultra` (`/ultrareview`) | G, D | ⚠️ | 조건부 — ship 직전 보강 |
-| 11b | `/code-review` (기본형) | **G(중복)** | 도입 불요 | `/hk-code-review`·`/hk-gemini-review` 와 중복 |
-| 12 | `/background` (`/bg`) | **B**, E | 🔍 | 검증 후 — 알림 타이밍 실측 |
-| 13 | `/batch` | **D**, E, B | 🔍→⛔근접 | 보류 — 마찰 최대 |
+| 11 | `/code-review ultra` (`/ultrareview`) | G, D, **H** | ⚠️ | 조건부 — ship 보강. 무료 3회 후 크레딧 |
+| 11b | `/code-review` (기본형) | G(보완) | ⚠️ | **보조** — effort/`--fix`/`--comment` 는 hk-code-review 에 없는 고유 기능 |
+| 12 | `/background` (`/bg`) | **B**, E, H | 🔍 | 검증 후 — 알림 타이밍 + 사용량(확인 필요) |
+| 13 | `/batch` | **D**, E, B, H | 🔍→⛔근접 | 보류 — 마찰 최대 + 사용량 |
 | 14 | `/branch` (`/fork`) | E, A, F, C | 🔍 | 검증 후 — 상태 승계 불명 |
-| 15 | `/ultraplan` | A, C | 🔍 | 조건부 — 복귀 후 `/hk-plan-accept` 재게이팅 |
+| 15 | `/ultraplan` | A, C, H | 🔍 | 조건부 — 복귀 후 재게이팅. 웹 실행(플랜 확인) |
 | 16 | `/btw` | A(Idea Gate) | ✅\* | Go — 정보성 질문만, 아이디어는 Idea Capture |
 | 17 | 스킬 시스템 (`/skills`) | G | ⚠️ | 조건부 — 컨텍스트 비용 3순위 |
 
-(\* = 조건부 ✅)
+(\* = 조건부 ✅. **N/A** = 거버넌스 무관, 개인 사용 — 도입 판단 대상 아님)
 
-### 4.1 ✅군 — 바로 도입 (7종)
+### 4.1 ✅군 — 바로 도입 (5종) + 거버넌스 무관 (2종)
 
-코드/state 변경이 없어 게이트(A)·hook(F)와 직교한다. 멀티채널 알림(교정 3.1)이 메인 세션 안에서 정상 동작하므로 축 B 도 무영향.
+코드/state 변경이 없어 게이트(A)·hook(F)와 직교한다. 멀티채널 알림(교정 3.1)이 메인 세션 안에서 정상 동작하므로 축 B 도 무영향. 단 클라우드/웹 기능(`/deep-research`)은 사용량 제약이 있을 수 있다(축 H, §4.5).
 
 - **`/deep-research`** — 웹 fan-out + 인용 리포트. `/hk-align` 전후, spec 작성 시 근거 수집에 보완적이며 기존 자산과 중복 없음(축 G). 결과를 spec.md 에 첨부해 `/hk-spec-critique` 로 넘기는 흐름 권장. *유의*: 웹 fan-out 은 Windows 네트워크/인증 정상 필요(가로지르는 리스크 6).
 - **`/workflows`** — `/deep-research`·`/batch` 워크플로의 watch/pause/resume 관찰 뷰. 무해.
 - **`/copy [N]`** — 직전 응답을 클립보드/파일로. spec·plan·리뷰 결과를 문서/PR 로 이관할 때 유용(SSH 시 `w` 파일 저장).
 - **`/rewind`** — 체크포인트 롤백. **축 F 단서**: harness-kit 이 git hook 으로 커밋을 관리하므로, `/rewind` 의 *code-only 롤백*이 git 상태와 어긋날 수 있다. → conversation 롤백 위주로 쓰고, 코드 롤백은 `git status` 확인 후. 그래서 조건부 ✅.
 - **`/team-onboarding`** — 최근 30일 세션·커맨드·MCP 사용 분석 → 온보딩 가이드. **축 G 순기능**: `/hk-*` 사용 패턴이 그대로 반영돼 SDD 워크플로 전파에 오히려 유리. *유의*: 클라우드 공유 링크는 Pro/Max/Team/Enterprise 한정.
-- **`/powerup`, `/radio`** — 학습 레슨 / lo-fi BGM. 무해(Bedrock·Vertex·Foundry 미지원).
+- **`/powerup` · `/radio` — 거버넌스 무관 (N/A)** — 학습 레슨 / lo-fi BGM 으로 SDD 거버넌스·개발 워크플로와 무관하다. **"도입/미도입"을 논할 대상이 아니다** — 막을 이유도 권장할 이유도 없는 개인 사용 항목(사용자 피드백 반영). 따라서 도입 로드맵(§5)에서 제외한다. `/radio` 는 Bedrock·Vertex·Foundry 백엔드 미지원(축 H).
 
 ### 4.2 ⚠️군 — 게이트 안쪽에서만 (4종 + 1)
 
@@ -114,7 +115,10 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
   - **조건**: 생성된 allowlist 를 *커밋 전 검토*(spec-critique 처럼). 읽기 전용 위주·위험 동작 미포함 확인.
 - **`/code-review ultra`** — 클라우드 멀티에이전트 리뷰. 교정 3.3 적용 — cross-model 역할 분담은 이미 `/hk-gemini-review` 로 해결됨. ultra 는 *대체가 아니라* 중요 PR 의 ship 직전 *추가 보강*. 축 D: 클라우드 실행 + `--comment` 는 GitHub PR 전제(도그푸딩 GitHub OK / target Bitbucket 불일치).
   - **조건**: 중요 PR 의 `/hk-ship`·`/hk-phase-ship` 직전 1회. 무료 3회 후 usage credits.
-- **`/code-review` (기본형, 11b)** — 로컬 리뷰. **축 G 중복**: 기본형은 이미 `/hk-code-review`(Opus same-model)와 역할이 같다. → 별도 도입 불요. cross-model 이 필요하면 `/hk-gemini-review`.
+- **`/code-review` (기본형, 11b) — 보조 도입 (정정)** — **당초 `/hk-code-review` 와 "중복 → 도입 불요"로 판단했으나, 실제 구현(`sources/commands/hk-code-review.md`) 확인 결과 역할이 다르다(사용자 지적 반영).**
+  - `/hk-code-review` 고유: *spec.md 대비 구현 검증*(Functional Req / DoD 충족 / scope creep) + *테스트 커버리지* 관점, 결과를 `code-review.md` SDD 산출물로 저장, Opus 서브에이전트 독립 컨텍스트.
+  - native `/code-review` 고유: *effort level*(low~max/ultra) 조절, **`--fix`**(working tree 자동 수정), **`--comment`**(PR 인라인 코멘트). spec 인식 없음.
+  - → **중복이 아니라 보완**. native `/code-review` 는 effort 조절·자동 정리(`--fix`)가 필요한 *수시 리뷰*에 보조 가치. 단 ship 게이트의 *정식 리뷰*는 여전히 `/hk-gemini-review`(cross-model) + `/hk-code-review`(spec 대비). 축 D: `--comment` 는 GitHub PR 전제(target Bitbucket 불일치).
 
 ### 4.3 🔍군 — 검증 필요 (4종)
 
@@ -130,6 +134,22 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 - **`/btw`** — 흐름을 안 깨는 짧은 질문(히스토리 미축적). state 변경 없어 축 A/B 무해하나, **§5.5 Idea Capture Gate 와 상호작용**: `/btw` 로 새 작업 아이디어를 띄우면 Icebox 기록을 우회할 수 있다. → 순수 정보성 질문에만 사용하고, 새 작업 아이디어는 정식 Idea Capture 로. 조건부 ✅.
 - **스킬 시스템 (`/skills`, `/reload-skills`)** — 반복 프로세스를 `.claude/skills/` 에 자산화. **축 G**: harness-kit 의 `/hk-*` 자산화 철학과 정합하나, 컨텍스트 비용 우선순위(CLAUDE.md: bash > slash > skill > MCP)에서 skill 은 3순위. → `/hk-*` 로 표준화된 SDD 워크플로와 *중복되지 않는* 개인 반복 작업에 한정. 거버넌스 워크플로는 `/hk-*` 유지. 조건부 ⚠️.
 
+### 4.5 사용 제한 매트릭스 (축 H)
+
+> 플랜·사용량·크레딧·백엔드 제약. 정확한 한도는 플랜·버전에 따라 변동하므로 *"확인 필요"* 항목은 세션의 `/help`·플랜 설정이 최종 기준이다. 클라우드/유료 기능은 무료·Pro 플랜에서 가용성이 제한될 수 있어 도입 판단(특히 "즉시 Go")에 단서를 단다.
+
+| 기능 | 제한 유형 | 상세 | 출처 |
+|---|---|---|---|
+| `/code-review ultra` | 크레딧 | Pro·Max 무료 3회/월, 이후 usage credits | 입력 문서 명시 |
+| `/team-onboarding` | 플랜(공유 링크) | 클라우드 공유 링크 Pro·Max·Team·Enterprise 한정 (가이드 생성 자체는 무관) | 입력 문서 명시 |
+| `/radio` | 백엔드 | Bedrock·Vertex·Foundry 미지원 | 입력 문서 명시 |
+| `/deep-research` | 사용량 | Workflow — fan-out 다중 검색/페치로 토큰·사용량 큼 | 확인 필요 |
+| `/ultraplan` | 플랜/웹 | 웹 실행 핸드오프 — 플랜 의존 가능 | 확인 필요 |
+| `/effort ultracode` | 사용량 | xhigh + 자동 오케스트레이션 → 토큰 소모 큼 | 입력 문서 "토큰 소모 큼" |
+| `/background`·`/batch`·`/branch` | 세션/사용량 | 추가 세션·다중 worktree 서브에이전트 → 사용량·동시성 제약 | 확인 필요 (§7 검증) |
+
+**판단 영향**: ✅ "즉시 Go"로 둔 `/deep-research` 도 *사용량 제약*이 있어 무제한 사용은 아니다. ⚠️ `/code-review ultra` 의 크레딧 제한은 "중요 PR 1회"로 좁히는 조건의 근거다. 사용 제한은 등급을 *바꾸지는 않지만* 각 기능의 운용 빈도·범위를 제약하는 부가 조건으로 로드맵(§5)에 반영한다. 정확한 플랜별 한도는 본 조사가 단정하지 않으며 세션 `/help` 가 최종 기준이다.
+
 
 ## 5. 단계별 도입 로드맵
 
@@ -137,11 +157,12 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 
 ### 1단계 — 즉시 도입 (별도 spec 불필요, 운영 관행으로 채택)
 
-거버넌스와 직교하고 코드/state 변경이 없는 9종. 도입에 spec 이 필요 없으며, *세션 운영 관행*으로 바로 쓸 수 있다.
+거버넌스와 직교하고 코드/state 변경이 없는 6종. 도입에 spec 이 필요 없으며, *세션 운영 관행*으로 바로 쓸 수 있다. (`/powerup`·`/radio` 는 거버넌스 무관이라 도입 논의 밖 — 개인 사용.)
 
-- `/deep-research`, `/workflows`, `/copy`, `/rewind`, `/team-onboarding`, `/powerup`, `/radio` (문서 2 1단계와 동일)
-- **(교정 추가) `/btw`** — 정보성 질문 한정. 새 작업 아이디어는 Idea Capture Gate 로.
+- `/deep-research`, `/workflows`, `/copy`, `/rewind`, `/team-onboarding`, `/btw`
 - **(조건 명시) `/rewind`** — 코드 롤백은 `git status` 확인 후, conversation 롤백 위주.
+- **(교정 추가) `/btw`** — 정보성 질문 한정. 새 작업 아이디어는 Idea Capture Gate 로.
+- **(사용 제한, §4.5) `/deep-research`** 사용량 큼(확인 필요), `/team-onboarding`** 공유 링크는 Pro/Max/Team/Ent 한정 — 무제한 사용 전제 아님.
 
 ### 2단계 — 게이트 통합 후 (정책 spec 1개로 묶음 권장)
 
@@ -151,6 +172,7 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 - `/effort ultracode` — 구현 phase 내부 한정. 전체 프로젝트 ⛔.
 - `/fewer-permission-prompts` — 생성 allowlist 커밋 전 검토. `.env*`/`~/.ssh` 가드 우회 금지.
 - `/code-review ultra` — 중요 PR 의 ship 직전 보강(무료 3회 후 유료). **(교정)** 역할은 이미 `/hk-gemini-review` 로 정의됨 — *대체 아닌 보강*.
+- **(정정 추가) `/code-review` 기본형** — `/hk-code-review` 와 중복이 아닌 *보완*(effort/`--fix`/`--comment` 고유, §4.2). 수시 정리·자동수정용 보조 도구.
 - **(교정 추가) 스킬 시스템** — `/hk-*` 와 중복 안 되는 개인 반복 작업 한정. 컨텍스트 비용 3순위 인지.
 
 ### 3단계 — 검증 테스트 통과 후
@@ -164,14 +186,16 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 ### 보류 / 도입 불요
 
 - **`/batch` — 보류** — Bitbucket PR 자동생성 정합성(target) + worktree 병렬·알림 한계(테스트 2·3·5) 해결 전까지. 도그푸딩(GitHub)에선 자동 PR 이 정합하나, *키트가 배포되는 target 이 Bitbucket* 이므로 키트 차원의 권장은 보류.
-- **`/code-review` (기본형) — 도입 불요** — `/hk-code-review` 와 중복.
+- **`/code-review` (기본형) → 2단계로 이동(보조)** — *정정*: 중복이 아니라 보완(effort/`--fix`/`--comment` 고유, §4.2). "도입 불요" 판단 철회.
 
 ### 문서 2 로드맵과의 차이 (교정 요약)
 
 | 항목 | 문서 2 | 본 조사 (교정) | 근거 |
 |---|---|---|---|
 | `/code-review ultra` 역할 | "Codex 와 중복, 정의 필요" | 보강으로 위치 확정 | 교정 3.3 (`/hk-gemini-review` 기존 통합) |
-| `/code-review` 기본형 | 미분리 | 도입 불요(중복) 명시 | 축 G |
+| `/code-review` 기본형 | 미분리 | **보조 도입(보완)** — *정정* | 실제 구현 확인 (§4.2) |
+| `/powerup`·`/radio` | ✅ 도입 | **N/A 거버넌스 무관** — *정정* | 개인 사용, 도입 논의 밖 (사용자 피드백) |
+| 사용 제한 차원 | 산발 언급 | **축 H + §4.5 매트릭스** 신설 | 클라우드/유료 가용성 |
 | `/ultraplan` 단계 | 3단계 고정 | 재게이팅 조건 시 2단계 | 축 A 회복 경로 |
 | 스킬 시스템 | 미분류 | 2단계 조건부 | 축 G + 컨텍스트 비용 |
 | `/btw` | 미분류 | 1단계 (Idea Gate 주의) | §5.5 상호작용 |
@@ -179,15 +203,15 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 
 ## 6. 결론 — Go/No-Go 종합
 
-**핵심 판단**: 17개 중 **9종은 즉시 Go**(거버넌스 직교), **6종은 조건부 Go**(게이트 보존 조건 명문화 필요), **`/background`·`/branch` 2종은 검증 후 결정**, **`/batch` 1종은 보류**, **`/code-review` 기본형은 도입 불요**.
+**핵심 판단**: **6종 즉시 Go**(거버넌스 직교), **7종 조건부 Go**(게이트 보존 조건 명문화 필요), **`/background`·`/branch` 2종 검증 후 결정**, **`/batch` 1종 보류**, **`/powerup`·`/radio` 2종 거버넌스 무관**(개인 사용, 도입 논의 밖). 모든 클라우드/유료 기능은 사용 제한(축 H, §4.5)을 부가 조건으로 가진다.
 
 | 판단 | 기능 | 후속 액션 |
 |---|---|---|
-| **즉시 Go** (9) | `/deep-research` `/workflows` `/copy` `/rewind` `/team-onboarding` `/powerup` `/radio` `/btw` | 운영 관행 채택. spec 불필요 |
-| **조건부 Go** (6) | `/goal` `/effort ultracode` `/fewer-permission-prompts` `/code-review ultra` `/ultraplan` 스킬시스템 | 정책 spec 1개로 묶어 게이트 조건 명문화 |
+| **즉시 Go** (6) | `/deep-research` `/workflows` `/copy` `/rewind` `/team-onboarding` `/btw` | 운영 관행 채택. spec 불필요 (사용량 제한 단서) |
+| **조건부 Go** (7) | `/goal` `/effort ultracode` `/fewer-permission-prompts` `/code-review ultra` `/code-review` 기본형 `/ultraplan` 스킬시스템 | 정책 spec 1개로 묶어 게이트 조건 명문화 |
 | **검증 후** (2) | `/background` `/branch` | 검증 테스트 spec (실측) 선행 |
 | **보류** (1) | `/batch` | Bitbucket 정합 + 병렬/알림 해결 후 재평가 |
-| **도입 불요** (1) | `/code-review` 기본형 | `/hk-code-review` 로 충분 |
+| **거버넌스 무관** (2) | `/powerup` `/radio` | 개인 사용 — 도입 판단 대상 아님 |
 
 **두 시점 관점** (CLAUDE.md): `gh` 전제 기능(`/batch` 자동 PR, `/code-review --comment`)은 *도그푸딩 시점*(본 repo, GitHub)에선 정합하나 *적용 결과 시점*(target nextmarket-api, Bitbucket)에선 불일치한다. 키트가 다른 프로젝트에 배포되는 메타 도구임을 고려하면, 이들 기능의 키트 차원 권장은 target 플랫폼 중립성을 우선해 보수적으로 둔다.
 

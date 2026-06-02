@@ -70,11 +70,22 @@
 
 ---
 
+## Task 6: 사용자 피드백 정정 (Strict Loop 중 추가)
+
+> code-review 판단 오류 + 사용 제한 축 누락 + radio/powerup 과분류 — 사용자 지적 반영 (constitution §5.6).
+
+- [x] report.md 정정 — 8번째 축 H(사용 제한) + `/code-review` 기본형 보조 도입 + `/powerup`·`/radio` N/A 재분류 + §4.5 사용 제한 매트릭스 + Go/No-Go 갱신
+- [x] Commit: `docs(spec-x-cc-native-adoption): correct code-review judgment, add usage-limit axis, reclassify radio/powerup`
+- [ ] plan/walkthrough/queue/pr 동기화
+- [ ] Commit: `docs(spec-x-cc-native-adoption): sync artifacts after feedback correction`
+
+---
+
 ## 진행 요약
 
 | 항목 | 값 |
 |---|---|
-| **총 Task 수** | 5 |
-| **예상 commit 수** | 6 (report 골격 + 분석 + 로드맵 + Icebox + ship) |
-| **현재 단계** | Ship (push/PR 사용자 확인 대기) |
+| **총 Task 수** | 6 (5 + 피드백 정정) |
+| **예상 commit 수** | 8 |
+| **현재 단계** | Ship (정정 반영 → push/PR 사용자 확인 대기) |
 | **마지막 업데이트** | 2026-06-02 |
