@@ -73,7 +73,7 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 
 | # | 기능 (alias) | 주요 충돌 축 | 재검증 등급 | 판단 |
 |---|---|---|:---:|---|
-| 1 | `/deep-research` | H(사용량) | ✅ | Go — 근거 수집. 사용량 큼(확인 필요) |
+| 1 | `/deep-research` | H(비용) | ✅ | Go — 근거 수집. 사용량 큼이나 현 플랜 가용 |
 | 2 | `/workflows` | (없음) | ✅ | Go — 워크플로 관찰 |
 | 3 | `/copy` | (없음) | ✅ | Go — 산출물 이관 |
 | 4 | `/rewind` (`/checkpoint`·`/undo`) | F | ✅\* | Go — 코드 롤백만 git 상태 확인 후 |
@@ -138,17 +138,14 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 
 > 플랜·사용량·크레딧·백엔드 제약. 정확한 한도는 플랜·버전에 따라 변동하므로 *"확인 필요"* 항목은 세션의 `/help`·플랜 설정이 최종 기준이다. 클라우드/유료 기능은 무료·Pro 플랜에서 가용성이 제한될 수 있어 도입 판단(특히 "즉시 Go")에 단서를 단다.
 
-| 기능 | 제한 유형 | 상세 | 출처 |
+| 기능 | 제약 유형 | 상세 | 현 환경(사용자 플랜) |
 |---|---|---|---|
-| `/code-review ultra` | 크레딧 | Pro·Max 무료 3회/월, 이후 usage credits | 입력 문서 명시 |
-| `/team-onboarding` | 플랜(공유 링크) | 클라우드 공유 링크 Pro·Max·Team·Enterprise 한정 (가이드 생성 자체는 무관) | 입력 문서 명시 |
-| `/radio` | 백엔드 | Bedrock·Vertex·Foundry 미지원 | 입력 문서 명시 |
-| `/deep-research` | 사용량 | Workflow — fan-out 다중 검색/페치로 토큰·사용량 큼 | 확인 필요 |
-| `/ultraplan` | 플랜/웹 | 웹 실행 핸드오프 — 플랜 의존 가능 | 확인 필요 |
-| `/effort ultracode` | 사용량 | xhigh + 자동 오케스트레이션 → 토큰 소모 큼 | 입력 문서 "토큰 소모 큼" |
-| `/background`·`/batch`·`/branch` | 세션/사용량 | 추가 세션·다중 worktree 서브에이전트 → 사용량·동시성 제약 | 확인 필요 (§7 검증) |
+| `/code-review ultra` | **크레딧 (가용성)** | Pro·Max 무료 3회/월, 이후 usage credits | **유일한 실질 제약** |
+| `/team-onboarding` | 부가기능 플랜 | *공유 링크*만 Pro·Max·Team·Ent 한정 (가이드 생성은 무관) | 가용 (공유 링크 불요 시 무관) |
+| `/radio` | 배포 백엔드 | Bedrock·Vertex·Foundry 미지원 | 무관 (해당 백엔드 미사용 시) |
+| `/deep-research`·`/ultraplan`·`/effort ultracode`·`/background`·`/batch` | 사용량/비용 | 토큰·세션 소모 큼 — 가용성 *차단* 아님 | 가용 — 비용 차원만 |
 
-**판단 영향**: ✅ "즉시 Go"로 둔 `/deep-research` 도 *사용량 제약*이 있어 무제한 사용은 아니다. ⚠️ `/code-review ultra` 의 크레딧 제한은 "중요 PR 1회"로 좁히는 조건의 근거다. 사용 제한은 등급을 *바꾸지는 않지만* 각 기능의 운용 빈도·범위를 제약하는 부가 조건으로 로드맵(§5)에 반영한다. 정확한 플랜별 한도는 본 조사가 단정하지 않으며 세션 `/help` 가 최종 기준이다.
+**판단 영향 (현 환경 실측 — 사용자 피드백)**: 사용자 플랜에서 *실질 가용성 제약*은 `/code-review ultra` 크레딧(무료 3회/월)뿐이다. 나머지는 사용량·비용(토큰) 차원이지 가용성 *차단*이 아니므로 도입 등급을 제약하지 않는다 — `/code-review ultra` 의 크레딧만 "중요 PR 1회"로 좁히는 조건의 근거다. **단 harness-kit 은 다양한 플랜에 배포되는 키트이므로, 하위 플랜(무료/Pro) 대상 배포 시 클라우드/Workflow 기능 가용성은 재확인이 필요하다(중립성).** 정확한 플랜별 한도는 세션 `/help` 가 최종 기준.
 
 
 ## 5. 단계별 도입 로드맵
@@ -162,7 +159,7 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 - `/deep-research`, `/workflows`, `/copy`, `/rewind`, `/team-onboarding`, `/btw`
 - **(조건 명시) `/rewind`** — 코드 롤백은 `git status` 확인 후, conversation 롤백 위주.
 - **(교정 추가) `/btw`** — 정보성 질문 한정. 새 작업 아이디어는 Idea Capture Gate 로.
-- **(사용 제한, §4.5) `/deep-research`** 사용량 큼(확인 필요), `/team-onboarding`** 공유 링크는 Pro/Max/Team/Ent 한정 — 무제한 사용 전제 아님.
+- **(사용 제한, §4.5) `/deep-research`** 사용량 큼이나 현 플랜 가용(비용 차원), `/team-onboarding`** 공유 링크만 플랜 한정 — 가이드 생성은 무관.
 
 ### 2단계 — 게이트 통합 후 (정책 spec 1개로 묶음 권장)
 
@@ -203,7 +200,7 @@ harness-kit 은 Claude Code 전용 SDD 거버넌스 부트스트랩이다. Claud
 
 ## 6. 결론 — Go/No-Go 종합
 
-**핵심 판단**: **6종 즉시 Go**(거버넌스 직교), **7종 조건부 Go**(게이트 보존 조건 명문화 필요), **`/background`·`/branch` 2종 검증 후 결정**, **`/batch` 1종 보류**, **`/powerup`·`/radio` 2종 거버넌스 무관**(개인 사용, 도입 논의 밖). 모든 클라우드/유료 기능은 사용 제한(축 H, §4.5)을 부가 조건으로 가진다.
+**핵심 판단**: **6종 즉시 Go**(거버넌스 직교), **7종 조건부 Go**(게이트 보존 조건 명문화 필요), **`/background`·`/branch` 2종 검증 후 결정**, **`/batch` 1종 보류**, **`/powerup`·`/radio` 2종 거버넌스 무관**(개인 사용, 도입 논의 밖). 현 사용자 플랜에선 `/code-review ultra` 크레딧(무료 3회/월)만 실질 가용성 제약이고 나머지는 비용 차원이다(축 H, §4.5). 단 키트가 하위 플랜에 배포될 때는 클라우드 기능 가용성 재확인이 필요하다.
 
 | 판단 | 기능 | 후속 액션 |
 |---|---|---|

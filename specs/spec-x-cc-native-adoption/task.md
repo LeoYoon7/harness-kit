@@ -81,11 +81,20 @@
 
 ---
 
+## Task 7: 사용 제한 현 환경 반영 (사용자 피드백 2차)
+
+> 사용자 플랜 실측 — `/code-review ultra` 크레딧만 실질 가용성 제약. "확인 필요"로 과하게 단 항목들을 비용 차원으로 정정.
+
+- [x] report.md §4.5 매트릭스 정정 — 제약 유형 재분류(가용성/부가기능/배포백엔드/비용) + 현 환경 column + Go/No-Go 핵심판단 톤다운
+- [x] Commit: `docs(spec-x-cc-native-adoption): scope usage-limit matrix to current plan (ultrareview only)`
+
+---
+
 ## 진행 요약
 
 | 항목 | 값 |
 |---|---|
-| **총 Task 수** | 6 (5 + 피드백 정정) |
-| **예상 commit 수** | 8 |
+| **총 Task 수** | 7 (5 + 피드백 정정 2차) |
+| **예상 commit 수** | 9 |
 | **현재 단계** | Ship (정정 반영 → push/PR 사용자 확인 대기) |
 | **마지막 업데이트** | 2026-06-02 |
