@@ -5,6 +5,8 @@
 > **단일 출처 원칙**: 도입 판단과 조건의 **정본은 ADR-007** (`docs/decisions/ADR-007-native-feature-adoption-policy.md`) 과 그 Amendment 입니다. 본 문서는 사용 관점 *합성*이며, **모순이 있으면 ADR-007 이 우선**합니다. 8충돌축 근거는 조사 `spec-x-cc-native-adoption` (PR #25) `report.md`.
 >
 > **배포 범위**: 본 문서는 kit repo 전용(미배포)입니다. 배포되는 거버넌스 요지는 `agent.md §6.7`.
+>
+> **호출 주체 주의 (§1.5)**: 기능은 🤖 에이전트가 부르는 것 / 👤 사용자가 타이핑하는 것으로 갈린다. 👤 기능은 harness 가 "도입·강제"할 수 없고 *가드*만 한다 — "도입"이 의미 있는 건 🤖 부류뿐.
 
 ## 1. tier 정의
 
@@ -18,27 +20,38 @@
 
 > **공통 원칙 (ADR-007)**: 자율·세션분리·웹핸드오프 기능이 텍스트 게이트(§8.5)·Plan Accept·양방향 알림(§10) **응답 기회를 박탈하지 않도록**, 각 게이트에서 멈추고 보고하는 조건을 보존한다. 규약(convention) 수준 — hook 강제 아님, 위반은 walkthrough/RCA 로 학습.
 
+## 1.5 호출 주체 — 누가 발동하나 (★ 중요)
+
+기능은 **누가 발동하는가**로 갈리며, 이게 "harness 도입"의 의미를 정한다.
+
+| 호출 주체 | 기능 | harness 가 할 수 있는 것 |
+|---|---|---|
+| 🤖 **에이전트 호출 가능** (Skill/Workflow 도구) | `/deep-research`·`/code-review`(기본)·`/fewer-permission-prompts`·`/workflows`·스킬 시스템 | 에이전트 절차에 엮어 *자동 활용/강제* 가능 — **진짜 "도입" 대상** |
+| 👤 **사용자 타이핑** (세션 제어, 에이전트가 못 부름) | `/goal`·`/background`·`/branch`·`/rewind`·`/ultraplan`·`/effort ultracode`·`/code-review ultra`·`/copy`·`/btw`·`/team-onboarding` | 발동·강제 불가. harness 는 *사용자가 쓸 때 게이트 보존(가드)* 만 — "도입"이 아니라 **하우스룰** |
+
+**함의**: 👤 기능에 "harness 가 도입/강제"는 성립하지 않는다(에이전트가 발동 주체가 아님). harness 의 역할은 *가드*(§3 조건)뿐이다. forcing(default-run) 논의가 의미 있는 건 🤖 부류에 한한다.
+
 ## 2. 상황별 사용 가이드 (★ 핵심)
 
-> "지금 이 상황엔 뭘 쓰지?" → 아래에서 상황을 찾고, tier·조건을 확인한다.
+> "지금 이 상황엔 뭘 쓰지?" → 아래에서 상황을 찾고, **호출 주체**·tier·조건을 확인한다.
 
-| 상황 (when) | 권장 기능 | tier | 어떻게 (조건 요약) |
-|---|---|:---:|---|
-| 근거 수집 / 사전 조사 | `/deep-research` | 1 | 그대로 사용. 결과를 spec.md 에 첨부 → `/hk-spec-critique` 로 넘기는 흐름 권장 |
-| 웹 핸드오프로 계획 수립 | `/ultraplan` | 2 | 복귀한 플랜을 **반드시 `/hk-plan-accept` 로 재게이팅** |
-| 워크플로 관찰(watch/pause/resume) | `/workflows` | 1 | 그대로 사용 |
-| 직전 응답을 PR/문서로 이관 | `/copy [N]` | 1 | 그대로 사용 (SSH 시 `w` 로 파일 저장) |
-| 롤백 / 체크포인트 | `/rewind` | 1 | conversation 롤백 위주. **코드 롤백은 `git status` 확인 후** (git hook 관리와 어긋남 주의) |
-| 온보딩 가이드 생성 | `/team-onboarding` | 1 | 가이드 생성 무관. *공유 링크*만 Pro/Max/Team/Ent 한정 |
-| 흐름 안 깨는 짧은 질문 | `/btw` | 1 | 정보성 질문만. **새 작업 아이디어는 Idea Capture Gate(§5.5)로** |
-| 긴 mechanical 자동 실행(테스트 수트·대량 수정) | `/background` (`/bg`) | 3 | **게이트가 예상되지 않는 구간 한정**. 게이트 발생 시 **계층 2 명시 `notify.sh` 필수**(계층 1 자동 hook 의존 금지). worktree 격리가 SDD 단일 체크아웃과 어긋남 인지 |
-| 대안 탐색 분기 | `/branch` (`/fork`) | 3 | 기본은 peer fork(`CLAUDE_CODE_FORK_SUBAGENT` 미설정) — 게이트 보존. 세션 권한 재승인 인지. `=1` 은 백그라운드 subagent → `/background` 조건 적용 |
-| 단일 spec/phase 자율 진행 | `/goal` | 2 | 단일 spec/phase 의 **acceptance criteria 한정** + 조건문에 "각 게이트에서 멈추고 보고" 명시. **phase 경계 불가침** |
-| 구현 phase 심화 추론·오케스트레이션 | `/effort ultracode` | 2 | **확정된 구현 phase 내부 한정**. 전체 프로젝트 적용 금지. 토큰 소모 큼 |
-| 권한 프롬프트 줄이기 | `/fewer-permission-prompts` | 2 | 생성된 allowlist **커밋 전 검토**. `.env*`·SSH 키 가드 우회 금지 |
-| 중요 PR ship 직전 보강 리뷰 | `/code-review ultra` (`/ultrareview`) | 2 | 중요 PR ship 직전 **1회 보강**. 정식 리뷰는 `/hk-gemini-review` + `/hk-code-review`. 무료 3회/월 후 크레딧 |
-| 수시 리뷰 / 자동 수정 | `/code-review` (기본형) | 2 | `--fix`·`--comment`·effort 조절이 고유 가치인 **보조** 도구. ship 게이트 정식 리뷰 대체 금지. `--comment` 는 GitHub PR 전제 |
-| 반복 프로세스 자산화 | 스킬 시스템 (`/skills`) | 2 | `/hk-*` 와 **중복 안 되는** 개인 반복 작업 한정. 컨텍스트 비용 3순위(bash > slash > skill > MCP) 인지 |
+| 상황 (when) | 권장 기능 | 호출 | tier | 어떻게 (조건 요약) |
+|---|---|:---:|:---:|---|
+| 근거 수집 / 사전 조사 | `/deep-research` | 🤖 | 1 | 그대로 사용. 결과를 spec.md 에 첨부 → `/hk-spec-critique` 로 넘기는 흐름 권장 |
+| 웹 핸드오프로 계획 수립 | `/ultraplan` | 👤 | 2 | 복귀한 플랜을 **반드시 `/hk-plan-accept` 로 재게이팅** |
+| 워크플로 실행·관찰 | `/workflows` (Workflow 도구) | 🤖 | 1 | 에이전트가 Workflow 도구로 실행; `/workflows` 는 사용자 관찰뷰 |
+| 직전 응답을 PR/문서로 이관 | `/copy [N]` | 👤 | 1 | 그대로 사용 (SSH 시 `w` 로 파일 저장) |
+| 롤백 / 체크포인트 | `/rewind` | 👤 | 1 | conversation 롤백 위주. **코드 롤백은 `git status` 확인 후** (git hook 관리와 어긋남 주의) |
+| 온보딩 가이드 생성 | `/team-onboarding` | 👤 | 1 | 가이드 생성 무관. *공유 링크*만 Pro/Max/Team/Ent 한정 |
+| 흐름 안 깨는 짧은 질문 | `/btw` | 👤 | 1 | 정보성 질문만. **새 작업 아이디어는 Idea Capture Gate(§5.5)로** |
+| 긴 mechanical 자동 실행(테스트 수트·대량 수정) | `/background` (`/bg`) | 👤 | 3 | **게이트가 예상되지 않는 구간 한정**. 게이트 발생 시 **계층 2 명시 `notify.sh` 필수**(계층 1 자동 hook 의존 금지). worktree 격리가 SDD 단일 체크아웃과 어긋남 인지 |
+| 대안 탐색 분기 | `/branch` (`/fork`) | 👤 | 3 | 기본은 peer fork(`CLAUDE_CODE_FORK_SUBAGENT` 미설정) — 게이트 보존. 세션 권한 재승인 인지. `=1` 은 백그라운드 subagent → `/background` 조건 적용 |
+| 단일 spec/phase 자율 진행 | `/goal` | 👤 | 2 | 단일 spec/phase 의 **acceptance criteria 한정** + 조건문에 "각 게이트에서 멈추고 보고" 명시. **phase 경계 불가침** |
+| 구현 phase 심화 추론·오케스트레이션 | `/effort ultracode` | 👤 | 2 | **확정된 구현 phase 내부 한정**. 전체 프로젝트 적용 금지. 토큰 소모 큼 |
+| 권한 프롬프트 줄이기 | `/fewer-permission-prompts` | 🤖 | 2 | 생성된 allowlist **커밋 전 검토**. `.env*`·SSH 키 가드 우회 금지 |
+| 중요 PR ship 직전 보강 리뷰 | `/code-review ultra` (`/ultrareview`) | 👤 | 2 | **사용자만 발동**(에이전트 self-launch 불가). 중요 PR 1회 보강. 정식 리뷰는 `/hk-gemini-review` + `/hk-code-review`. 무료 3회/월 후 크레딧 |
+| 수시 리뷰 / 자동 수정 | `/code-review` (기본형) | 🤖 | 2 | `--fix`·`--comment`·effort 조절이 고유 가치인 **보조** 도구. ship 게이트 정식 리뷰 대체 금지. `--comment` 는 GitHub PR 전제 |
+| 반복 프로세스 자산화 | 스킬 시스템 (`/skills`) | 🤖 | 2 | `/hk-*` 와 **중복 안 되는** 개인 반복 작업 한정. 컨텍스트 비용 3순위(bash > slash > skill > MCP) 인지 |
 
 ## 3. tier 2·3 기능별 조건 (ADR-007 발췌)
 
