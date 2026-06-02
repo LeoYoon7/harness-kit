@@ -49,8 +49,23 @@ status: accepted
 
 Accepted (2026-06-02, `spec-x-native-feature-adoption-policy` 머지 시점). 첫 적용: agent.md §6.7 요지 + 본 ADR 참조.
 
+## 🔄 Amendment — 세션 기능 검증 (2026-06-02, `spec-x-native-session-feature-verify`)
+
+조사 당시 "검증 후(3단계)"로 보류했던 `/background`·`/branch` 2종을 문서 조사 + 정적 분석으로 검증하여 **조건부 Go(2단계)로 승격**한다. (검증 보고서: `spec-x-native-session-feature-verify` report.md, 검증 테스트 1·4)
+
+| 기능 | 게이트 보존 조건 | 막는 충돌 |
+|---|---|---|
+| `/branch` (peer fork) | 기본은 peer fork(`CLAUDE_CODE_FORK_SUBAGENT` 미설정). 컨텍스트·settings(hook 배선)·모델·git 상태를 승계하고 같은 working dir 라 git hook·branch protection 적용 → 게이트 보존. fork 세션 권한 재승인 인지 | fork 세션이 hook(축 F)·§8.5(축 A)·멀티모델(축 C) 미승계 우려 (→ 승계 확인됨) |
+| `/background` | *게이트가 예상되지 않는 mechanical 자동 실행 구간* 한정(`/goal` 정신). 게이트 발생 시 계층 2 명시 `notify.sh` 필수(계층 1 자동 hook 의존 금지). worktree 격리가 SDD 단일 체크아웃과 어긋남 인지 | 백그라운드 세션의 계층 1 자동 알림(`Notification`/`Stop`) 발화 미확정 → 알림 누락(축 B, §9 비대칭 비용) |
+| `CLAUDE_CODE_FORK_SUBAGENT=1` | `/fork` 가 백그라운드 subagent 를 spawn → `/background` 조건을 따른다 | 위 `/background` 와 동일 |
+
+**잔여 라이브 항목**: `/background` 의 계층 1 자동 hook 발화 여부는 문서로 확정 불가 — 사용자 라이브 체크리스트(report §6 test 1)로 1회 확인 권장. 발화 확인 시 계층 2 필수 조건 완화 가능. 미확인 동안은 위 조건이 리스크를 한정한다.
+
+**근거 요약**: 공식 문서상 `/branch` 는 settings(hook 배선)·CLAUDE.md·모델·git 상태를 승계하고 같은 working dir 라 git hook·branch protection 이 적용된다(확정). `/background` 는 세션 분리·worktree 격리·config 공유가 확정이고 계층 1 자동 알림만 미확정이나, 계층 2 명시 알림 + 게이트-free 구간 한정으로 리스크를 한정한다.
+
 ## 🔗 Related
 
 - 조사: `spec-x-cc-native-adoption` (PR #25) — 8충돌축 매트릭스 + Go/No-Go 종합
+- 검증: `spec-x-native-session-feature-verify` — `/background`·`/branch` 실측(문서+정적) → 본 ADR Amendment
 - ADR-006 (code-review-gate-default-run) — cross-model 리뷰 게이트
-- 검증 후속(Icebox): `/background`·`/branch` 세션 기능 실측, `/batch` Bitbucket 정합성
+- 검증 후속(Icebox): `/batch` Bitbucket 정합성 (세션 기능 2종은 본 Amendment 로 해소)
