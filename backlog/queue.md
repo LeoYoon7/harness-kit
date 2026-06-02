@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-native-session-feature-verify — native-session-feature-verify
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -142,6 +141,7 @@
 - [x] spec-x-review-gate-default (완료)
 - [x] spec-x-cc-native-adoption (완료)
 - [x] spec-x-native-feature-adoption-policy (완료)
+- [x] spec-x-native-session-feature-verify (완료)
 <!-- sdd:done:end -->
 
 ---
