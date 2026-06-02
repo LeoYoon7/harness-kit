@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-review-gate-default — review-gate-default
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -135,6 +134,7 @@
 - [x] spec-x-notify-channel-formatter (완료)
 - [x] spec-x-update-semver-suffix-fix (완료)
 - [x] spec-x-skip-perms-launcher (완료)
+- [x] spec-x-review-gate-default (완료)
 <!-- sdd:done:end -->
 
 ---
