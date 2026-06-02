@@ -63,10 +63,10 @@
 - [x] **walkthrough.md 작성** (조사 결정·발견 기록)
 - [x] **pr_description.md 작성** (템플릿 준수)
 - [x] **Ship Commit**: `docs(spec-x-cc-native-adoption): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-cc-native-adoption`
-- [ ] **코드 리뷰 게이트** — docs-only 변경이므로 `docs-only` 사유로 skip 가능 (agent.md §6.3.8)
-- [ ] **PR 생성**: `/hk-pr-gh` 로 생성 (base = fork main)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] **Push**: `git push -u origin spec-x-cc-native-adoption`
+- [-] **코드 리뷰 게이트** — `docs-only` 사유로 skip (agent.md §6.3.8, 분석 문서)
+- [x] **PR 생성**: `/hk-pr-gh` → PR #25 (base = fork main)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -96,5 +96,5 @@
 |---|---|
 | **총 Task 수** | 7 (5 + 피드백 정정 2차) |
 | **예상 commit 수** | 9 |
-| **현재 단계** | Ship (정정 반영 → push/PR 사용자 확인 대기) |
+| **현재 단계** | Ship 완료 — PR #25 머지 대기 |
 | **마지막 업데이트** | 2026-06-02 |
