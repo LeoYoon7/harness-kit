@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-skip-perms-launcher — skip-perms-launcher
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -134,6 +133,7 @@
 - [x] spec-x-notify-chunk-line-aware (완료)
 - [x] spec-x-notify-channel-formatter (완료)
 - [x] spec-x-update-semver-suffix-fix (완료)
+- [x] spec-x-skip-perms-launcher (완료)
 <!-- sdd:done:end -->
 
 ---
