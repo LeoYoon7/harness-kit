@@ -38,9 +38,9 @@
 > 커맨드 절차에 Skip 사유 기록을 명시 (FR 2).
 
 ### 3-1. §1.5 절차 수정
-- [ ] `sources/commands/hk-ship.md` §1.5 게이트 프레이밍 + Skip 분기에 사유 기록 절차 추가
-- [ ] 정적 검증: `grep -nE "사유" sources/commands/hk-ship.md` → 매치
-- [ ] Commit: `docs(spec-x-review-gate-default): hk-ship §1.5 에 skip 사유 기록 절차 추가`
+- [x] `sources/commands/hk-ship.md` §1.5 게이트 프레이밍 + Skip 분기에 사유 기록 절차 추가
+- [x] 정적 검증: `grep -nE "사유" sources/commands/hk-ship.md` → 매치
+- [x] Commit: `docs(spec-x-review-gate-default): hk-ship §1.5 에 skip 사유 기록 절차 추가`
 
 ---
 
