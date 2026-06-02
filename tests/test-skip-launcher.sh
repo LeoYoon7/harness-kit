@@ -139,6 +139,38 @@ fi
 echo ""
 
 # ──────────────────────────────────────────────
+# Scenario D: update 후 skipLauncher 선택 보존
+# ──────────────────────────────────────────────
+echo "▶ Scenario D: update 후 보존"
+# FIX_B 는 --with-skip-launcher 로 설치된 상태. update 후에도 선택이 보존돼야 한다.
+bash "$UPDATE" --yes "$FIX_B" > /dev/null 2>&1 || true
+
+check
+if [ -f "$FIX_B/$LAUNCHER" ]; then
+  pass "D-1: update 후 런처 파일 보존"
+else
+  fail "D-1: update 후 런처 파일 소실"
+fi
+
+check
+_sl_d="$(_config_sl "$FIX_B")"
+if [ "$_sl_d" = "true" ]; then
+  pass "D-2: update 후 config skipLauncher=true 보존"
+else
+  fail "D-2: update 후 config skipLauncher='$_sl_d' (expected true)"
+fi
+
+check
+_cnt_d=$(grep -cE "$GI_PAT" "$FIX_B/.gitignore" 2>/dev/null || echo 0)
+if [ "$_cnt_d" -ge 1 ]; then
+  pass "D-3: update 후 .gitignore 런처 라인 보존"
+else
+  fail "D-3: update 후 .gitignore 런처 라인 소실"
+fi
+
+echo ""
+
+# ──────────────────────────────────────────────
 # 결과
 # ──────────────────────────────────────────────
 echo "═══════════════════════════════════════════"
