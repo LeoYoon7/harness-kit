@@ -35,9 +35,9 @@
 
 ## Task 3: 도그푸딩 동기화 + 단어 수 검증
 
-- [ ] `sources/governance/agent.md` → `.harness-kit/agent/agent.md` 직접 cp (단방향 동기화)
-- [ ] `bash tests/test-governance-dedup.sh` 실행 → 단어 수 악화 여부 확인 (이미 초과 상태이므로 추가분 최소 확인)
-- [ ] Commit: `chore(spec-x-native-feature-adoption-policy): sync agent.md to dogfood install`
+- [x] `sources/governance/agent.md` → `.harness-kit/agent/agent.md` 직접 cp (단방향 동기화)
+- [x] `bash tests/test-governance-dedup.sh` 실행 → Check 2 동기화 ✅ OK / Check 3 단어 수 6994w (기존 6904w 초과 유지 + 본 spec +90w). 6000w 는 테스트 휴리스틱(2026-05-10 5000→6000 전례), 다이어트는 Icebox 별도
+- [x] Commit: `chore(spec-x-native-feature-adoption-policy): sync agent.md to dogfood install`
 
 ---
 
