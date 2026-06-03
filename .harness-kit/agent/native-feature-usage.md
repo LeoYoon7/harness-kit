@@ -2,9 +2,9 @@
 
 > 본 문서는 harness-kit 거버넌스 하에서 **어떤 상황에 어떤 Claude Code 네이티브 기능을, 어떤 조건으로 쓰는지**를 한눈에 보는 *사용 관점 reference* 입니다.
 >
-> **단일 출처 원칙**: 도입 판단과 조건의 **정본은 ADR-007** (`docs/decisions/ADR-007-native-feature-adoption-policy.md`) 과 그 Amendment 입니다. 본 문서는 사용 관점 *합성*이며, **모순이 있으면 ADR-007 이 우선**합니다. 8충돌축 근거는 조사 `spec-x-cc-native-adoption` (PR #25) `report.md`.
+> **조건의 정본**: 키트 repo 에 한해 도입 판단·조건의 정본은 `ADR-007` (native-feature-adoption-policy) 과 그 Amendment 입니다. ADR 은 키트 repo 전용이라 설치 대상엔 배포되지 않으므로, **본 문서가 설치 대상의 자족적 사용 지침**입니다 (키트 작업 시 모순은 ADR-007 우선).
 >
-> **배포 범위**: 본 문서는 kit repo 전용(미배포)입니다. 배포되는 거버넌스 요지는 `agent.md §6.7`.
+> **배포 범위**: 본 문서는 install 시 설치 대상에도 배포됩니다 (`sources/governance/` → `.harness-kit/agent/`). PR 호스트 등 플랫폼 의존 항목은 중립 표기. 거버넌스 요지는 `agent.md §6.7`.
 >
 > **호출 주체 주의 (§1.5)**: 기능은 🤖 에이전트가 부르는 것 / 👤 사용자가 타이핑하는 것으로 갈린다. 👤 기능은 harness 가 "도입·강제"할 수 없고 *가드*만 한다 — "도입"이 의미 있는 건 🤖 부류뿐.
 
@@ -50,12 +50,12 @@
 | 구현 phase 심화 추론·오케스트레이션 | `/effort ultracode` | 👤 | 2 | **확정된 구현 phase 내부 한정**. 전체 프로젝트 적용 금지. 토큰 소모 큼 |
 | 권한 프롬프트 줄이기 | `/fewer-permission-prompts` | 🤖 | 2 | 생성된 allowlist **커밋 전 검토**. `.env*`·SSH 키 가드 우회 금지 |
 | 중요 PR ship 직전 보강 리뷰 | `/code-review ultra` (`/ultrareview`) | 👤 | 2 | **사용자만 발동**(에이전트 self-launch 불가). 중요 PR 1회 보강. 정식 리뷰는 `/hk-gemini-review` + `/hk-code-review`. 무료 3회/월 후 크레딧 |
-| 수시 리뷰 / 자동 수정 | `/code-review` (기본형) | 🤖 | 2 | `--fix`·`--comment`·effort 조절이 고유 가치인 **보조** 도구. ship 게이트 정식 리뷰 대체 금지. `--comment` 는 GitHub PR 전제 |
+| 수시 리뷰 / 자동 수정 | `/code-review` (기본형) | 🤖 | 2 | `--fix`·effort 조절이 고유 가치인 **보조** 도구. ship 게이트 정식 리뷰 대체 금지. `--comment`(PR 인라인)는 PR 호스트 지원 시 |
 | 반복 프로세스 자산화 | 스킬 시스템 (`/skills`) | 🤖 | 2 | `/hk-*` 와 **중복 안 되는** 개인 반복 작업 한정. 컨텍스트 비용 3순위(bash > slash > skill > MCP) 인지 |
 
 ## 3. tier 2·3 기능별 조건 (ADR-007 발췌)
 
-> 정본은 ADR-007 / Amendment. 본 절은 빠른 참조용 요약.
+> 키트 repo 기준 정본은 ADR-007 / Amendment. 설치 대상에선 본 절이 조건의 운영 기준이다.
 
 **2단계 (조건부 Go)**
 
@@ -81,6 +81,6 @@
 
 ## 4. 경계 (각주)
 
-- **보류 — `/batch`**: 다수 worktree 서브에이전트가 단위별 PR 자동 생성. target Bitbucket 자동 PR 정합성(자동 PR off + worktree diff → `/hk-pr-bb`) + 병렬·알림 한계(검증 테스트 2·3·5) 해소 전까지 보류. 도그푸딩(GitHub)에선 자동 PR 이 정합하나, 키트 배포 대상 중립성을 우선해 보수적으로 둔다.
+- **보류 — `/batch`**: 다수 worktree 서브에이전트가 단위별 PR 자동 생성. PR 자동생성이 *PR 호스트 의존*(GitHub `gh` 전제) + 다수 worktree 의 병렬·알림 한계(검증 테스트 2·3·5) 미해소로 보류. 비-GitHub 호스트에선 자동 PR off + worktree diff → `/hk-pr-gh`·`/hk-pr-bb` 경로 필요.
 - **N-A (거버넌스 무관) — `/powerup`·`/radio`**: 학습 레슨 / lo-fi BGM. SDD 거버넌스·개발 워크플로와 무관한 개인 사용 항목 — 막을 이유도 권장할 이유도 없다. (`/radio` 는 Bedrock·Vertex·Foundry 백엔드 미지원.)
 - **사용 제한(축 H)**: 현 플랜에서 실질 가용성 제약은 `/code-review ultra` 크레딧(무료 3회/월)뿐. 나머지는 비용(토큰) 차원. 단 키트가 하위 플랜(무료/Pro)에 배포될 때는 클라우드/Workflow 기능 가용성 재확인 필요. 정확한 한도는 세션 `/help` 가 최종 기준.
