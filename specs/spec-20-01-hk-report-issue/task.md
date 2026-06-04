@@ -17,13 +17,13 @@
 ## Task 1: `/hk-report-issue` 커맨드 포팅 (TDD)
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-20-01-hk-report-issue`
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-20-01-hk-report-issue`
+- [x] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. 구조 검증 테스트 작성 (TDD Red)
-- [ ] `tests/test-report-issue-cmd.sh` 작성 — sources/installed 커맨드 존재 + byte-identical + 핵심 섹션 + installedCommands 등록 + README 언급
-- [ ] 테스트 실행 → **Fail 확인** (커맨드 미설치 상태)
-- [ ] Commit: `test(spec-20-01): add failing structure test for hk-report-issue command`
+- [x] `tests/test-report-issue-cmd.sh` 작성 — sources/installed 커맨드 존재 + byte-identical + 핵심 섹션 + installedCommands 등록 + README 언급
+- [x] 테스트 실행 → **Fail 확인** (5 FAIL, exit 1 — 커맨드 미설치)
+- [x] Commit: `test(spec-20-01): add failing structure test for hk-report-issue command`
 
 ### 1-3. 커맨드 포팅 + 등록 (TDD Green)
 - [ ] `git show upstream/main:sources/commands/hk-report-issue.md` → `sources/commands/hk-report-issue.md`
