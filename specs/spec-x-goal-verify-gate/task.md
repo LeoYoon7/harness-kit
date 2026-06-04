@@ -30,10 +30,10 @@
 ## Task 2: `agent.md §6.7` `/goal` 요지 갱신 + 설치본 sync
 
 ### 2-1. 요지 갱신 (두 복사본 동일 편집)
-- [ ] `sources/governance/agent.md` §6.7 `/goal` 절에 검증 강제 요지 1줄 + ADR-007 Amendment 포인터
-- [ ] `.harness-kit/agent/agent.md` 동일 편집 (dogfood sync)
-- [ ] `git diff` 로 양쪽 동일 변경 확인
-- [ ] Commit: `docs(spec-x-goal-verify-gate): agent.md §6.7 /goal 검증 요지 + 설치본 sync`
+- [x] `sources/governance/agent.md` §6.7 `/goal` 절에 검증 강제 요지 1줄 + ADR-007 Amendment 포인터
+- [x] `.harness-kit/agent/agent.md` 동일 편집 (dogfood sync)
+- [x] `git diff` 로 양쪽 동일 변경 확인 (blob 4a4399c→980b529 일치)
+- [x] Commit: `docs(spec-x-goal-verify-gate): agent.md §6.7 /goal 검증 요지 + 설치본 sync`
 
 ---
 
