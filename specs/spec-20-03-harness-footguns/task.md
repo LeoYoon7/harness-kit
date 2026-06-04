@@ -89,10 +89,10 @@
 - [x] **walkthrough.md 작성** (#2 병렬 진화 머지 결정 + Gemini 리뷰 포함)
 - [x] **pr_description.md 작성** (템플릿 준수)
 - [x] **코드 리뷰 게이트** (Gemini cross-model → Approve, Minor 2 미변경)
-- [ ] **Ship Commit**: `docs(spec-20-03): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-20-03-harness-footguns`
-- [ ] **PR 생성**: `/hk-pr-gh` (base: `phase-20-upstream-parity`)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] **Ship Commit**: `docs(spec-20-03): ship walkthrough and pr description` — `b02975f`
+- [x] **Push**: `git push -u origin spec-20-03-harness-footguns`
+- [x] **PR 생성**: gh api → LeoYoon7/harness-kit#34 (base: `phase-20-upstream-parity`)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -101,6 +101,6 @@
 | 항목 | 값 |
 |---|---|
 | **총 Task 수** | 5 |
-| **예상 commit 수** | 9 (footgun 4종 × Red+Green = 8 + ship 1) |
-| **현재 단계** | Planning |
+| **실제 commit 수** | 11 (planning + 결정기록 + footgun 4종×2 + ship) |
+| **현재 단계** | Ship 완료 — PR #34 머지 대기 |
 | **마지막 업데이트** | 2026-06-04 |
