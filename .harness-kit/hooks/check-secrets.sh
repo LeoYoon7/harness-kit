@@ -60,8 +60,19 @@ if [ -n "$staged_diff" ]; then
     violations="${violations}  Private Key 패턴 발견\n"
   fi
 
-  # 일반 시크릿 (추가된 줄만, 값이 있는 경우) — .md 제외 staged diff 사용
-  if echo "$staged_diff_no_md" | grep -E '^\+' | grep -qiE '(password|secret|api_key|api_secret|access_token|private_key)[[:space:]]*[=:][[:space:]]*[^[:space:]]+'; then
+  # 일반 시크릿 (추가된 줄만, 값이 있는 경우) — .md 제외 + shell 보간 제외
+  # fork: .md 본문 제외(staged_diff_no_md). upstream(#158): 값이 ${..}/$(..)/$VAR 보간이거나
+  # 키워드 직후 bash 파라미터 확장(:-, :=)이면 오탐에서 제외 — _var_re/_op_re 가 값 바로 뒤만 앵커링.
+  # 주의: placeholder 필터(_ph_re)는 fork Test 15(비-.md 맨 placeholder 차단)와 충돌해 미적용 (spec-20-03).
+  _keys='(password|secret|api_key|api_secret|access_token|private_key)'
+  _q='["'"'"']?'                                   # 선택적 따옴표 (single 또는 double)
+  _var_re="[=:][[:space:]]*${_q}[$][{(A-Za-z_]"    # 값 = \$VAR / \${..} / \$(..)
+  _op_re="${_keys}[[:space:]]*:[-=?+]"             # \${VAR:-default} 등 bash 파라미터 확장 연산자
+  if echo "$staged_diff_no_md" | grep -E '^\+' \
+       | grep -iE "${_keys}[[:space:]]*[=:][[:space:]]*[^[:space:]]+" \
+       | grep -vE "$_var_re" \
+       | grep -viE "$_op_re" \
+       | grep -q .; then
     violations="${violations}  시크릿 할당 패턴 발견 (password=, secret=, api_key= 등)\n"
   fi
 
