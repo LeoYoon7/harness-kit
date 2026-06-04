@@ -49,14 +49,14 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 전체 키트 테스트 실행 → 무 NEW 회귀 (`tests/test-context-orchestration.sh` + `tests/test-governance-dedup.sh`)
-- [ ] **walkthrough.md 작성** (5축 결정·net-neutral 단어 수 before/after 증거)
-- [ ] **pr_description.md 작성** (템플릿 준수, base = `phase-21-director-mode` 첫 ship 시 생성)
-- [ ] 코드 리뷰 게이트 (§6.3.8): Gemini / Opus / Skip 중 선택 — docs/거버넌스 변경
-- [ ] **Ship Commit**: `docs(spec-21-01): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-21-01-context-orchestration`
-- [ ] **PR 생성**: `/hk-pr-gh` (base `phase-21-director-mode` 자동 생성)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 전체 키트 테스트 실행 → 무 NEW 회귀 (`test-context-orchestration` 6/6, `test-governance-dedup` Check 3 만 baseline red)
+- [x] **walkthrough.md 작성** (5축 결정·단어 수 before/after 7285→7333 +48w 증거)
+- [x] **pr_description.md 작성** (템플릿 준수, base = `phase-21-director-mode`)
+- [x] 코드 리뷰 게이트 (§6.3.8): **Gemini cross-model 실행 → Approve** (Critical 0/Major 0/Minor 1, ASCII 반영)
+- [x] **Ship Commit**: `docs(spec-21-01): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-21-01-context-orchestration`
+- [x] **PR 생성**: base `phase-21-director-mode` 자동 생성
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
