@@ -54,14 +54,14 @@
 
 ## Task 4: Ship (필수)
 
-- [ ] 전체 테스트 (`test-director-mode` 전체 + `test-governance-dedup` 무 NEW 회귀)
-- [ ] **walkthrough.md 작성**
-- [ ] **pr_description.md 작성**
-- [ ] 코드 리뷰 게이트 (§6.3.8): Gemini / Opus / Skip
-- [ ] **Ship Commit**: `docs(spec-21-02): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-21-02-director-mode-switch`
-- [ ] **PR 생성**: base `phase-21-director-mode`
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 전체 테스트 (`test-director-mode` 10/10 + `test-governance-dedup` 무 NEW 회귀) + 스모크(installed sdd)
+- [x] **walkthrough.md 작성**
+- [x] **pr_description.md 작성**
+- [x] 코드 리뷰 게이트 (§6.3.8): **Gemini cross-model → Approve** (Critical 0/Major 0/Minor 2, 옵션 deferred)
+- [x] **Ship Commit**: `docs(spec-21-02): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-21-02-director-mode-switch`
+- [x] **PR 생성**: base `phase-21-director-mode`
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -71,5 +71,5 @@
 |---|---|
 | **총 Task 수** | 3 (+ Ship) |
 | **예상 commit 수** | 4 (test / feat-cli / feat-cmd / ship docs) |
-| **현재 단계** | Planning |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-06-04 |
