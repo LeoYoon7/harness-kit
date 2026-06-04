@@ -32,12 +32,12 @@
 > 논리 단위: "역할→모델 매핑 config 도입" (명령 + 시드 + 로컬값).
 
 ### 2-1. config 구현
-- [ ] `sources/bin/sdd`: `cmd_config` 에 `models)` 분기 + `_config_models`(list/set, fallback director=opus/worker=sonnet/scout=opus) + `cmd_help` config 사용법 1줄.
-- [ ] `.harness-kit/bin/sdd` 미러 동기화 (cp 로 보장).
-- [ ] `install.sh`: installed.json heredoc 에 `.models` 기본값 시드.
-- [ ] `.harness-kit/installed.json` (로컬): `.models` 3역할 추가 (추적 여부 `git ls-files` 확인 후 처리).
-- [ ] 검증: `bash tests/test-role-model-config.sh` → C1/C2/C3 PASS (C4/C5 agent.md 아직 red)
-- [ ] Commit: `feat(spec-21-04): add sdd config models (role-model mapping)`
+- [x] `sources/bin/sdd`: `cmd_config` 에 `models)` 분기 + `_config_models`(list/set, fallback director=opus/worker=sonnet/scout=opus) + `cmd_help` config 사용법 1줄.
+- [x] `.harness-kit/bin/sdd` 미러 동기화 (cp 로 보장).
+- [x] `install.sh`: installed.json heredoc 에 `.models` 기본값 시드.
+- [x] `.harness-kit/installed.json` (로컬, tracked): `.models` 3역할 추가.
+- [x] 검증: `bash tests/test-role-model-config.sh` → C1/C2/C3/C5 PASS (C4 agent.md 아직 red)
+- [x] Commit: `feat(spec-21-04): add sdd config models (role-model mapping)`
 
 ---
 
