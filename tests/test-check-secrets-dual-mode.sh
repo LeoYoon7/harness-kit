@@ -382,6 +382,74 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────
+# Test 17: 비-.md 파일 + 값이 ${VAR:-default} env 보간 → 통과 (오탐 해소)
+#   spec-20-03 (#158): docker-compose / .sh 등의 정상 env 보간이 시크릿으로
+#   오탐되어 commit 이 막히는 footgun 해소. _var_re 가 값이 ${..} 면 제외.
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "▶ Test 17: 비-.md + 값이 \${VAR:-default} 보간 → 통과"
+REPO17="$(_make_repo)"
+_install_hooks "$REPO17"
+
+# 키워드/값 분리 — 이 테스트 파일 staged 시 self-trigger 방지
+_PWD_KW="password"; _VAL='=${DB_PW:-changeme}'
+echo "${_PWD_KW}${_VAL}" > "$REPO17/deploy.sh"
+git -C "$REPO17" add deploy.sh
+
+exit_code=0
+_run_secrets "$REPO17" "HARNESS_GIT_HOOK_MODE=1" || exit_code=$?
+
+if [ "$exit_code" -eq 0 ]; then
+  ok "Test 17: \${VAR:-default} 보간 → 통과 (exit=0)"
+else
+  fail "Test 17: \${VAR:-default} 보간 → 차단됨 (통과되어야 함, exit=$exit_code)"
+fi
+
+# ─────────────────────────────────────────────────────────
+# Test 18: 비-.md 파일 + 키워드 바로 뒤 :-default 파라미터 확장 → 통과
+#   키워드 직후에 bash 파라미터 확장 연산자(:-)가 오는 형태 — _op_re 가 제외.
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "▶ Test 18: 비-.md + \${KEYWORD:-default} 파라미터 확장 → 통과"
+REPO18="$(_make_repo)"
+_install_hooks "$REPO18"
+
+_PWD_KW="password"; _OPEN='${'; _OP=':-defaultpw}'
+echo "${_OPEN}${_PWD_KW}${_OP}" > "$REPO18/run.sh"
+git -C "$REPO18" add run.sh
+
+exit_code=0
+_run_secrets "$REPO18" "HARNESS_GIT_HOOK_MODE=1" || exit_code=$?
+
+if [ "$exit_code" -eq 0 ]; then
+  ok "Test 18: \${KEYWORD:-default} 파라미터 확장 → 통과 (exit=0)"
+else
+  fail "Test 18: \${KEYWORD:-default} 파라미터 확장 → 차단됨 (통과되어야 함, exit=$exit_code)"
+fi
+
+# ─────────────────────────────────────────────────────────
+# Test 19: 비-.md 파일 + 실제 하드코딩 시크릿 → 차단 (regression 가드)
+#   보간 제외 필터가 진짜 시크릿까지 흘려보내면 안 됨.
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "▶ Test 19: 비-.md + 실제 하드코딩 시크릿 → 차단"
+REPO19="$(_make_repo)"
+_install_hooks "$REPO19"
+
+_PWD_KW="password"; _REAL="=hunter2longvalue"
+echo "${_PWD_KW}${_REAL}" > "$REPO19/config.sh"
+git -C "$REPO19" add config.sh
+
+exit_code=0
+_run_secrets "$REPO19" "HARNESS_GIT_HOOK_MODE=1" || exit_code=$?
+
+if [ "$exit_code" -ne 0 ]; then
+  ok "Test 19: 실제 하드코딩 시크릿 → 차단됨 (exit=$exit_code)"
+else
+  fail "Test 19: 실제 하드코딩 시크릿 → 통과 (차단되어야 함 — regression)"
+fi
+
+# ─────────────────────────────────────────────────────────
 # 결과
 # ─────────────────────────────────────────────────────────
 echo ""
