@@ -35,15 +35,15 @@
 
 ## Task 2: Ship (필수)
 
-- [ ] `bash tests/test-doctor-hookspath-lefthook.sh` → PASS
-- [ ] `bash .harness-kit/bin/sdd doctor` 실행 → 기존 출력 회귀 없음 육안 확인
-- [ ] **walkthrough.md 작성**
-- [ ] **pr_description.md 작성**
-- [ ] **Ship Commit**: `docs(spec-20-02): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-20-02-doctor-lefthook`
-- [ ] **코드 리뷰 게이트** (§6.3 — additive 진단 검사; skip 시 사유 기록)
-- [ ] **PR 생성**: base `phase-20-upstream-parity`
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] `bash tests/test-doctor-hookspath-lefthook.sh` → PASS (4/4)
+- [x] `bash .harness-kit/bin/sdd doctor` → ALL PASS, lefthook skip (회귀 없음)
+- [x] **walkthrough.md 작성**
+- [x] **pr_description.md 작성**
+- [x] **Ship Commit**: `docs(spec-20-02): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-20-02-doctor-lefthook`
+- [x] **코드 리뷰 게이트** — `small-port` skip (walkthrough 기록)
+- [x] **PR 생성**: base `phase-20-upstream-parity`
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
