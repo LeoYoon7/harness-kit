@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-goal-verify-gate — goal-verify-gate
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -48,6 +49,7 @@
 - ~~**CC 네이티브 세션 기능 검증 spec**~~ → ✓ `spec-x-native-session-feature-verify` 로 검증 (2026-06-02): `/background`·`/branch` 문서+정적 분석 → 조건부 Go(2단계) 승격, ADR-007 Amendment 반영. 잔여 라이브 test 1(계층 1 자동 알림)은 사용자 체크리스트로 분리(Done 조건 아님)
 - **`/batch` Bitbucket 정합성** — target Bitbucket 에서 `/batch` 자동 PR off + worktree diff → `/hk-pr-bb` 경로. 검증 테스트 2·3·5 해소 전 보류. 도그푸딩(GitHub) 시점엔 정합하나 키트 배포 대상 중립성 우선. (조사: report §5 보류)
 - **CC 네이티브 1단계 6종 즉시 채택** — `/deep-research`·`/workflows`·`/copy`·`/rewind`·`/team-onboarding`·`/btw` 는 거버넌스 직교라 spec 불필요 (`/powerup`·`/radio` 는 거버넌스 무관 — 개인 사용, 도입 논의 밖). 운영 관행 또는 CLAUDE.md 한 줄 메모로 승격 검토. (조사: report §5 1단계)
+- **`/goal` 자율 실행 시 검증 강제 정책** (`spec-x-goal-verify-gate` 후보) — `/goal` 자율성 ↔ 게이트 멈춤 충돌 완화안. 제안: 진입 전 critique 강제 + ship 전 code-review skip 불가 격상 → 멈춤 빈도↓. **단 검증≠승인 — Plan Accept(ADR-008 하드락)·계획밖 deviation 권한 게이트는 검증으로 대체 불가(헌법 §1.2/§5.3)**. 미해결 설계 3: ① 잔존 hard-stop 범위(+ 가역 in-scope 마이크로결정의 logged-default 레인 신설 시 agent.md §7 완화 동반) ② 에이전트의 /goal 모드 감지(👤 기능 — 자동 감지 불가 가능, 사용자 launch ritual 앵커링 검토) ③ 강제 임계값(작은 goal 과함 → §11.2 scope 임계 재사용). ADR-007 `/goal` 조건 개정 + Amendment 대상. (2026-06-04 논의)
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
 - ~~접근성 개선~~ → phase-17 **spec-17-02** (accessibility-install-and-entry)
