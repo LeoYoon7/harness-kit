@@ -59,10 +59,10 @@
 - [x] **walkthrough.md 작성** (증거 + word-count 증가폭 + 발견)
 - [x] **pr_description.md 작성**
 - [x] **코드 리뷰 게이트**: Gemini cross-model → Approve (Critical/Major/Minor 0)
-- [ ] **Ship Commit**: `docs(spec-20-04): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-20-04-phase-ff-first-class`
-- [ ] **PR 생성**: gh api → LeoYoon7/harness-kit (base: `phase-20-upstream-parity`)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] **Ship Commit**: `docs(spec-20-04): ship walkthrough and pr description` — `028693d`
+- [x] **Push**: `git push -u origin spec-20-04-phase-ff-first-class`
+- [x] **PR 생성**: gh api → LeoYoon7/harness-kit#35 (base: `phase-20-upstream-parity`)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -71,6 +71,6 @@
 | 항목 | 값 |
 |---|---|
 | **총 Task 수** | 5 |
-| **예상 commit 수** | 6 (planning + ADR + constitution + agent.md + fragment + ship) |
-| **현재 단계** | Planning |
+| **실제 commit 수** | 6 (planning + ADR + constitution + agent.md + fragment + ship) |
+| **현재 단계** | Ship 완료 — PR #35 머지 대기 |
 | **마지막 업데이트** | 2026-06-04 |
