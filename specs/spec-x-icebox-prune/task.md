@@ -11,7 +11,7 @@
 - [x] plan.md 작성
 - [x] task.md 작성 (이 파일)
 - [-] 백로그 업데이트 (phase.md SPEC 표) — spec-x 는 phase 비소속, 해당 없음
-- [ ] 사용자 Plan Accept
+- [x] 사용자 Plan Accept
 
 ---
 
@@ -38,14 +38,14 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 회귀 확인 — 기존 키트 테스트 스위트 실행 (존재 시) → PASS
-- [ ] **walkthrough.md 작성** (증거 로그)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] 코드 리뷰 게이트 — docs-only 사유 기록 (walkthrough 코드 리뷰 필드)
-- [ ] **Ship Commit**: `docs(spec-x-icebox-prune): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-icebox-prune`
-- [ ] **PR 생성**: `/hk-pr-gh` 로 생성 (base = fork main)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 회귀 확인 — `test-sdd-queue-redesign.sh` 5/5 PASS (docs-only, §9.1 면제 — toolchain 건강성 확인)
+- [x] **walkthrough.md 작성** (증거 로그)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] 코드 리뷰 게이트 — `docs-only` 사유 기록 (walkthrough 코드 리뷰 필드)
+- [x] **Ship Commit**: `docs(spec-x-icebox-prune): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-x-icebox-prune`
+- [x] **PR 생성**: `/hk-pr-gh` 로 생성 (base = fork main)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -54,6 +54,6 @@
 | 항목 | 값 |
 |---|---|
 | **총 Task 수** | 3 (+ Ship) |
-| **예상 commit 수** | 2 (제거 1 + ship 1) |
-| **현재 단계** | Planning |
+| **예상 commit 수** | 3 (planning 1 + 제거 1 + ship 1) |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-06-04 |
