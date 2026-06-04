@@ -49,15 +49,15 @@
 
 ## Task 4: Ship (필수)
 
-- [ ] governance 일관성 검증: `bash tests/test-governance-dedup.sh` (사전 상태 대비 무 NEW 회귀)
-- [ ] 3자 일관성 + sources↔installed diff 육안 확인
-- [ ] **walkthrough.md 작성** (결정·검증·발견 로그)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-x-goal-verify-gate): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-goal-verify-gate`
-- [ ] **코드 리뷰 게이트** (§6.3 — docs-only 라 `docs-only` 사유로 skip 가능, walkthrough 기록)
-- [ ] **PR 생성**: `/hk-pr-gh` (사용자 승인 후)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] governance 일관성 검증: `bash tests/test-governance-dedup.sh` (Check 2 sync PASS; Check 3 단어수 사전존재 — 무 NEW 회귀)
+- [x] 3자 일관성 + sources↔installed diff 육안 확인 (blob 동일 / `--no-index` exit=0)
+- [x] **walkthrough.md 작성** (결정·검증·발견 로그)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `docs(spec-x-goal-verify-gate): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-x-goal-verify-gate`
+- [x] **코드 리뷰 게이트** — `docs-only` skip (walkthrough 기록)
+- [x] **PR 생성**: `/hk-pr-gh`
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
