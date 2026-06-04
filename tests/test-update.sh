@@ -34,7 +34,8 @@ echo ""
 FIXTURE="$(mktemp -d)"
 FIXTURE_B=""
 FIXTURE_C=""
-trap 'rm -rf "$FIXTURE" "$FIXTURE_B" "$FIXTURE_C"' EXIT
+FIXTURE_D=""
+trap 'rm -rf "$FIXTURE" "$FIXTURE_B" "$FIXTURE_C" "$FIXTURE_D"' EXIT
 git -C "$FIXTURE" init -q
 git -C "$FIXTURE" checkout -b main 2>/dev/null || true
 git -C "$FIXTURE" config user.email "test@local" && git -C "$FIXTURE" config user.name "test"
@@ -201,6 +202,30 @@ if command -v jq >/dev/null 2>&1 && [ -f "$FIXTURE_C/.claude/state/current.json"
   fi
 else
   pass "(jq 없음 — baseBranch 필드 검증 스킵)"
+fi
+
+# ──────────────────────────────────────────────
+# 시나리오 D: update 후 미커밋 install 산물 → 커밋 안내 출력 (spec-20-03 / #158)
+#   /hk-update 가 .harness-kit/·.claude/ 를 덮어쓰고 커밋하지 않아 이후 새 브랜치를
+#   오염시키는 footgun — update 종료 시 미커밋 산물을 감지해 능동 안내해야 함.
+# ──────────────────────────────────────────────
+echo ""
+echo "▶ 시나리오 D: update 후 미커밋 산물 → 커밋 안내"
+
+FIXTURE_D="$(mktemp -d)"
+git -C "$FIXTURE_D" init -q
+git -C "$FIXTURE_D" checkout -b main 2>/dev/null || true
+git -C "$FIXTURE_D" config user.email "test@local" && git -C "$FIXTURE_D" config user.name "test"
+
+bash "$INSTALL" --yes "$FIXTURE_D" > /dev/null 2>&1
+# 커밋하지 않음 → .harness-kit/·.claude/ 는 untracked → update 후 porcelain 비어있지 않음
+update_out="$(bash "$UPDATE" --yes "$FIXTURE_D" 2>&1 || true)"
+
+check
+if printf '%s' "$update_out" | grep -q "미커밋"; then
+  pass "update 후 미커밋 산물 커밋 안내 출력됨"
+else
+  fail "update 후 미커밋 산물 안내 누락"
 fi
 
 # ──────────────────────────────────────────────

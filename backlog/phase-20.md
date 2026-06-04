@@ -44,6 +44,7 @@ upstream 의 가치 있는 신규 기능을 **fork 구조에 맞게** 적용한�
 |---|---|:---:|---|---|
 | `spec-20-01` | hk-report-issue | P? | Merged | `specs/spec-20-01-hk-report-issue/` |
 | `spec-20-02` | doctor-lefthook | P? | Merged | `specs/spec-20-02-doctor-lefthook/` |
+| `spec-20-03` | harness-footguns | P? | Active | `specs/spec-20-03-harness-footguns/` |
 <!-- sdd:specs:end -->
 
 > 상태 허용값: `Backlog` / `In Progress` / `Merged`

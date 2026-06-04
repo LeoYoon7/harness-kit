@@ -942,6 +942,14 @@ phase_new() {
   echo "  2. ${C_CYN}sdd spec new <slug>${C_RST} 로 첫 spec 시작"
 }
 
+# phase.md 메타 표 'Base Branch' 행의 값 셀을 주어진 branch 로 치환 (spec-20-03 / #158).
+# BSD/GNU sed 호환 (-i.tmp + -E). phase_new 의 placeholder 전용 sed 와 달리 일반 케이스용.
+_set_phase_base_meta() {
+  local file="$1" branch="$2"
+  sed -i.tmp -E "s#^([|] \*\*Base Branch\*\* [|])[^|]*[|]#\1 ${branch} |#" "$file"
+  rm -f "$file.tmp"
+}
+
 # 사전 정의된 phase-NN.md 를 활성화 (본문 미수정).
 # 사용자가 backlog/ 에 phase 를 미리 작성해 둔 경우 sdd state/queue 에 등록한다.
 phase_activate() {
@@ -967,19 +975,27 @@ phase_activate() {
     die "다른 active phase 존재: $cur_phase — 'sdd phase done' 후 재시도 또는 명시적 전환"
   fi
 
-  # --base / --force 플래그
+  # --base / --base=<branch> / --force 플래그 (spec-20-03 / #158)
   local base_mode=0
   local force_mode=0
+  local base_arg=""
   local arg
   for arg in "${@:2}"; do
     case "$arg" in
-      --base)  base_mode=1 ;;
-      --force) force_mode=1 ;;
+      --base=*) base_mode=1; base_arg="${arg#--base=}" ;;
+      --base)   base_mode=1 ;;
+      --force)  force_mode=1 ;;
     esac
   done
 
-  # 활성 spec 가드 (--force 로 우회 가능)
-  [ $force_mode -eq 0 ] && die_if_active_spec "phase activate"
+  # 같은 phase 재활성화(base 추가/정정 등)인지 판별 — active spec 컨텍스트 보존용
+  local same_phase=0
+  [ "$cur_phase" = "$id" ] && same_phase=1
+
+  # 활성 spec 가드 (--force 로 우회). 단, 같은 phase 재활성화는 spec 을 보존하므로 가드 생략
+  if [ $same_phase -eq 0 ] && [ $force_mode -eq 0 ]; then
+    die_if_active_spec "phase activate"
+  fi
 
   # phase.md 첫 줄 제목에서 슬러그(표시용) 추출
   local slug
@@ -987,23 +1003,35 @@ phase_activate() {
   [ -z "$slug" ] && slug="$id"
 
   state_set phase "$id"
-  state_set spec "null"
-  state_set planAccepted "false"
+  # 같은 phase 재활성화 시 active spec / planAccepted 보존 (silent reset 방지)
+  if [ $same_phase -eq 0 ]; then
+    state_set spec "null"
+    state_set planAccepted "false"
+  fi
 
   if [ $base_mode -eq 1 ]; then
-    # phase.md 메타 표 'Base Branch' 행에서 phase-NN-... 형식 추출
-    local meta_base
-    meta_base="$(grep -E '^\| \*\*Base Branch\*\*' "$file" \
-                 | head -1 \
-                 | sed 's/.*| *\*\*Base Branch\*\* *|//; s/`//g; s/^ *//; s/ *|.*$//')"
+    # base 브랜치 결정: --base=<branch> 명시 인자 우선, 없으면 phase.md 메타에서 추출
     local base_branch=""
-    case "$meta_base" in
-      phase-[0-9]*-*) base_branch="$meta_base" ;;
+    case "$base_arg" in
+      "") : ;;
+      phase-[0-9]*-*) base_branch="$base_arg" ;;
+      *) die "--base=<branch> 형식 오류: phase-NN-<slug> (예: phase-10-ops-tooling)" ;;
     esac
     if [ -z "$base_branch" ]; then
-      die "phase.md 메타의 'Base Branch' 필드를 phase-NN-<slug> 형식으로 먼저 채워주세요 (예: phase-03-stt-v2)"
+      local meta_base
+      meta_base="$(grep -E '^\| \*\*Base Branch\*\*' "$file" \
+                   | head -1 \
+                   | sed 's/.*| *\*\*Base Branch\*\* *|//; s/`//g; s/^ *//; s/ *|.*$//')"
+      case "$meta_base" in
+        phase-[0-9]*-*) base_branch="$meta_base" ;;
+      esac
+    fi
+    if [ -z "$base_branch" ]; then
+      die "base 브랜치를 결정할 수 없습니다 — 'sdd phase activate $id --base=phase-NN-<slug>' 로 지정하거나 phase.md 의 'Base Branch' 메타를 채우세요"
     fi
     state_set baseBranch "$base_branch"
+    # phase.md 메타 'Base Branch' 행 자동 갱신
+    _set_phase_base_meta "$file" "$base_branch"
     ok "base branch: $base_branch"
   fi
 
@@ -1205,6 +1233,21 @@ cmd_spec() {
   esac
 }
 
+# 미커밋 install drift 경고 (spec-20-03 / #158, 비차단):
+# spec new / specx new 시 .harness-kit/·.claude/ 에 미커밋 변경이 있으면
+# 브랜치 생성 직전에 능동 경고. /hk-update 산물이 새 브랜치를 오염시키는 footgun 방지.
+_warn_install_drift() {
+  git -C "$SDD_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 0
+  local dirty
+  dirty="$(git -C "$SDD_ROOT" status --porcelain -- '.harness-kit' '.claude' 2>/dev/null)"
+  [ -z "$dirty" ] && return 0
+  local n
+  n="$(printf '%s\n' "$dirty" | grep -c .)"
+  warn "미커밋 install 변경 ${n}건 감지 (.harness-kit/, .claude/) — 브랜치 생성 전 커밋 권장"
+  printf "   ${C_DIM}예: git add .harness-kit .claude && git commit -m \"chore: ...\"${C_RST}\n" >&2
+  return 0
+}
+
 # Pre-spec validation (agent.md §11 Planning Economy):
 # phase 활성 + 직전 merged spec 존재 시 *주의 환기* 출력 (gate 아님).
 # 직전 spec 의 walkthrough 발견/이월 + 잔여 spec 표 + 재검증 4 질문 표시.
@@ -1269,6 +1312,9 @@ spec_new() {
 
   # 활성 spec 가드 (--force 로 우회 가능)
   [ $force_mode -eq 0 ] && die_if_active_spec "spec new"
+
+  # 미커밋 install drift 경고 (비차단)
+  _warn_install_drift
 
   _pre_spec_validation "$slug"
 
@@ -1891,6 +1937,9 @@ specx_new() {
   local id="spec-x-${slug}"
   local dir="$SDD_SPECS/$id"
   [ -d "$dir" ] && die "이미 존재: $dir"
+
+  # 미커밋 install drift 경고 (비차단)
+  _warn_install_drift
 
   log "spec-x 생성: $id"
   mkdir -p "$dir"

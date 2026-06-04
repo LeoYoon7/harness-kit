@@ -280,6 +280,68 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────
+# Check 10: --base=<branch> 인자 → 인자값 사용 + phase.md 메타 자동 기입 (spec-20-03 / #158)
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "Check 10: phase activate --base=<branch> → 인자값 사용 + 메타 자동 기입"
+
+F10="$(make_fixture)"
+trap "rm -rf '$F1' '$F2' '$F3' '$F5' '$F6' '$F7' '$F9' '$F10'" EXIT
+write_predef_phase "$F10" "phase-03" "base arg"  # 기본 meta (비어있음)
+
+out=$(cd "$F10" && bash .harness-kit/bin/sdd phase activate phase-03 --base=phase-03-custom 2>&1)
+rc=$?
+base_branch=$(jq -r '.baseBranch' "$F10/.claude/state/current.json")
+
+if [ "$rc" -eq 0 ] && [ "$base_branch" = "phase-03-custom" ]; then
+  ok "baseBranch=phase-03-custom (인자값 사용)"
+else
+  fail "rc=$rc, baseBranch=$base_branch (expected phase-03-custom), out=$out"
+fi
+
+if grep -q 'phase-03-custom' "$F10/backlog/phase-03.md"; then
+  ok "phase-03.md 메타에 base 자동 기입"
+else
+  fail "phase-03.md 메타에 base 미기입 — $(grep 'Base Branch' "$F10/backlog/phase-03.md")"
+fi
+
+# ─────────────────────────────────────────────────────────
+# Check 11: 같은 phase 재활성화 시 active spec 보존 (spec-20-03 / #158)
+#   base 를 나중에 지정/정정하려 재활성해도 active spec 컨텍스트가 리셋되면 안 됨.
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "Check 11: 같은 phase 재활성화 → active spec/planAccepted 보존"
+
+F11="$(make_fixture)"
+trap "rm -rf '$F1' '$F2' '$F3' '$F5' '$F6' '$F7' '$F9' '$F10' '$F11'" EXIT
+write_predef_phase "$F11" "phase-03" "재활성 보존"
+
+(cd "$F11" && bash .harness-kit/bin/sdd phase activate phase-03 >/dev/null 2>&1)
+# active spec 주입 (작업 진행 중 모사)
+jq '.spec = "spec-03-01-foo" | .planAccepted = true' \
+  "$F11/.claude/state/current.json" > "$F11/.tmp.json" \
+  && mv "$F11/.tmp.json" "$F11/.claude/state/current.json"
+
+# 같은 phase 재활성화 (base 추가)
+out=$(cd "$F11" && bash .harness-kit/bin/sdd phase activate phase-03 --base=phase-03-v2 2>&1)
+rc=$?
+spec_after=$(jq -r '.spec' "$F11/.claude/state/current.json")
+base_after=$(jq -r '.baseBranch' "$F11/.claude/state/current.json")
+pa_after=$(jq -r '.planAccepted' "$F11/.claude/state/current.json")
+
+if [ "$rc" -eq 0 ] && [ "$spec_after" = "spec-03-01-foo" ] && [ "$pa_after" = "true" ]; then
+  ok "rc=0, spec/planAccepted 보존 (spec=$spec_after, pa=$pa_after)"
+else
+  fail "rc=$rc, spec=$spec_after (expected spec-03-01-foo), pa=$pa_after, out=$out"
+fi
+
+if [ "$base_after" = "phase-03-v2" ]; then
+  ok "재활성으로 baseBranch=phase-03-v2 갱신"
+else
+  fail "baseBranch=$base_after (expected phase-03-v2)"
+fi
+
+# ─────────────────────────────────────────────────────────
 # 결과
 # ─────────────────────────────────────────────────────────
 echo ""
