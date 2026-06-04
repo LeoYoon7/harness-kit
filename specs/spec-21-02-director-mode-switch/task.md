@@ -45,10 +45,10 @@
 ## Task 3: /hk-director 슬래시 커맨드 (TDD Green — 전체)
 
 ### 3-1. 커맨드 + 미러
-- [ ] `sources/commands/hk-director.md` 작성 (frontmatter description + `sdd config director-mode $ARGUMENTS`)
-- [ ] `.claude/commands/hk-director.md` 미러
-- [ ] `bash tests/test-director-mode.sh` → 전체 PASS (T01~T10)
-- [ ] Commit: `feat(spec-21-02): add /hk-director slash command`
+- [x] `sources/commands/hk-director.md` 작성 (frontmatter description + `sdd config director-mode $ARGUMENTS`)
+- [x] `.claude/commands/hk-director.md` 미러
+- [x] `bash tests/test-director-mode.sh` → 전체 PASS (T01~T10) — PASS=10 FAIL=0
+- [x] Commit: `feat(spec-21-02): add /hk-director slash command`
 
 ---
 
