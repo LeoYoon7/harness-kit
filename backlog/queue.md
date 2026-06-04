@@ -8,7 +8,7 @@
 ## 📦 진행 중 Phase
 
 <!-- sdd:active:start -->
-- **phase-21** — director-mode — 3 spec — 다음: spec-21-03-director-protocol
+- **phase-21** — director-mode — 3 spec — 다음: (spec 없음)
 <!-- sdd:active:end -->
 
 ## 📥 spec-x 대기

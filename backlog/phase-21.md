@@ -51,7 +51,7 @@ upstream 의 director mode 가치를 **fork 구조(§6.6/§6.7·ADR-007/008)에 
 |---|---|:---:|---|---|
 | `spec-21-01` | context-orchestration | P? | Merged | `specs/spec-21-01-context-orchestration/` |
 | `spec-21-02` | director-mode-switch | P? | Merged | `specs/spec-21-02-director-mode-switch/` |
-| `spec-21-03` | director-protocol | P? | Active | `specs/spec-21-03-director-protocol/` |
+| `spec-21-03` | director-protocol | P? | Merged | `specs/spec-21-03-director-protocol/` |
 <!-- sdd:specs:end -->
 
 > 상태 허용값: `Backlog` / `In Progress` / `Merged`
