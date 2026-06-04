@@ -17,20 +17,20 @@
 
 ## Task 1: 브랜치 생성 + planning 산출물 commit
 
-- [ ] `git checkout -b spec-x-icebox-prune`
-- [ ] 현재 브랜치가 `main` 이 아님을 확인
-- [ ] planning 산출물 stage: `specs/spec-x-icebox-prune/{spec,plan,task}.md` + `backlog/queue.md` (specx 등록 hunk만 — Icebox 편집 전이라 자동 분리됨)
-- [ ] Commit: `docs(spec-x-icebox-prune): add spec/plan/task`
+- [x] `git checkout -b spec-x-icebox-prune`
+- [x] 현재 브랜치가 `main` 이 아님을 확인
+- [x] planning 산출물 stage: `specs/spec-x-icebox-prune/{spec,plan,task}.md` + `backlog/queue.md` (specx 등록 hunk만 — Icebox 편집 전이라 자동 분리됨)
+- [x] Commit: `docs(spec-x-icebox-prune): add spec/plan/task` (38437ae)
 
 ---
 
 ## Task 2: Icebox 해소 항목 5줄 제거
 
-- [ ] `backlog/queue.md` 🧊 Icebox 에서 5줄 제거 (spec.md 요구사항 표의 5개 항목)
-- [ ] 검증: `grep` 으로 5개 항목 부재 확인 → 0
-- [ ] 검증: `git diff backlog/queue.md` 로 5줄 삭제만 / 마커 무변경 확인
-- [ ] 검증: `sdd status` 정상 동작 확인
-- [ ] Commit: `chore(spec-x-icebox-prune): remove 5 resolved icebox items`
+- [x] `backlog/queue.md` 🧊 Icebox 에서 5줄 제거 (spec.md 요구사항 표의 5개 항목)
+- [x] 검증: `grep` 으로 5개 항목 부재 확인 → 0
+- [x] 검증: `git diff backlog/queue.md` 로 5줄 삭제만 / 마커 무변경 확인 (`@@ -36,16 +36,11 @@`)
+- [x] 검증: `sdd status` 정상 동작 확인
+- [x] Commit: `chore(spec-x-icebox-prune): remove 5 resolved icebox items`
 
 ---
 
