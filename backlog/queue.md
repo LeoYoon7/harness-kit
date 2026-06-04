@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-icebox-prune — icebox-prune
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
