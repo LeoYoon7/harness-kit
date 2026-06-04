@@ -16,13 +16,13 @@
 ## Task 1: lefthook × hooksPath 검사 추가 (TDD)
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-20-02-doctor-lefthook` (phase-20-upstream-parity 기준)
-- [ ] Commit: 없음
+- [x] `git checkout -b spec-20-02-doctor-lefthook` (phase-20-upstream-parity 기준)
+- [x] Commit: 없음
 
 ### 1-2. 검사 테스트 작성 (TDD Red)
-- [ ] `tests/test-doctor-hookspath-lefthook.sh` 작성 (임시 repo: lefthook+hooksPath→warn / lefthook+미설정→pass / lefthook없음→skip). upstream 테스트 적응.
-- [ ] 실행 → **Fail 확인** (검사 미구현)
-- [ ] Commit: `test(spec-20-02): add failing test for lefthook×hooksPath doctor check`
+- [x] `tests/test-doctor-hookspath-lefthook.sh` (upstream 테스트 충실 포팅 — fork lib 구조 호환)
+- [x] 실행 → **Fail 확인** (PASS 2 / FAIL 2 — Case 1·2 검사 미구현)
+- [x] Commit: `test(spec-20-02): add failing test for lefthook×hooksPath doctor check`
 
 ### 1-3. 검사 구현 (TDD Green)
 - [ ] `sources/bin/sdd` + `.harness-kit/bin/sdd` `cmd_doctor()` 에 `_check_lefthook_hookspath()` + `_check_hooks` 직후 호출
