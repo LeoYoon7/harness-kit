@@ -7,6 +7,36 @@ harness-kit의 주요 변경 사항을 버전별로 정리합니다.
 
 ---
 
+## [0.16.0-leo.1] — 2026-06-04
+
+> **Fork-distinct stable release** — LeoYoon7/harness-kit (forked from Changsik00/harness-kit).
+> `-leo.N` suffix 는 upstream 충돌 방지용 식별자이며 unstable 의미 없음.
+>
+> Claude Code 네이티브 기능 도입 정책 체계화 (리서치 → 정책 → 검증 → 플레이북 → 강제 잠금) + opt-in 권한 우회 런처 + 코드 리뷰 게이트 기본 실행 전환. ADR 3건(006/007/008) 추가.
+
+### Added
+
+- **opt-in 권한 우회 런처** — `install.sh --with-skip-launcher` 로 `claude --dangerously-skip-permissions` 런처(`claude-dangerously-skip-permissions.sh`)를 대상 루트에 설치. `harness.config.json` 의 `skipLauncher` 로 update 시 보존, `.gitignore` 등재로 커밋 차단 (#23)
+- **CC 네이티브 기능 사용 playbook** — `sources/governance/native-feature-usage.md` (상황→기능→조건, 호출 주체 🤖/👤 구분). install 시 대상에 배포 (#28)
+
+### Changed
+
+- **코드 리뷰 게이트 기본 실행 + 감사형 skip** — `/hk-ship` pre-flight 리뷰를 optional→default-run 으로 격상. Skip 시 `walkthrough.md` 에 사유 1줄 필수 (ADR-006) (#24)
+- **CC 네이티브 기능 게이트 보존 도입 정책** — 조건부 Go 7종 + 세션 기능 2종(`/background`·`/branch`)의 게이트 보존 조건을 `agent.md §6.7` + ADR-007(+Amendment)로 명문화 (#26, #27)
+- **사람 승인 게이트 모델 자가호출 잠금** — `/hk-plan-accept`·`/hk-phase-ship` frontmatter 에 `disable-model-invocation: true` 적용 → 모델 자가 승인 우회 차단 (ADR-008) (#29)
+- **`/goal` 검증 강제 게이트 정책** — spec/phase 급 `/goal` 에 진입 critique + ship code-review 강제(skip 불가). 검증≠승인 경계 + hard-stop 2개(Plan Accept·계획밖 deviation) 보존 (ADR-007 Amendment) (#30)
+
+### Fixed
+
+- **stale-ADR 검출 false positive** — ADR 본문의 산문 glob/가상 경로(`.claude/commands/*.md`, `.claude/skills/`)를 `sdd status` 가 missing 으로 오탐하던 문제. 경로 토큰을 검사기-safe 로 변경 (ADR-008)
+
+### Docs
+
+- **CC 네이티브 기능 도입 적합성 리서치** — 네이티브 17종을 8개 충돌 축으로 재검증, 7종 조건부 Go 분류 (#25)
+- **RCA-002** — git-bash 멀티바이트 argv ANSI 코드페이지 손상 패턴 기록 (#22)
+
+---
+
 ## [0.15.1-leo.1] — 2026-06-02
 
 > **Fork-distinct stable release** — LeoYoon7/harness-kit (forked from Changsik00/harness-kit).
