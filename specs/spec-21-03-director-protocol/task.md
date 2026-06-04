@@ -17,13 +17,13 @@
 ## Task 1: 브랜치 + 검증 테스트 (TDD Red)
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-21-03-director-protocol` (시작점 = `phase-21-director-mode` phase base)
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-21-03-director-protocol` (시작점 = `phase-21-director-mode` phase base)
+- [x] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. 테스트 작성 (TDD Red)
-- [ ] `tests/test-director-protocol.sh` 작성 — upstream fork 적응. Check: (1) §6.8 섹션, (2) 핵심 용어(intent handshake / distilled contract / re-ingestion·full transcript / Plan Accept), (3) §6.1 Director Mode delegation 단락 + artifact files 용어, (4) 이중 미러 parity(agent.md + director-mode.md), (5) `director-mode.md` 존재, (6) ADR-011 존재 + `type: decision`. **단어 예산 체크 미포함**.
-- [ ] 테스트 실행 → Fail 확인 (§6.8·가이드·ADR 미존재 → Red)
-- [ ] Commit: `test(spec-21-03): add failing test for director mode protocol`
+- [x] `tests/test-director-protocol.sh` 작성 — upstream fork 적응. Check: (1) §6.8 섹션, (2) 핵심 용어(intent handshake / distilled contract / re-ingestion·full transcript / Plan Accept), (3) §6.1 Director Mode delegation 단락 + artifact files 용어, (4) 이중 미러 parity(agent.md + director-mode.md), (5) `director-mode.md` 존재, (6) ADR-011 존재 + `type: decision`. **단어 예산 체크 미포함**.
+- [x] 테스트 실행 → Fail 확인 (PASS=4 FAIL=9 — Red)
+- [x] Commit: `test(spec-21-03): add failing test for director mode protocol`
 
 ---
 
