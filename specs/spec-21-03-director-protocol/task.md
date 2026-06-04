@@ -32,9 +32,9 @@
 > agent.md stub 이 ADR-011 을 참조하므로 참조 대상을 먼저 생성.
 
 ### 2-1. ADR-011 작성
-- [ ] `docs/decisions/ADR-011-director-mode.md` 작성 — frontmatter `id: ADR-011` / `type: decision` / `status: accepted`. upstream ADR-006 fork 재구현: Context / Decision / Consequences(검증 불변식 포함) / Alternatives / Related(ADR-010 토대, ADR-007·008 게이트 정합, upstream 005/006 참조만).
-- [ ] 검증: `grep "type: decision" docs/decisions/ADR-011-director-mode.md` 확인
-- [ ] Commit: `docs(spec-21-03): add ADR-011 director-mode`
+- [x] `docs/decisions/ADR-011-director-mode.md` 작성 — frontmatter `id: ADR-011` / `type: decision` / `status: accepted`. upstream ADR-006 fork 재구현: Context / Decision / Consequences(검증 불변식 포함) / Alternatives / Related(ADR-010 토대, ADR-007·008 게이트 정합, upstream 005/006 참조만).
+- [x] 검증: `grep "type: decision" docs/decisions/ADR-011-director-mode.md` 확인 (line 3)
+- [x] Commit: `docs(spec-21-03): add ADR-011 director-mode`
 
 ---
 
