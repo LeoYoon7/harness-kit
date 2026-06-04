@@ -64,14 +64,14 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 전체 테스트 실행 → `test-director-protocol.sh` PASS + 회귀 무 NEW (Check 3 red 예상)
-- [ ] 코드 리뷰 게이트 (§6.3 — Gemini cross-model 권장 / Opus / Skip 중 선택)
-- [ ] **walkthrough.md 작성** (증거 로그 — 검증 결과, 단어 예산 before/after, 결정 기록)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-21-03): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-21-03-director-protocol`
-- [ ] **PR 생성**: `/hk-pr-gh` — base = `phase-21-director-mode` (phase base)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 전체 테스트 실행 → `test-director-protocol.sh` 13/13 PASS + 회귀 무 NEW (Check 3 red 예상대로)
+- [x] 코드 리뷰 게이트 (§6.3 — Gemini cross-model 선택 → **Approve**, Critical/Major 0)
+- [x] **walkthrough.md 작성** (증거 로그 — 검증 결과, 단어 예산 before/after, 결정 기록)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `docs(spec-21-03): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-21-03-director-protocol`
+- [x] **PR 생성**: `/hk-pr-gh` — base = `phase-21-director-mode` (phase base)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -80,6 +80,6 @@
 | 항목 | 값 |
 |---|---|
 | **총 Task 수** | 5 (작업 4 + Ship) |
-| **예상 commit 수** | 5 (test / ADR / 가이드 / agent.md / ship) |
-| **현재 단계** | Planning |
+| **실제 commit 수** | 6 (planning / test / ADR / 가이드 / agent.md / ship) |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-06-05 |
