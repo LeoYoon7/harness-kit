@@ -37,15 +37,15 @@
 
 ## Task 2: Ship (필수)
 
-- [ ] `bash tests/test-report-issue-cmd.sh` → PASS (+ 기존 테스트 무 회귀 확인)
-- [ ] sources ↔ installed byte-identical + upstream 사본 diff 0 확인
-- [ ] **walkthrough.md 작성**
-- [ ] **pr_description.md 작성**
-- [ ] **Ship Commit**: `docs(spec-20-01): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-20-01-hk-report-issue`
-- [ ] **코드 리뷰 게이트** (§6.3 — 포팅+소규모라 판단; skip 시 사유 기록)
-- [ ] **PR 생성**: base `phase-20-upstream-parity` (base 브랜치 자동 생성), `/hk-pr-gh` 또는 gh api
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] `bash tests/test-report-issue-cmd.sh` → PASS (exit 0)
+- [x] sources ↔ installed byte-identical + upstream 사본 diff 0 확인 (DIFF_EMPTY)
+- [x] **walkthrough.md 작성**
+- [x] **pr_description.md 작성**
+- [x] **Ship Commit**: `docs(spec-20-01): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-20-01-hk-report-issue`
+- [x] **코드 리뷰 게이트** — `small-port` skip (walkthrough 기록)
+- [x] **PR 생성**: base `phase-20-upstream-parity` (base 브랜치 just-in-time 생성)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
