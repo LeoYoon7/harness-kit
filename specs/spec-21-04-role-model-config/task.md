@@ -17,13 +17,13 @@
 ## Task 1: 브랜치 + 검증 테스트 (TDD Red)
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-21-04-role-model-config` (시작점 = `phase-21-director-mode`)
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-21-04-role-model-config` (시작점 = `phase-21-director-mode`)
+- [x] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. 테스트 작성 (TDD Red)
-- [ ] `tests/test-role-model-config.sh` 작성 — C1 `.models` 3역할, C2 `sdd config models` list, C3 `set` 갱신(fixture+원복), C4 §6.6 `models.*` 참조 + 모델명 부재, C5 이중 미러 parity(agent.md+sdd).
-- [ ] 테스트 실행 → Fail 확인 (.models·command·§6.6 참조 미존재 → Red)
-- [ ] Commit: `test(spec-21-04): add failing test for role-model config`
+- [x] `tests/test-role-model-config.sh` 작성 — C1 `.models` 3역할, C2 `sdd config models` list, C3 `set` 갱신(fixture), C4 §6.6 `models.*` 참조 + 모델명 부재, C5 이중 미러 parity(agent.md+sdd).
+- [x] 테스트 실행 → Fail 확인 (PASS=2 FAIL=7 — Red)
+- [x] Commit: `test(spec-21-04): add failing test for role-model config`
 
 ---
 
