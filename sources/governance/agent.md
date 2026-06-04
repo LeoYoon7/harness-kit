@@ -244,7 +244,7 @@ When calling the Bash tool, the Agent MUST follow these rules:
 
 When the project has static analysis tools configured (type-checker, linter), use them as the primary diagnostic authority before making corrections. The Agent MUST NOT guess or over-correct beyond their findings.
 
-### 6.6 Model Allocation Strategy
+### 6.6 Model & Context Allocation Strategy
 
 The main session runs on **Opus** (planning, coordination, judgment). Sub-agents are dispatched with explicit model overrides:
 
@@ -255,9 +255,9 @@ The main session runs on **Opus** (planning, coordination, judgment). Sub-agents
 | Code review / critique | Opus (sub-agent, `model: "opus"`) | Catching subtle issues requires deep analysis from a different context |
 | Code analysis | Opus (sub-agent, `model: "opus"`) | Structural understanding and impact assessment |
 
-When delegating implementation to a Sonnet sub-agent, the main Opus agent MUST provide clear, specific instructions including: target files, expected behavior, test expectations, and commit message format.
+**Context offloading (orchestrator–worker)** — the main session is a *context orchestrator*. When delegating: (1) **delegate** token-heavy / polluting labor (multi-file impl, broad search; boundary → §6.7 threshold), keeping judgment and verification on main; (2) inject a **scoped slice** (files, expected behavior, test command, commit format), not full history; (3) the worker returns a **distilled contract** (commit SHA, test + completion status [full/partial/failed], decisions), never the transcript; (4) orchestrator **retains verification** (on failure → §7 Hard Stop); (5) **fan out** independent jobs (→ §6.7). Applies always; director mode (→ §6.8) toggles delegation *aggressiveness*, not on/off. Rationale: ADR-010.
 
-**Dispatch exception — docs-only tasks**: When all Spec tasks are limited to markdown/documentation file creation or editing (no code, scripts, or tests), run them in the main thread — sub-agent spin-up overhead exceeds the saving. See §6.7 sub-agent dispatch threshold for the general rule.
+**Dispatch exception — docs-only tasks**: all-markdown Spec tasks stay in the main thread (spin-up overhead > saving; → §6.7 dispatch threshold).
 
 ### 6.7 Workflow Patterns
 
