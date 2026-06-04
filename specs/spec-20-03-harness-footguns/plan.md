@@ -12,7 +12,7 @@
 > 본 Plan 을 Accept 하기 전에 사용자가 명시적으로 확인해야 할 항목들.
 
 > [!IMPORTANT]
-> - [ ] **#2 병렬 진화 머지 방식**: fork 의 `.md` 제외(`staged_diff_no_md`)를 **유지한 채** upstream 의 보간/placeholder 필터(`_var_re`/`_ph_re`/`_op_re`)를 추가로 적용한다. 즉 두 오탐 예외를 모두 거친다. (대안: upstream 방식으로 전면 교체 → fork 의 `.md` 제외 손실, 비채택)
+> - [x] **#2 병렬 진화 머지 방식** (실행 중 조정 — 2026-06-04, 사용자 1번 선택): fork 의 `.md` 제외(`staged_diff_no_md`)를 **유지한 채** upstream 의 **보간 필터만**(`_var_re`/`_op_re`) 추가 적용한다. **`_ph_re`(placeholder 필터)는 제외** — fork 기존 `test-check-secrets-dual-mode.sh` Test 15(비-md 파일의 맨 placeholder 차단)와 충돌(NFR-1 무회귀 위반)하기 때문. 실제 보고된 footgun(`${POSTGRES_PASSWORD:-default}` env 보간)은 `_var_re`+`_op_re` 만으로 완전 해결됨. `$` 없는 맨 placeholder(`changeme`/`<your-password>`)는 코드 파일에서 계속 차단(사람 검토 가치). (대안: upstream 완전 parity → Test 15 수정 필요, 비채택)
 > - [ ] **#1b 채택 결정**: fork 의 `sdd status` drift 탐지와 별개로 `_warn_install_drift` 를 `spec new`/`specx new` 시점에 추가한다(능동 경고). 중복이 아니라 보완 — status 는 수동 조회, spec new 경고는 브랜치 생성 직전 능동 발화.
 
 > [!WARNING]
@@ -25,7 +25,7 @@
 
 | 컴포넌트 | 전략 | 이유 |
 |:---:|:---|:---|
-| **#2 check-secrets** | fork `.md` 제외 파이프라인에 upstream 보간/placeholder 필터 **append** | 두 오탐 원인(문서 리터럴 + env 보간)이 직교 — 둘 다 필요 |
+| **#2 check-secrets** | fork `.md` 제외 파이프라인에 upstream **보간 필터만**(`_var_re`/`_op_re`) append, `_ph_re` 제외 | 보고된 footgun(env 보간) 정확 해결 + fork Test 15(placeholder 차단) 무회귀 보존 |
 | **#1a update.sh** | 종료 직전 안내 블록 additive 포팅 | fork update.sh 와 충돌 없음(말미 추가). 자동 커밋 금지 |
 | **#1b _warn_install_drift** | upstream 헬퍼 그대로 포팅 + `spec new`/`specx new` 2곳 호출 | fork 헬퍼·호출자 구조 동일 → 매끄러운 이식 |
 | **#3 phase activate** | upstream 로직 재구현 + `_set_phase_base_meta` 헬퍼 신규 포팅 | fork phase_new 는 인라인 sed(placeholder 전용) — 범용 헬퍼가 재활성 케이스에 필요 |
@@ -43,16 +43,16 @@
 fork 의 "일반 시크릿" 검사 블록(현재 line 63-66)에서 `staged_diff_no_md` 파이프라인은 유지하되, upstream 의 필터를 추가한다.
 
 ```bash
-# 일반 시크릿 (추가된 줄만, 값이 있는 경우) — .md 제외 + shell 보간/placeholder 제외
-# fork: .md 본문 제외(staged_diff_no_md) / upstream(#158): 값이 ${..}/$(..)/$VAR/placeholder 면 제외
+# 일반 시크릿 (추가된 줄만, 값이 있는 경우) — .md 제외 + shell 보간 제외
+# fork: .md 본문 제외(staged_diff_no_md) / upstream(#158): 값이 ${..}/$(..)/$VAR 보간이면 제외
+# 주의: _ph_re(placeholder 필터)는 fork Test 15 와 충돌해 제외 (위 [IMPORTANT] 참조)
 _keys='(password|secret|api_key|api_secret|access_token|private_key)'
 _q='["'"'"']?'                                   # 선택적 따옴표
 _var_re="[=:][[:space:]]*${_q}[$][{(A-Za-z_]"    # 값 = $VAR / ${..} / $(..)
-_ph_re="[=:][[:space:]]*${_q}(changeme|change-me|placeholder|example|sample|your[_-]|xxx+|dummy|todo|<[^>]+>|[.]{3})"
 _op_re="${_keys}[[:space:]]*:[-=?+]"             # ${VAR:-default} 등 파라미터 확장
 if echo "$staged_diff_no_md" | grep -E '^\+' \
      | grep -iE "${_keys}[[:space:]]*[=:][[:space:]]*[^[:space:]]+" \
-     | grep -vE "$_var_re" | grep -viE "$_ph_re" | grep -viE "$_op_re" \
+     | grep -vE "$_var_re" | grep -viE "$_op_re" \
      | grep -q .; then
   violations="${violations}  시크릿 할당 패턴 발견 (password=, secret=, api_key= 등)\n"
 fi

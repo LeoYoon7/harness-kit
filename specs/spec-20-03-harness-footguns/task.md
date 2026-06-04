@@ -21,12 +21,13 @@
 - [ ] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. 테스트 작성 (TDD Red)
-- [ ] `tests/test-check-secrets-dual-mode.sh` 에 케이스 추가: 비-`.md` 파일의 `${VAR:-default}`·placeholder 통과(오탐 없음) + 실제 시크릿 계속 차단
+> 결정(2026-06-04): `_ph_re`(placeholder 필터) 제외 — fork Test 15 무회귀. 보간(`_var_re`/`_op_re`)만 머지.
+- [ ] `tests/test-check-secrets-dual-mode.sh` 에 케이스 추가: 비-`.md` 파일의 `${VAR:-default}`·`$VAR` 보간 통과(오탐 없음) + 실제 시크릿 계속 차단 + Test 15(맨 placeholder 차단) 보존 확인
 - [ ] 테스트 실행 → Fail 확인 (fork 현재는 보간 오탐)
 - [ ] Commit: `test(spec-20-03): add env-interpolation false-positive cases for check-secrets`
 
 ### 1-3. 구현 (TDD Green)
-- [ ] `sources/hooks/check-secrets.sh` + `.harness-kit/hooks/check-secrets.sh`: `.md` 제외 파이프라인에 `_var_re`/`_ph_re`/`_op_re` 필터 추가
+- [ ] `sources/hooks/check-secrets.sh` + `.harness-kit/hooks/check-secrets.sh`: `.md` 제외 파이프라인에 `_var_re`/`_op_re` 필터 추가 (`_ph_re` 제외)
 - [ ] 테스트 실행 → Pass 확인
 - [ ] `diff -q` 로 sources↔installed sync 확인
 - [ ] Commit: `fix(spec-20-03): exclude shell interpolation/placeholder from secret check (#158)`
