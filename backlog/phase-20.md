@@ -29,7 +29,7 @@ upstream 의 가치 있는 신규 기능을 **fork 구조에 맞게** 적용한�
 ### 성공 기준 (Success Criteria) — 정량 우선
 
 1. `/hk-report-issue` 가 fork 에 설치·동작 (sources + installed 동기화 + 단위 테스트 PASS).
-2. director mode(컨텍스트 오케스트레이션) 가 fork 의 §6.6/§6.7·ADR-007/008 과 **충돌 없이** 재구현 (전용 테스트 PASS, 신규 ADR 번호).
+2. director mode(컨텍스트 오케스트레이션) 가 fork 의 §6.6/§6.7·ADR-007/008 과 **충돌 없이** 재구현 (전용 테스트 PASS, 신규 ADR 번호). → **phase-21 이관** (2026-06-04 의식적 분리, 규모상 별도 phase 승격 — 미달 아님). 상세: queue.md 대기 Phase.
 3. phase-FF 1급 작업 모드가 fork 거버넌스(constitution/agent.md/fragment)에 반영.
 4. upstream 소규모 fix(doctor lefthook×hooksPath #162, footgun #158)는 충돌 점검 후 반영 *또는* 의식적 제외(사유 기록).
 5. governance 일관성 테스트 무 NEW 회귀 + `sources ↔ installed` sync 유지.
@@ -80,6 +80,7 @@ upstream 의 가치 있는 신규 기능을 **fork 구조에 맞게** 적용한�
 |---|---|---|---|
 | 통합 방식 | 전체 merge / cherry-pick / 재구현 | 기능별 혼합 (포팅+재구현) | fork↔upstream 분기 과대 — merge 충돌·ADR 번호 충돌·병렬작업 혼입 |
 | 시작 순서 | quick wins / director mode | quick wins 먼저 | 낮은 위험으로 포팅 흐름 검증 + /hk-report-issue 즉시 가치(hook 결함 리포팅) |
+| director mode 처리 | phase-20 내 분해 / phase-21 승격 / 종료 | **phase-21 승격 (의식적 이관, 2026-06-04)** | 3부작 + 검증 불변식 규모가 별도 phase 기준 부합. phase-20 핵심(quick wins + phase-FF) 달성. 성공기준 2 = phase-21 이관(미달 아님) |
 
 ## 🧪 통합 테스트 시나리오 (간결)
 
