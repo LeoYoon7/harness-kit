@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-goal-verify-gate — goal-verify-gate
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -25,7 +24,7 @@
 - kit 새 버전 알림이 `sdd status` drift 섹션 한 줄에 그쳐 사용자 도달이 약함 — SessionStart 시 자동 노출 또는 알림 시각 강화 필요
 - (phase-16 W9) ADR 승격 가이드 ROI metric — *측정 누적 (3 개월+) 선행 필요*. phase-17 종료 후 spec 의 ADR 승격 ratio 데이터 보고 결정
 - `tests/test-uninstall-cmd-list.sh` Scenario 2 FAIL — uninstall 후 `hk-*.md` 커맨드가 하나도 제거되지 않고 15개 전부 잔존. Windows(Git Bash) 환경에서 `uninstall.sh` 의 파일 삭제 미동작 의심 (macOS 1차 타깃). spec-x-sdd-bugfix 재검증 (2026-06-01) 중 발견. 원인 범위 (환경 의존 vs uninstall 로직 회귀) 확인 필요
-- 거버넌스 문서 단어 수 한계 초과 — `tests/test-governance-dedup.sh` 가 상한 6000w 인데 현재 6418w. 한계 재설정 또는 거버넌스 다이어트 검토
+- 거버넌스 문서 단어 수 한계 초과 — `tests/test-governance-dedup.sh` 가 상한 6000w 인데 현재 7045w (2026-06-04 측정; 주로 #26 §6.7 native-feature 단락 + 후속 누적). 한계 재설정 또는 거버넌스 다이어트 검토
 - **hk-wiki-ingest 슬래시 커맨드** — archive 후 Claude가 wiki를 갱신하는 표준 워크플로. `sources/commands/hk-wiki-ingest.md` + 템플릿에 `[[wikilinks]]` 관련 문서 섹션 추가. (phase-19 spec-19-02 deferred)
 - **sdd doctor wiki 점검 3종** — wiki 고아 링크 감지, stale ADR/RCA 90일+ 경고, governance 단어 수 상한 경고. (phase-19 spec-19-03 deferred)
 - 기존 루트 런처(`telegram.sh`/`discord.sh`)의 `.dockerignore` 미커버 — spec-x-skip-perms-launcher 는 신규 권한 우회 런처만 doctor 점검 추가. 동일 갭이 telegram/discord 에도 존재. doctor 점검 확장 또는 컨테이너 가이드 항목 추가 검토
@@ -49,7 +48,7 @@
 - ~~**CC 네이티브 세션 기능 검증 spec**~~ → ✓ `spec-x-native-session-feature-verify` 로 검증 (2026-06-02): `/background`·`/branch` 문서+정적 분석 → 조건부 Go(2단계) 승격, ADR-007 Amendment 반영. 잔여 라이브 test 1(계층 1 자동 알림)은 사용자 체크리스트로 분리(Done 조건 아님)
 - **`/batch` Bitbucket 정합성** — target Bitbucket 에서 `/batch` 자동 PR off + worktree diff → `/hk-pr-bb` 경로. 검증 테스트 2·3·5 해소 전 보류. 도그푸딩(GitHub) 시점엔 정합하나 키트 배포 대상 중립성 우선. (조사: report §5 보류)
 - **CC 네이티브 1단계 6종 즉시 채택** — `/deep-research`·`/workflows`·`/copy`·`/rewind`·`/team-onboarding`·`/btw` 는 거버넌스 직교라 spec 불필요 (`/powerup`·`/radio` 는 거버넌스 무관 — 개인 사용, 도입 논의 밖). 운영 관행 또는 CLAUDE.md 한 줄 메모로 승격 검토. (조사: report §5 1단계)
-- **`/goal` 자율 실행 시 검증 강제 정책** (`spec-x-goal-verify-gate` 후보) — `/goal` 자율성 ↔ 게이트 멈춤 충돌 완화안. 제안: 진입 전 critique 강제 + ship 전 code-review skip 불가 격상 → 멈춤 빈도↓. **단 검증≠승인 — Plan Accept(ADR-008 하드락)·계획밖 deviation 권한 게이트는 검증으로 대체 불가(헌법 §1.2/§5.3)**. 미해결 설계 3: ① 잔존 hard-stop 범위(+ 가역 in-scope 마이크로결정의 logged-default 레인 신설 시 agent.md §7 완화 동반) ② 에이전트의 /goal 모드 감지(👤 기능 — 자동 감지 불가 가능, 사용자 launch ritual 앵커링 검토) ③ 강제 임계값(작은 goal 과함 → §11.2 scope 임계 재사용). ADR-007 `/goal` 조건 개정 + Amendment 대상. (2026-06-04 논의)
+- **`/goal` 검증정책 Q1-b 적극안** — `spec-x-goal-verify-gate`(PR #30, 보수안 Q1-a) 머지 완료. 잔여 = 완전 무중단: 계획 *내* 가역 마이크로 A/B 의 **logged-default 레인**(멈춤 대신 default 선택+로그+ship 일괄 보고) + **agent.md §7 hard-stop 완화**. 중앙 규약(§7) 변경이라 보수안 운영 데이터 축적 후 별도 spec 승격 (hook 단계론). (2026-06-04)
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
 - ~~접근성 개선~~ → phase-17 **spec-17-02** (accessibility-install-and-entry)
@@ -146,6 +145,7 @@
 - [x] spec-x-native-session-feature-verify (완료)
 - [x] spec-x-native-feature-usage (완료)
 - [x] spec-x-human-gate-model-lock (완료)
+- [x] spec-x-goal-verify-gate (완료)
 <!-- sdd:done:end -->
 
 ---
