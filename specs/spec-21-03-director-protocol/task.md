@@ -41,10 +41,10 @@
 ## Task 3: director-mode.md 운영 가이드 (source + 미러)
 
 ### 3-1. 가이드 작성
-- [ ] `sources/governance/director-mode.md` 작성 (한국어) — 6규칙 운영 절차 / 워커 scoped brief 필수 항목 표 / 검증 체크리스트(전문 재흡수 금지) / over·under-dispatch 경계 예시 / 게이트 보유 원칙(ADR-008·§5/§9 연결).
-- [ ] `.harness-kit/agent/director-mode.md` 미러 동기화 (동일 내용 복사)
-- [ ] 검증: `diff -q sources/governance/director-mode.md .harness-kit/agent/director-mode.md` → 차이 없음
-- [ ] Commit: `feat(spec-21-03): add director-mode.md operational guide`
+- [x] `sources/governance/director-mode.md` 작성 (한국어) — 6규칙 운영 절차 / 워커 scoped brief 필수 항목 표 / 검증 체크리스트(전문 재흡수 금지) / over·under-dispatch 경계 예시 / 게이트 보유 원칙(ADR-008·§5/§9 연결).
+- [x] `.harness-kit/agent/director-mode.md` 미러 동기화 (동일 내용 복사)
+- [x] 검증: `diff -q sources/governance/director-mode.md .harness-kit/agent/director-mode.md` → 차이 없음 (parity OK)
+- [x] Commit: `feat(spec-21-03): add director-mode.md operational guide`
 
 ---
 
