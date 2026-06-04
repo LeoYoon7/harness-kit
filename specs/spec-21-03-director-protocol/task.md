@@ -51,12 +51,12 @@
 ## Task 4: agent.md §6.8 stub + §6.1 delegation (source + 미러) — GREEN
 
 ### 4-1. agent.md 수정
-- [ ] `sources/governance/agent.md` — §6.7 뒤 §7 앞에 **§6.8 Director Mode Protocol** stub 추가(영어, 6규칙 + 핵심 용어 + 참조), §6.1 Strict Loop 뒤에 **Director Mode delegation** 단락 추가(영어, artifact files 커밋 범위 포함).
-- [ ] `.harness-kit/agent/agent.md` 미러 동기화 (동일 내용 반영)
-- [ ] 검증: `bash tests/test-director-protocol.sh` → **전체 PASS (GREEN)**
-- [ ] 회귀: `bash tests/test-governance-dedup.sh` → Check 1/2/4/5/6 PASS, Check 3 red 유지(예상). `bash tests/test-director-mode.sh` + `bash tests/test-context-orchestration.sh` → 무 회귀
-- [ ] 검증: agent.md 순증 ≤ ~150w (NFR2)
-- [ ] Commit: `feat(spec-21-03): add §6.8 director protocol stub + §6.1 delegation`
+- [x] `sources/governance/agent.md` — §6.7 뒤 §7 앞에 **§6.8 Director Mode Protocol** stub 추가(영어, 6규칙 + 핵심 용어 + 참조), §6.1 Strict Loop 뒤에 **Director Mode delegation** 단락 추가(영어, artifact files 커밋 범위 포함).
+- [x] `.harness-kit/agent/agent.md` 미러 동기화 (cp 로 동일 내용 보장)
+- [x] 검증: `bash tests/test-director-protocol.sh` → **13/13 PASS (GREEN)**
+- [x] 회귀: governance-dedup Check 1/2/4/5/6 PASS·Check 3 red 유지(예상), director-mode 10/10, context-orchestration 6/6 → 무 NEW 회귀
+- [x] 검증: agent.md 순증 = **+171w** (4535→4706). 목표 ~150w 에 근접(+21w 초과, enforcement 절 보존 위해 수용 — 21-06 다이어트가 흡수, walkthrough 기록)
+- [x] Commit: `feat(spec-21-03): add 6.8 director protocol stub + 6.1 delegation`
 
 ---
 
