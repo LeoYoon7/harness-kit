@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-human-gate-model-lock — human-gate-model-lock
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox

@@ -22,14 +22,16 @@
 
 ## 1.5 호출 주체 — 누가 발동하나 (★ 중요)
 
-기능은 **누가 발동하는가**로 갈리며, 이게 "harness 도입"의 의미를 정한다.
+기능은 **누가 발동하는가**로 갈린다. 에이전트는 **SlashCommand/Skill tool** 로 *커스텀 커맨드·번들 스킬*을 호출할 수 있으나(조건: `description` 보유 + `disable-model-invocation: true` 아님 + 권한 허용), *순수 내장 세션/UI 커맨드*는 호출하지 못한다 (검증: claude-code-guide + 외부 docs 교차).
 
 | 호출 주체 | 기능 | harness 가 할 수 있는 것 |
 |---|---|---|
-| 🤖 **에이전트 호출 가능** (Skill/Workflow 도구) | `/deep-research`·`/code-review`(기본)·`/fewer-permission-prompts`·`/workflows`·스킬 시스템 | 에이전트 절차에 엮어 *자동 활용/강제* 가능 — **진짜 "도입" 대상** |
-| 👤 **사용자 타이핑** (세션 제어, 에이전트가 못 부름) | `/goal`·`/background`·`/branch`·`/rewind`·`/ultraplan`·`/effort ultracode`·`/code-review ultra`·`/copy`·`/btw`·`/team-onboarding` | 발동·강제 불가. harness 는 *사용자가 쓸 때 게이트 보존(가드)* 만 — "도입"이 아니라 **하우스룰** |
+| 🤖 **에이전트 호출 가능** (SlashCommand/Skill tool — 커스텀 커맨드·번들 스킬) | `/deep-research`·`/code-review`(기본)·`/fewer-permission-prompts`·`/batch`·스킬 시스템·**harness-kit `/hk-*`** | 에이전트 절차에 엮어 *자동 활용* + **`disable-model-invocation`/권한으로 통제** — 진짜 거버넌스 레버가 작동 |
+| 👤 **사용자 전용** (순수 내장 세션/UI — 모델이 못 부름) | `/goal`·`/background`·`/branch`·`/rewind`·`/effort`(ultracode)·`/ultraplan`·`/copy`·`/btw`·`/team-onboarding`·`/workflows`(뷰어)·`/code-review ultra`(클라우드) | 발동·강제 불가. harness 는 *사용자가 쓸 때 게이트 보존(가드)* 만 |
 
-**함의**: 👤 기능에 "harness 가 도입/강제"는 성립하지 않는다(에이전트가 발동 주체가 아님). harness 의 역할은 *가드*(§3 조건)뿐이다. forcing(default-run) 논의가 의미 있는 건 🤖 부류에 한한다.
+**함의**:
+- **👤 부류**: 에이전트가 *자율로 못 켜므로*, `/effort ultracode`·`/background`·`/branch` 의 게이트/멀티모델 우회 위험은 *사람이 켤 때만* 발생 (자율 오용 불가 — 유리한 사실). harness 역할은 가드(§3 조건)뿐.
+- **🤖 부류**: `/hk-*` 포함 모델이 자가 호출 가능 → harness 가 **진짜로 통제**한다. 사람 승인 게이트는 `disable-model-invocation: true` 로 잠근다 — **`/hk-plan-accept`·`/hk-phase-ship` 잠금 적용** (모델 자가 승인 차단). 자율 허용할 `/hk-*`(예: `/hk-spec-critique`)는 열어둔다. (settings 의 SlashCommand/Skill 권한 화이트리스트는 도구명·syntax 확정 후 별도 — 현재는 frontmatter 레버만.)
 
 ## 2. 상황별 사용 가이드 (★ 핵심)
 
