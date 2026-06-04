@@ -63,7 +63,8 @@ This section defines the roles and boundaries of work types used in harness-kit.
 
 ### 3.1 Phase (Epic)
 
-- **Role**: A grouping of related Specs. Can serve as an independent integration test and release unit.
+- **Role**: A grouping of related work (Specs plus small phase-FF commits). Can serve as an independent integration test and release unit.
+- **In-Phase Work Sizing (phase-FF)**: Not every item in a Phase must be a Spec. Within an active Phase (base-branch mode), small/clear/reversible items (1–2 commits) MAY be committed directly to the phase branch as **phase-FF** — no spec artifacts, no per-item re-approval. phase-FF is a first-class *up-front* choice sized at item start, not only a re-adjustment fallback (→ agent.md §11.4; ADR-009). It differs from FF (Mode C, §2.3): phase-FF lands in the Phase PR and MUST NOT change `state.json`'s active spec.
 - **Entry Condition**: 3+ Specs, or inter-Spec dependencies exist, or integration testing is required.
 - **Exit Condition**: All Specs merged, integration tests PASS, User go/no-go via `/hk-phase-ship`, and (base mode) Phase PR merge (→ agent.md §6.3.2).
 - **Phase Ship Rule**: The Agent MUST NOT create a Phase PR (phase branch → main) without explicit User go/no-go approval. The `/hk-phase-ship` procedure — including success criteria verification, integration test execution, and go/no-go report — MUST be completed before PR creation. The Phase PR body MUST follow the `phase-ship.md` template.
@@ -272,7 +273,7 @@ Once a Plan is explicitly accepted (Plan Accept), the Agent is authorized to:
 - Direct commits to `main` are strictly forbidden. The Agent MUST verify the current branch before starting any task.
 
 ### 10.2 Commit Protocol
-- **Pre-Push Validation**: The Agent MUST execute the project's local test suite and confirm it passes before pushing a feature branch for review.
+- **Pre-Push Validation**: The Agent MUST execute the project's local test suite and confirm it passes before pushing a feature branch for review. **phase-FF exception** (→ §3.1, ADR-009): a phase-FF commit keeps the test requirement (testable changes still need passing tests) but has no per-item Spec PR — its review is folded into the phase-ship PR's integration check, not a separate per-item review.
 - **Commit Title Format**: MUST follow `<type>(spec-{phaseN}-{seq}): <description>` (all lowercase).
   - Allowed types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `style`, `perf`, `build`, `ci`.
   - Example: `feat(spec-01-01): introduce row-level lock for stock decrement`.

@@ -469,15 +469,17 @@ The Agent MUST state the recommended mode (with one-line reasoning) at the start
 
 The Agent reports the assessment to the User before continuing with the next spec.
 
-### 11.4 Re-Adjustment Options (in Phase)
+### 11.4 In-Phase Work Sizing & Re-Adjustment
 
-Within a phase, prefer **bundle** or **phase FF** over spec-x demotion (preserves thematic cohesion + saves ceremony):
+**Size each item up front — phase-FF is a first-class choice, not only a fallback.** When starting any item inside an active Phase, the Agent first sizes it: substantial or uncertain → full **Spec**; small/clear/reversible (1–2 commits) → **phase-FF** (direct commit to the phase base branch, no spec artifacts, no per-item re-approval — → constitution §3.1, ADR-009). Do NOT default to "every in-phase item is a Spec," and do NOT bundle small items into a Spec merely to avoid phase-FF.
+
+Re-adjustment (when an already-planned spec's assumptions shift mid-phase, → §11.3) prefers **bundle** or **phase-FF** over spec-x demotion (preserves thematic cohesion + saves ceremony):
 
 | Situation | Action |
 |---|---|
 | Direction invalidated, no longer needed | **Drop** spec (remove from `phase.md` table) |
 | Direction valid, scope small, another small remaining spec exists | **Bundle** — combine into one spec (the "잡탕 cleanup" pattern, e.g., spec-17-04) |
-| Direction valid, scope 1–2 commits, no bundle target | **Phase FF** — commit directly to the phase branch without spec artifacts |
+| Direction valid, scope 1–2 commits, no bundle target | **phase-FF** — commit directly to the phase branch without spec artifacts |
 | Direction valid, scope appropriate | **Proceed as planned** |
 
 spec-x demotion is reserved for *leftover work after a phase has ended*, not for in-phase reshaping.

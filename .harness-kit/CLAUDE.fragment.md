@@ -19,12 +19,12 @@ SDD 작업 시작 시 `/hk-align` 슬래시 커맨드를 호출하면 전체 거
 ## 검증된 패턴 & 안티패턴 (phase-08~18 distilled)
 
 **❌ 안티패턴 (피할 것):**
-- **ceremony-over-work**: 1-2 commit 작업에 full SDD ceremony 금지. → FF (사용자 명시 승인) 또는 spec-x demote.
+- **ceremony-over-work**: 1-2 commit 작업에 full SDD ceremony 금지. → phase 안이면 **phase-FF** (1급, 재승인 불요), phase 밖이면 FF(사용자 승인) 또는 spec-x demote.
 - **silent-inter-spec-drift**: 다음 spec 시작 전 직전 spec 실제 변경 영향 검토 의무. phase plan은 draft — 재검증 필수 (ADR-002).
 
 **✅ 굿 패턴:**
 - **bundle-before-spec-x**: 같은 테마 소규모 항목 3개+ → spec-x 여러 개 대신 하나로 묶기. phase 응집도 + ceremony 절감.
-- **phase-FF**: 1-2 commit, 단일 파일, 가역적 변경 → spec 없이 phase base 브랜치 직접 커밋 (사용자 명시 승인 필요).
+- **phase-FF** (1급, ADR-009): phase 안의 1-2 commit 가역 항목 → spec 없이 phase base 브랜치 직접 커밋. **착수 시점 선택 + 항목별 재승인 불요** (phase plan 이 위임; FF Mode C 와 구별 — state.json active spec 불변). notify 정합: 개별 의사결정 게이트가 아니므로 §5/§9 알림 미발화(최소 알림).
 
 ---
 
