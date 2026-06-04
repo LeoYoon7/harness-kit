@@ -177,6 +177,8 @@ For **EVERY** Task in the approved Plan, the Agent MUST:
 6. **Update task.md**: Mark the task status (see §6.2).
 7. **Auto-proceed or Stop**: If no issues occurred, update `task.md` and **automatically proceed** to the next task — including the Ship task (ship → push → PR creation). If any issue occurs (test failure, unexpected error, scope deviation, push failure), immediately **STOP** and report to the user. On successful PR creation, report the PR URL and wait for User merge.
 
+**Director Mode delegation** (when `directorMode` enabled, → §6.8): the director MAY delegate a task's Strict Loop execution to a worker, who runs test→implement→verify→commit and commits the in-scope artifact files (task.md status, planning artifacts). The director retains gates and verification (§6.8). Single short tasks stay inline (§6.7).
+
 ### 6.2 Task Status Management
 
 **Checkbox states in `task.md`**:
@@ -276,6 +278,17 @@ Generic agent behavior patterns that improve UX, latency, and cost without per-t
 **Version + CHANGELOG paired update**: When `version.json` changes, `CHANGELOG.md` MUST gain a corresponding entry in the same commit. Conversely, never bump version without summarizing changes since the last release.
 
 **Native feature gate-preservation**: Claude Code native features that introduce autonomy, session-splitting, or web hand-off (`/goal`, `/effort ultracode`, `/fewer-permission-prompts`, `/code-review` [incl. ultra], `/ultraplan`, the skill system, `/background`, `/branch`) MAY be used ONLY under gate-preservation conditions — each MUST stop and report at every decision gate (§8.5, Plan Accept) instead of running past them, so text-gate and §10 bidirectional-notification response opportunities are never bypassed. In particular: `/goal` is bounded to one spec/phase's acceptance criteria with an explicit "stop and report at each gate" clause, plus mandatory entry critique + non-skippable ship code-review at spec/phase scope (verification ≠ authorization — Plan Accept and out-of-plan deviations still hard-stop; ADR-007 Amendment); `/effort ultracode` only inside a confirmed implementation phase (never the whole project); `/ultraplan` output MUST be re-gated through `/hk-plan-accept`; `/fewer-permission-prompts` allowlists are reviewed before commit; `/background` is bounded to gate-free mechanical stretches with explicit (tier-2) notification at any gate, and `/branch` peer-fork preserves gates via inherited settings (`CLAUDE_CODE_FORK_SUBAGENT=1` follows `/background`). Per-feature conditions and rationale: ADR-007 (native-feature-adoption-policy) in the kit repo; in install targets (where ADR-007 is not distributed), the self-contained situational guide is `.harness-kit/agent/native-feature-usage.md` — read it when a native feature is being considered.
+
+### 6.8 Director Mode Protocol
+
+Active only when `directorMode` is enabled (→ `/hk-director`). How-to + examples: `director-mode.md`; rationale: ADR-011. Builds on §6.6 — director mode raises delegation aggressiveness, not on/off.
+
+1. **Intent handshake** before dispatch.
+2. **Scoped brief**: target files, expected behaviour, test command, commit format, artifact commit scope — never full history.
+3. **Distilled contract**: commit SHA + test status + decisions only; full transcript return is a VIOLATION.
+4. **Verification by action**: test re-run + live smoke + contract review; re-ingesting the worker's full transcript is PROHIBITED (→ ADR-010 ④).
+5. **Gates stay with director**: Plan Accept, Ship, §5/§9 notification gates never delegated (→ ADR-008).
+6. **No over-dispatch**: respect §6.7; single short commands inline. Strict Loop execution delegation → §6.1 Director Mode delegation.
 
 ## 7. Deviation & Hard Stop
 
