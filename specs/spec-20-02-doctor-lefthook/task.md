@@ -25,11 +25,11 @@
 - [x] Commit: `test(spec-20-02): add failing test for lefthook×hooksPath doctor check`
 
 ### 1-3. 검사 구현 (TDD Green)
-- [ ] `sources/bin/sdd` + `.harness-kit/bin/sdd` `cmd_doctor()` 에 `_check_lefthook_hookspath()` + `_check_hooks` 직후 호출
-- [ ] `doctor.sh` 에 동일 검사
-- [ ] sdd sources↔installed 해당 블록 동일 확인
-- [ ] 실행 → **Pass 확인** + 기존 doctor 회귀 없음
-- [ ] Commit: `fix(spec-20-02): detect lefthook×core.hooksPath conflict in doctor`
+- [x] `sources/bin/sdd` + `.harness-kit/bin/sdd` `cmd_doctor()` 에 `_check_lefthook_hookspath()` + `_check_hooks` 직후 호출
+- [x] `doctor.sh` 에 동일 검사
+- [x] sdd sources↔installed 동일 확인 (diff -q SYNCED)
+- [x] 실행 → **Pass 확인** (PASS 4 / FAIL 0) + 기존 doctor 회귀 없음(additive)
+- [x] Commit: `fix(spec-20-02): detect lefthook×core.hooksPath conflict in doctor`
 
 ---
 
