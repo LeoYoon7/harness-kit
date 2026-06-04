@@ -51,6 +51,7 @@ upstream 의 director mode 가치를 **fork 구조(§6.6/§6.7·ADR-007/008)에 
 |---|---|:---:|---|---|
 | `spec-21-01` | context-orchestration | P? | Merged | `specs/spec-21-01-context-orchestration/` |
 | `spec-21-02` | director-mode-switch | P? | Merged | `specs/spec-21-02-director-mode-switch/` |
+| `spec-21-03` | director-protocol | P? | Active | `specs/spec-21-03-director-protocol/` |
 <!-- sdd:specs:end -->
 
 > 상태 허용값: `Backlog` / `In Progress` / `Merged`
@@ -91,7 +92,14 @@ upstream 의 director mode 가치를 **fork 구조(§6.6/§6.7·ADR-007/008)에 
 - **참조**: upstream spec-20-06(director-protocol Out of Scope 참조), upstream `tests/test-director-mode.sh` T13/T14
 - **연관 모듈**: `sources/commands/hk-code-review.md`, `sources/commands/hk-spec-critique.md`, `sources/commands/hk-phase-review.md`, `.claude/commands/`(미러)
 
-> **agent.md 다이어트(성공기준 4)** 는 별도 spec 이 아니라 거버넌스 spec(21-01/21-03)에 *교차 반영*한다. director 내용을 추가하면서도 §6.8 배치 전략(별도 가이드 분리 + 간결 stub)으로 순증을 흡수하고, 기존 중복 다이어트로 단어 예산 테스트를 green 화한다. 단독 다이어트 규모가 크면 §11.3 재검증으로 spec-21-06 으로 분리한다.
+### spec-21-06 — governance-diet (단어 예산 green 복구)
+
+- **요점**: constitution+agent.md 합계를 6000w 상한 내로 다이어트 (현재 7333w → 목표 <6000w, ~1333w+ 절감). 성공기준 4(`test-governance-dedup.sh` Check 3 GREEN) 달성.
+- **방향성**: 의미 손실 없이 중복/장황 prose 압축 + 별도 가이드(native-feature-usage·director-mode)로 분리 가능한 인라인 잔재 정리. 21-03 의 §6.8 stub 순증분도 흡수. **add/delete 혼재 회피를 위해 protocol(21-03)과 분리** — 본 spec 은 *삭제/압축 전용*.
+- **참조**: `tests/test-governance-dedup.sh` Check 3, 21-01 walkthrough(±50w 순증 이월 결정)
+- **연관 모듈**: `sources/governance/constitution.md`, `sources/governance/agent.md`, `.harness-kit/agent/`(미러)
+
+> **agent.md 다이어트(성공기준 4)** 는 spec-21-03 §11.3 재검증서 그 규모(~1333w)가 protocol 추가와 독립적이고 크다고 확인되어 **별도 spec-21-06 으로 분리**한다(위 narrative). 21-03 은 §6.8 배치 전략(별도 `director-mode.md` 가이드 + 간결 stub)으로 agent.md 순증을 최소화하는 데 그치고, 단어 예산 green(<6000w)은 21-06 이 책임진다. 따라서 Check 3 GREEN 은 21-03 의 DoD 가 아니라 **phase Done 조건**이다.
 
 ## 📌 결정 기록 (Review)
 
@@ -102,8 +110,8 @@ upstream 의 director mode 가치를 **fork 구조(§6.6/§6.7·ADR-007/008)에 
 |---|---|---|---|
 | 통합 방식 | 전체 merge / cherry-pick / 재구현 | **재구현 + 표면 포팅 혼합** | upstream agent.md §6.6/§6.8 재작성이 fork §6.6/§6.7·ADR-007/008 과 충돌. 토글 표면만 자족적이라 포팅 가능 |
 | ADR 번호 | upstream 005/006 재사용 / fork 신규 | **fork 신규 010/011** | fork ADR-005/006 은 ignore-symmetry/code-review-gate — 의미 충돌. upstream 005/006 은 참조로만 |
-| §6.8 배치 (OPEN) | agent.md 인라인 / 별도 가이드 문서 | (spec-21-01 에서 확정) | leading: 별도 `director-mode.md` 가이드 + agent.md 간결 stub (native-feature-usage.md 패턴, 단어 예산 압박 완화) |
-| 단어 예산 상한 (OPEN) | 6000w 유지 / 8000w 상향(upstream) | (spec-21-01 에서 확정) | leading: 6000w 유지 + 다이어트 — fork "컨텍스트 비용 0 우선" 원칙. 상향은 anti-bloat 정신과 상충 |
+| §6.8 배치 | agent.md 인라인 / 별도 가이드 문서 | **별도 `director-mode.md` 가이드 + agent.md 간결 stub** | native-feature-usage.md 패턴. agent.md 순증 최소화(stub). 21-01 이 §6.8 을 분리 후보로 표시 (spec-21-03 §11.3 재검증서 확정) |
+| 단어 예산 상한 | 6000w 유지 / 8000w 상향(upstream) | **6000w 유지 + 다이어트는 spec-21-06 분리** | fork "컨텍스트 비용 0 우선". 다이어트 ~1333w 가 protocol 추가와 독립·대규모 → add/delete 혼재 회피. 상향은 anti-bloat 충돌 (spec-21-03 §11.3 재검증서 확정) |
 
 ## 🧪 통합 테스트 시나리오 (간결)
 
