@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-icebox-prune — icebox-prune
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -143,6 +142,7 @@
 - [x] spec-x-human-gate-model-lock (완료)
 - [x] spec-x-goal-verify-gate (완료)
 - **phase-20** — upstream-parity — completed 2026-06-04
+- [x] spec-x-icebox-prune (완료)
 <!-- sdd:done:end -->
 
 ---
