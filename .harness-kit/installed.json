@@ -3,5 +3,5 @@
   "kitOrigin": "git@github.com:LeoYoon7/harness-kit.git",
   "installedAt": "2026-06-04T04:50:53Z",
   "uxMode": "interactive",
-  "installedCommands": ["hk","hk-align","hk-archive","hk-ask-mode","hk-cleanup","hk-code-review","hk-doctor","hk-gemini-review","hk-phase-review","hk-phase-ship","hk-plan-accept","hk-pr-bb","hk-pr-gh","hk-ship","hk-spec-critique","hk-update"]
+  "installedCommands": ["hk","hk-align","hk-archive","hk-ask-mode","hk-cleanup","hk-code-review","hk-doctor","hk-gemini-review","hk-phase-review","hk-phase-ship","hk-plan-accept","hk-pr-bb","hk-pr-gh","hk-report-issue","hk-ship","hk-spec-critique","hk-update"]
 }
