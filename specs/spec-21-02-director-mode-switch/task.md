@@ -33,12 +33,12 @@
 > T03~T10 (config/status/doctor) green. T01/T02(커맨드)는 Task 3.
 
 ### 2-1. sdd CLI + installed.json + 미러
-- [ ] `sources/bin/sdd`: help 텍스트 + `cmd_config` `director-mode)` 케이스 + `_config_director_mode()` 함수(`--argjson` boolean) + `cmd_status` Director Mode 행 + `cmd_doctor` 진단
-- [ ] `.harness-kit/bin/sdd` 미러 동기화 (parity — 도그푸딩 installed 본)
-- [ ] `.harness-kit/installed.json` `directorMode: false` 추가
-- [ ] `bash tests/test-director-mode.sh` → T03~T10 PASS 확인 (T01/T02 still red)
-- [ ] 실제 동작: `sdd config director-mode on` → installed.json true + `sdd status` 행 노출 확인
-- [ ] Commit: `feat(spec-21-02): add director-mode config toggle + status/doctor`
+- [x] `sources/bin/sdd`: help 텍스트 + `cmd_config` `director-mode)` 케이스 + `_config_director_mode()` 함수(`--argjson` boolean) + `cmd_status` Director Mode 행 + `cmd_doctor` 진단
+- [x] `.harness-kit/bin/sdd` 미러 동기화 (parity — 도그푸딩 installed 본)
+- [x] `.harness-kit/installed.json` `directorMode: false` 추가
+- [x] `bash tests/test-director-mode.sh` → T03~T10 PASS 확인 (T01/T02 still red) — PASS=8 FAIL=2
+- [x] 실제 동작: fixture 통해 검증됨 (T03~T10 모두 PASS)
+- [x] Commit: `feat(spec-21-02): add director-mode config toggle + status/doctor`
 
 ---
 
