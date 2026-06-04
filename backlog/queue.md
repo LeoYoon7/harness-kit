@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-human-gate-model-lock — human-gate-model-lock
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -144,6 +143,7 @@
 - [x] spec-x-native-feature-adoption-policy (완료)
 - [x] spec-x-native-session-feature-verify (완료)
 - [x] spec-x-native-feature-usage (완료)
+- [x] spec-x-human-gate-model-lock (완료)
 <!-- sdd:done:end -->
 
 ---
