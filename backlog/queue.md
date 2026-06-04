@@ -8,7 +8,7 @@
 ## 📦 진행 중 Phase
 
 <!-- sdd:active:start -->
-- **phase-20** — upstream-parity — 4 spec — 다음: (spec 없음)
+(active phase 없음. `bin/sdd phase new <slug>` 로 시작)
 <!-- sdd:active:end -->
 
 ## 📥 spec-x 대기
@@ -146,6 +146,7 @@
 - [x] spec-x-native-feature-usage (완료)
 - [x] spec-x-human-gate-model-lock (완료)
 - [x] spec-x-goal-verify-gate (완료)
+- **phase-20** — upstream-parity — completed 2026-06-04
 <!-- sdd:done:end -->
 
 ---
