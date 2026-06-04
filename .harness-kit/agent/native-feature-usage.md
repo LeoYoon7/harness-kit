@@ -48,7 +48,7 @@
 | 흐름 안 깨는 짧은 질문 | `/btw` | 👤 | 1 | 정보성 질문만. **새 작업 아이디어는 Idea Capture Gate(§5.5)로** |
 | 긴 mechanical 자동 실행(테스트 수트·대량 수정) | `/background` (`/bg`) | 👤 | 3 | **게이트가 예상되지 않는 구간 한정**. 게이트 발생 시 **계층 2 명시 `notify.sh` 필수**(계층 1 자동 hook 의존 금지). worktree 격리가 SDD 단일 체크아웃과 어긋남 인지 |
 | 대안 탐색 분기 | `/branch` (`/fork`) | 👤 | 3 | 기본은 peer fork(`CLAUDE_CODE_FORK_SUBAGENT` 미설정) — 게이트 보존. 세션 권한 재승인 인지. `=1` 은 백그라운드 subagent → `/background` 조건 적용 |
-| 단일 spec/phase 자율 진행 | `/goal` | 👤 | 2 | 단일 spec/phase 의 **acceptance criteria 한정** + 조건문에 "각 게이트에서 멈추고 보고" 명시. **phase 경계 불가침** |
+| 단일 spec/phase 자율 진행 | `/goal` | 👤 | 2 | 단일 spec/phase 의 **acceptance criteria 한정** + 조건문에 "각 게이트에서 멈추고 보고" 명시. **phase 경계 불가침**. spec/phase 급이면 **진입 critique + ship code-review 강제(skip 불가)** — 검증≠승인이라 Plan Accept·계획밖 deviation 은 hard-stop (ADR-007 Amendment) |
 | 구현 phase 심화 추론·오케스트레이션 | `/effort ultracode` | 👤 | 2 | **확정된 구현 phase 내부 한정**. 전체 프로젝트 적용 금지. 토큰 소모 큼 |
 | 권한 프롬프트 줄이기 | `/fewer-permission-prompts` | 🤖 | 2 | 생성된 allowlist **커밋 전 검토**. `.env*`·SSH 키 가드 우회 금지 |
 | 중요 PR ship 직전 보강 리뷰 | `/code-review ultra` (`/ultrareview`) | 👤 | 2 | **사용자만 발동**(에이전트 self-launch 불가). 중요 PR 1회 보강. 정식 리뷰는 `/hk-gemini-review` + `/hk-code-review`. 무료 3회/월 후 크레딧 |
@@ -63,7 +63,7 @@
 
 | 기능 | 게이트 보존 조건 | 막는 충돌 |
 |---|---|---|
-| `/goal` | 단일 spec/phase acceptance criteria + "각 게이트에서 멈추고 보고" 명시. phase 경계 불가침 | 자율 지속이 §8.5·Plan Accept 건너뜀 |
+| `/goal` | 단일 spec/phase acceptance criteria + "각 게이트에서 멈추고 보고" 명시. phase 경계 불가침. spec/phase 급이면 진입 critique + ship code-review 강제(skip 불가) — 검증≠승인(Plan Accept·계획밖 deviation hard-stop), ADR-007 Amendment | 자율 지속이 §8.5·Plan Accept 건너뜀 |
 | `/effort ultracode` | 확정된 구현 phase 내부 한정. 전체 프로젝트 금지 | 자동 오케스트레이션이 phase별 모델 지정 override |
 | `/fewer-permission-prompts` | allowlist 커밋 전 검토. `.env`·SSH 가드 우회 금지 | 무검토 allowlist 가 권한 자세 약화 |
 | `/code-review ultra` | 중요 PR ship 직전 보강 1회(크레딧 제한). 정식 리뷰는 `/hk-gemini-review`+`/hk-code-review` | 크레딧 소진 + 정식 리뷰 대체 오인 |

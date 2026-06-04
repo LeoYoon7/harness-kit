@@ -40,10 +40,10 @@
 ## Task 3: 플레이북 `/goal` 행 갱신 + 설치본 sync
 
 ### 3-1. 플레이북 갱신 (두 복사본 동일 편집)
-- [ ] `sources/governance/native-feature-usage.md` §2 상황표 + §3 2단계 조건표 `/goal` 행에 검증 조건 추가
-- [ ] `.harness-kit/agent/native-feature-usage.md` 동일 편집 (dogfood sync)
-- [ ] `git diff` 로 양쪽 동일 변경 확인
-- [ ] Commit: `docs(spec-x-goal-verify-gate): native-feature-usage /goal 검증 조건 + 설치본 sync`
+- [x] `sources/governance/native-feature-usage.md` §2 상황표 + §3 2단계 조건표 `/goal` 행에 검증 조건 추가
+- [x] `.harness-kit/agent/native-feature-usage.md` 동일 편집 (dogfood sync)
+- [x] `git diff` 로 양쪽 동일 변경 확인 (--no-index exit=0, byte-identical)
+- [x] Commit: `docs(spec-x-goal-verify-gate): native-feature-usage /goal 검증 조건 + 설치본 sync`
 
 ---
 
