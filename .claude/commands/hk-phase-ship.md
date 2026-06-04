@@ -1,5 +1,6 @@
 ---
 description: Phase 완료 — 성공 기준 검증 + 통합 테스트 + go/no-go 후 main PR 생성
+disable-model-invocation: true
 ---
 
 Phase의 모든 Spec이 merge된 후 이 명령으로 Phase Ship 절차를 시작합니다.

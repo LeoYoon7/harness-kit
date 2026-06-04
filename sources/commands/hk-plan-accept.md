@@ -1,5 +1,6 @@
 ---
 description: 현재 SPEC 의 plan.md 를 명시적으로 승인 — Strict Loop 모드 진입
+disable-model-invocation: true
 ---
 
 사용자가 plan.md 를 승인했음을 시스템에 명시적으로 기록합니다. **이 명령은 신중하게 사용하세요** — 이후로는 Strict Loop 로 코드 편집이 시작됩니다.
