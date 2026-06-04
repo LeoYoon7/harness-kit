@@ -10,23 +10,23 @@
 - [x] plan.md 작성
 - [x] task.md 작성 (이 파일)
 - [x] 백로그 업데이트 (phase-21.md SPEC 표 — sdd 자동 갱신)
-- [ ] 사용자 Plan Accept
+- [x] 사용자 Plan Accept
 
 ---
 
 ## Task 1: 실패 테스트 작성 (TDD Red)
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-21-01-context-orchestration` (브랜치 이름 = spec 디렉토리 이름, `feature/` prefix 없음)
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-21-01-context-orchestration` (브랜치 이름 = spec 디렉토리 이름, `feature/` prefix 없음)
+- [x] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. 테스트 작성 (TDD Red)
-- [ ] `tests/test-context-orchestration.sh` 작성 (bash 3.2 호환, `set -uo pipefail`, 3 checks — 단어 예산 가드 제외, critique 대안 C):
+- [x] `tests/test-context-orchestration.sh` 작성 (bash 3.2 호환, `set -uo pipefail`, 3 checks — 단어 예산 가드 제외, critique 대안 C):
   - Check 1: §6.6 에 `orchestrator` / `worker` / `offloading` / `distilled` 용어 grep
   - Check 2: `sources/governance/agent.md` ↔ `.harness-kit/agent/agent.md` parity (`diff -q`)
   - Check 3: `docs/decisions/ADR-010-context-orchestration.md` 존재 + `type: decision`
-- [ ] `bash tests/test-context-orchestration.sh` 실행 → Fail 확인 (Check 1·3 실패 예상)
-- [ ] Commit: `test(spec-21-01): add failing test for context orchestration policy`
+- [x] `bash tests/test-context-orchestration.sh` 실행 → Fail 확인 (5/6 FAIL — Check 1 용어 4 + Check 3 ADR)
+- [x] Commit: `test(spec-21-01): add failing test for context orchestration policy`
 
 ---
 
@@ -35,13 +35,13 @@
 > §6.6 규칙 + ADR-010 근거 + 미러는 *하나의 거버넌스 결정* — net-neutral 다이어트 포함 단일 커밋.
 
 ### 2-1. 거버넌스 + ADR + 미러
-- [ ] `sources/governance/agent.md §6.6` 확장: 제목 → `Model & Context Allocation Strategy`, offloading 5축 단락 추가(영어, 간결) + always-on 명시
-- [ ] net-neutral 다이어트: §6.6 위임 지시 문장(3축 흡수) + docs-only 예외(§6.7 참조 축약) 중복 트림
-- [ ] `docs/decisions/ADR-010-context-orchestration.md` 작성 (frontmatter `type: decision`, 한국어 본문, upstream ADR-005 는 참조로만)
-- [ ] `.harness-kit/agent/agent.md` 미러 동기화 (parity)
-- [ ] `bash tests/test-context-orchestration.sh` → 4 checks PASS 확인
-- [ ] `bash tests/test-governance-dedup.sh` → Check 3 TOTAL 머지 전후 순증 ±50w 이내(walkthrough 기록) + 그 외 무 NEW 회귀 확인
-- [ ] Commit: `feat(spec-21-01): establish context orchestration policy (§6.6 + ADR-010)`
+- [x] `sources/governance/agent.md §6.6` 확장: 제목 → `Model & Context Allocation Strategy`, offloading 5축 단락 추가(영어, 간결) + always-on 명시
+- [x] net-neutral 다이어트: §6.6 위임 지시 문장(3축 흡수) + docs-only 예외(§6.7 참조 축약) + intro/예시 중복 트림 → 순증 +48w (baseline 7285 → 7333, ±50w 내)
+- [x] `docs/decisions/ADR-010-context-orchestration.md` 작성 (frontmatter `type: decision`, 한국어 본문, fork 고유 결정 초점, upstream ADR-005 는 참조로만)
+- [x] `.harness-kit/agent/agent.md` 미러 동기화 (parity)
+- [x] `bash tests/test-context-orchestration.sh` → 6 checks PASS 확인 (용어 4 + 미러 + ADR)
+- [x] `bash tests/test-governance-dedup.sh` → Check 3 +48w(±50w 내) + 그 외 무 NEW 회귀(1/8 FAIL = baseline Check 3 동일)
+- [x] Commit: `feat(spec-21-01): establish context orchestration policy (§6.6 + ADR-010)`
 
 ---
 
@@ -66,5 +66,5 @@
 |---|---|
 | **총 Task 수** | 3 (+ Ship) |
 | **예상 commit 수** | 3 (test / feat / ship docs) |
-| **현재 단계** | Planning |
+| **현재 단계** | Execution (Task 2 완료, 다음 Ship) |
 | **마지막 업데이트** | 2026-06-04 |
