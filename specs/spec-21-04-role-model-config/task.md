@@ -44,11 +44,11 @@
 ## Task 3: §6.6 de-hardcode — GREEN
 
 ### 3-1. agent.md §6.6 역할 참조 전환
-- [ ] `sources/governance/agent.md`: §6.6 prose "runs on Opus" → "runs as director(`models.director`)", 표 모델명 → 역할(director/worker/scout)+`models.*` 참조(4행→3행, review→director 흡수), config 명시(→ ADR-011).
-- [ ] `.harness-kit/agent/agent.md` 미러 동기화 (cp 로 보장).
-- [ ] 검증: `bash tests/test-role-model-config.sh` → **전체 PASS (GREEN)**
-- [ ] 회귀: `test-governance-dedup.sh`(무 NEW 회귀, Check 3 red 유지·가능하면 단어수 감소 기록) + `test-director-mode.sh` + `test-director-protocol.sh` 무 회귀
-- [ ] Commit: `refactor(spec-21-04): de-hardcode 6.6 model names to role config`
+- [x] `sources/governance/agent.md`: §6.6 prose "runs on Opus" → "runs as director(`models.director`)", 표 모델명 → 역할(director/worker/scout)+`models.*` 참조(4행→3행, review→director 흡수), config 명시(→ ADR-011).
+- [x] `.harness-kit/agent/agent.md` 미러 동기화 (cp 로 보장).
+- [x] 검증: `bash tests/test-role-model-config.sh` → **7/7 PASS (GREEN)**
+- [x] 회귀: governance-dedup 1/8(Check 3 만 red, 무 NEW 회귀) — agent.md 4706→**4696w (-10w)**. director-protocol 13/13, director-mode 10/10 무 회귀.
+- [x] Commit: `refactor(spec-21-04): de-hardcode 6.6 model names to role config`
 
 ---
 
