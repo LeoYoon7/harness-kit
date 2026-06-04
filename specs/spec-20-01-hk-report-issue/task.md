@@ -26,12 +26,12 @@
 - [x] Commit: `test(spec-20-01): add failing structure test for hk-report-issue command`
 
 ### 1-3. 커맨드 포팅 + 등록 (TDD Green)
-- [ ] `git show upstream/main:sources/commands/hk-report-issue.md` → `sources/commands/hk-report-issue.md`
-- [ ] 동일 파일을 `.claude/commands/hk-report-issue.md` 로 복사 (byte-identical)
-- [ ] `README.md` 커맨드 목록에 `/hk-report-issue` 추가
-- [ ] `.harness-kit/installed.json` installedCommands 에 `"hk-report-issue"` 추가
-- [ ] 테스트 실행 → **Pass 확인**
-- [ ] Commit: `feat(spec-20-01): port /hk-report-issue command from upstream`
+- [x] `git show upstream/main:sources/commands/hk-report-issue.md` → `sources/commands/hk-report-issue.md`
+- [x] 동일 파일을 `.claude/commands/hk-report-issue.md` 로 복사 (byte-identical)
+- [x] `README.md` 커맨드 목록에 `/hk-report-issue` 추가
+- [x] `.harness-kit/installed.json` installedCommands 에 `"hk-report-issue"` 추가
+- [x] 테스트 실행 → **Pass 확인** (ALL PASS, exit 0)
+- [x] Commit: `feat(spec-20-01): port /hk-report-issue command from upstream`
 
 ---
 
