@@ -18,12 +18,12 @@
 ## Task 1: ADR-007 Amendment — `/goal` 검증 강제 정책
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-x-goal-verify-gate`
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-x-goal-verify-gate`
+- [x] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. ADR-007 Amendment 절 추가
-- [ ] `docs/decisions/ADR-007-native-feature-adoption-policy.md` 에 Amendment 절 추가 (정책 6요소: 검증강제 / 검증≠승인 / hard-stop 2개 / launch-ritual / §11.2 임계 / Q1-a 채택·Q1-b Icebox)
-- [ ] Commit: `docs(spec-x-goal-verify-gate): ADR-007 에 /goal 검증 강제 정책 Amendment 추가`
+- [x] `docs/decisions/ADR-007-native-feature-adoption-policy.md` 에 Amendment 절 추가 (정책 6요소: 검증강제 / 검증≠승인 / hard-stop 2개 / launch-ritual / §11.2 임계 / Q1-a 채택·Q1-b Icebox)
+- [x] Commit: `docs(spec-x-goal-verify-gate): ADR-007 에 /goal 검증 강제 정책 Amendment 추가`
 
 ---
 

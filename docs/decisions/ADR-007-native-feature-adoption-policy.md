@@ -63,6 +63,32 @@ Accepted (2026-06-02, `spec-x-native-feature-adoption-policy` 머지 시점). �
 
 **근거 요약**: 공식 문서상 `/branch` 는 settings(hook 배선)·CLAUDE.md·모델·git 상태를 승계하고 같은 working dir 라 git hook·branch protection 이 적용된다(확정). `/background` 는 세션 분리·worktree 격리·config 공유가 확정이고 계층 1 자동 알림만 미확정이나, 계층 2 명시 알림 + 게이트-free 구간 한정으로 리스크를 한정한다.
 
+## 🔄 Amendment — `/goal` 검증 강제 정책 (2026-06-04, `spec-x-goal-verify-gate`)
+
+`/goal` 의 게이트 보존 조건("각 게이트에서 멈추고 보고")이 `/goal` 의 *자율 진행* 목적과 충돌한다는 지적에 따라 `/goal` 조건을 정련한다. 핵심은 **검증(verification)과 승인(authorization)의 분리** — 검증을 강제해 자율 진행의 신뢰도를 높이고 멈춤 빈도를 낮추되, 권한 게이트는 보존한다.
+
+**1. 검증 강제 (verification forcing)**
+`/goal` 이 spec(6+ task)/phase 급 범위로 실행될 때 **진입 전 critique 강제** + **ship 전 code-review 강제(skip 불가)**. 강제 임계값은 새로 만들지 않고 §11.2 scope 임계를 재사용한다 — 그 미만(1~5 task)의 `/goal` 은 ship code-review 만 강제. (critique 는 구조상 Plan Accept *이전* 활동이라 "진입 전" — agent.md §4.5.)
+
+**2. 검증 ≠ 승인 (★ 경계)**
+code-review·critique 통과는 *품질·정확성* 검증일 뿐 **Plan Accept·scope 확장·merge 권한을 대체하지 않는다** (헌법 §1.2 결정 소유, §5.3 premature execution). 검증을 아무리 강하게 걸어도 권한 게이트는 사람의 것이다.
+
+**3. 보존되는 hard-stop 2개**
+검증 강제와 무관하게 `/goal` 자율 실행 중에도 다음은 멈춘다.
+
+| hard-stop | 근거 |
+|---|---|
+| 진입 Plan Accept | ADR-008 (frontmatter 하드락 — 모델 자가 승인 불가) |
+| 계획 밖 권한 필요 deviation (새 파일·의존성·결정) | 헌법 §7.2, agent.md §7 |
+
+**4. launch-ritual 앵커링**
+`/goal` 은 👤 사용자 전용이라 에이전트가 *켜진 것을 신뢰성 있게 자동 감지* 못 할 수 있다. 따라서 본 정책은 *에이전트 자동 감지* 가 아니라 **사용자의 `/goal` 시작 의식**에 앵커링한다 — 사용자가 `/goal` 시작 *전* critique 를 돌리고 ship code-review 강제를 인지한 상태로 시작한다. code-review 강제는 ADR-006 default-run 을 해당 `/goal` spec 한정 *skip-불가* 로 격상하는 형태라 감지가 불필요하다.
+
+**5. 채택 범위 — 1차 보수안(Q1-a)**
+본 Amendment 는 **보수안**만 채택한다 — 계획 *내* 가역적 마이크로 A/B 결정도 hard-stop 을 유지한다(즉 멈춤이 완전히 사라지지는 않는다). 멈춤을 *계획밖만* 으로 좁히는 **적극안(Q1-b — agent.md §7 hard-stop 완화 + logged-default 레인)** 은 중앙 규약(§7) 변경이라 리스크가 커, `hook 단계론`(경고→차단) 정신으로 보수안 운영 데이터를 축적한 뒤 별도 spec 으로 승격한다 (queue.md Icebox).
+
+**근거 요약**: 검증 강제는 자율 진행을 *더 신뢰* 하게 만들고 진입 critique 가 중간 surprise(=멈춤 유발)를 줄이지만, 권한 위임은 못 한다. 따라서 `/goal` 은 "검증으로 보강된 자율 + 권한 게이트 2개 보존" 형태가 된다.
+
 ## 🔗 Related
 
 - 조사: `spec-x-cc-native-adoption` (PR #25) — 8충돌축 매트릭스 + Go/No-Go 종합
