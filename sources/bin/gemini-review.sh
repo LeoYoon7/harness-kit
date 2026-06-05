@@ -9,7 +9,9 @@
 #   specs/<spec-dir>/code-review-gemini.md
 #
 # 의존성: bash 3.2+, jq, git, gemini CLI (https://geminicli.com)
-# 실행 모드: read-only (gemini --approval-mode plan)
+# 실행 모드: 방어적 래퍼 — --approval-mode plan 의 read-only 보장을 신뢰하지 않고,
+#           실행 전후 HEAD/워킹트리 스냅샷으로 부수효과(커밋/파일변경)를 감지·거부한다
+#           (spec-x-gemini-review-sandbox: gemini 가 plan 모드에서 워크스페이스를 변조한 사고 대응).
 
 set -uo pipefail
 
@@ -94,22 +96,61 @@ INSTRUCTION="당신은 독립적인 시니어 개발자 코드 리뷰어입니�
 OUTPUT_FILE="$SPEC_DIR/code-review-gemini.md"
 echo "🔍 Gemini 리뷰 실행 중 ($SPEC_ID, base=$BASE_BRANCH)..." >&2
 
+# 부수효과 감지용 사전 스냅샷 (--approval-mode plan 의 read-only 보장은 신뢰 불가)
+BEFORE_HEAD=$(git rev-parse HEAD 2>/dev/null || echo "")
+PRE_STATUS=$(git status --porcelain 2>/dev/null || echo "")
+
+# gemini stdout 은 repo 밖 TEMP 로 받는다 (검증 통과 후에만 OUTPUT_FILE 로 이동)
+OUT_TMP=$(mktemp)
 GEMINI_STDERR=$(mktemp)
-if ! gemini -p "$INSTRUCTION" --approval-mode plan < "$INPUT_FILE" > "$OUTPUT_FILE" 2>"$GEMINI_STDERR"; then
+if ! gemini -p "$INSTRUCTION" --approval-mode plan < "$INPUT_FILE" > "$OUT_TMP" 2>"$GEMINI_STDERR"; then
     echo "✗ gemini CLI 호출 실패" >&2
     echo "--- gemini stderr ---" >&2
     cat "$GEMINI_STDERR" >&2
-    rm -f "$OUTPUT_FILE" "$GEMINI_STDERR" "$INPUT_FILE"
+    rm -f "$OUT_TMP" "$GEMINI_STDERR" "$INPUT_FILE"
     exit 1
 fi
 rm -f "$GEMINI_STDERR" "$INPUT_FILE"
 
-if [ ! -s "$OUTPUT_FILE" ]; then
-    echo "✗ Gemini 가 빈 응답을 반환했습니다" >&2
-    rm -f "$OUTPUT_FILE"
+# 7. 부수효과 감지 — gemini 가 read-only 를 어기고 워크스페이스를 변조했는가
+AFTER_HEAD=$(git rev-parse HEAD 2>/dev/null || echo "")
+POST_STATUS=$(git status --porcelain 2>/dev/null || echo "")
+if [ "$AFTER_HEAD" != "$BEFORE_HEAD" ] || [ "$PRE_STATUS" != "$POST_STATUS" ]; then
+    echo "✗ Gemini 가 워크스페이스를 변조했습니다 (read-only 위반) — 리뷰 거부" >&2
+    if [ "$AFTER_HEAD" != "$BEFORE_HEAD" ]; then
+        echo "  · 신규 커밋:" >&2
+        git log --oneline "${BEFORE_HEAD}..${AFTER_HEAD}" 2>/dev/null | sed 's/^/    /' >&2
+    fi
+    if [ "$PRE_STATUS" != "$POST_STATUS" ]; then
+        echo "  · 워킹트리 변경 감지" >&2
+    fi
+    if [ -z "$PRE_STATUS" ] && [ -n "$BEFORE_HEAD" ]; then
+        git reset --hard "$BEFORE_HEAD" >/dev/null 2>&1
+        git clean -fd >/dev/null 2>&1
+        echo "  · 로컬 변경 자동 원복 완료 (사전 워킹트리 clean)" >&2
+    else
+        echo "  · 사전 워킹트리가 clean 아님 → 자동 원복 생략, 수동 확인 필요" >&2
+    fi
+    echo "  ⚠ 원격(push/PR)은 자동 감지·원복 불가 — 직접 확인하세요" >&2
+    rm -f "$OUT_TMP"
     exit 1
 fi
 
-# 7. 요약 추출 (마크다운 리스트 마커 / 공백 변형 허용)
+if [ ! -s "$OUT_TMP" ]; then
+    echo "✗ Gemini 가 빈 응답을 반환했습니다" >&2
+    rm -f "$OUT_TMP"
+    exit 1
+fi
+
+# 8. 출력 형식 검증 — 리뷰가 아닌 출력(구현 요약/잡음) 오저장 방지
+if ! grep -qE '# Code Review|## 요약' "$OUT_TMP"; then
+    echo "✗ Gemini 출력이 리뷰 형식이 아닙니다 (구현 요약/잡음 의심) — 리뷰 거부" >&2
+    rm -f "$OUT_TMP"
+    exit 1
+fi
+
+mv "$OUT_TMP" "$OUTPUT_FILE"
+
+# 9. 요약 추출 (마크다운 리스트 마커 / 공백 변형 허용)
 echo "✅ Gemini 리뷰 완료: $OUTPUT_FILE" >&2
 grep -E "^[-*]\s+(전체 평가|Critical|Major|Minor)" "$OUTPUT_FILE" 2>/dev/null | head -4 >&2 || true

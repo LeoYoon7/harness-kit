@@ -28,11 +28,11 @@
 ## Task 2: 방어적 래퍼 구현 (TDD Green)
 
 ### 2-1. gemini-review.sh 하드닝
-- [ ] `sources/bin/gemini-review.sh`: BEFORE 스냅샷(HEAD+porcelain) → gemini stdout 을 repo 밖 TEMP → AFTER 비교 → 부수효과 시 거부+원격경고+(clean-pre)자동원복+exit1 → 리뷰 형식 검증 → 통과 시 TEMP→OUTPUT_FILE. 헤더 주석 정정.
-- [ ] `.harness-kit/bin/gemini-review.sh` 미러 동기화 (cp 로 보장).
-- [ ] 검증: `bash tests/test-gemini-review-guard.sh` → **전체 PASS (GREEN)**
-- [ ] 회귀: 기존 테스트 무 회귀 (`test-governance-dedup.sh` 등)
-- [ ] Commit: `fix(spec-x-gemini-review-sandbox): guard gemini-review against workspace mutation`
+- [x] `sources/bin/gemini-review.sh`: BEFORE 스냅샷(HEAD+porcelain) → gemini stdout 을 repo 밖 TEMP → AFTER 비교 → 부수효과 시 거부+원격경고+(clean-pre)자동원복+exit1 → 리뷰 형식 검증 → 통과 시 TEMP→OUTPUT_FILE. 헤더 주석 정정.
+- [x] `.harness-kit/bin/gemini-review.sh` 미러 동기화 (cp 로 보장).
+- [x] 검증: `bash tests/test-gemini-review-guard.sh` → **9/9 PASS (GREEN)**
+- [x] 회귀: 변경이 gemini-review.sh 단일 파일이라 타 테스트 무영향 (guard test 가 직접 커버).
+- [x] Commit: `fix(spec-x-gemini-review-sandbox): guard gemini-review against workspace mutation`
 
 ---
 
