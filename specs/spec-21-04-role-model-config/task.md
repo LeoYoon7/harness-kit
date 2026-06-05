@@ -52,12 +52,26 @@
 
 ---
 
+## Task 3.5: 코드 리뷰 반영 (Opus, ship 전)
+
+> Gemini 오작동(할루시네이션) → Opus 서브에이전트 재리뷰: Approve / Minor 4. 권고 1+2 반영(3/4 는 KISS 잔존).
+
+### 3.5-1. ADR-011 귀속 정합 (권고 1)
+- [x] `docs/decisions/ADR-011-director-mode.md` 에 Amendment 추가 — role-based model config 근거(§6.6 `(→ ADR-011)` 포인터 정합화).
+- [x] Commit: `docs(spec-21-04): amend ADR-011 with role-based model config rationale`
+
+### 3.5-2. 테스트 엣지 보강 (권고 2)
+- [x] `tests/test-role-model-config.sh` C6(미지원 role → exit 1) + C7(`.models` 미존재 → fallback) 추가 → 9/9 PASS.
+- [x] Commit: `test(spec-21-04): cover unsupported role + .models fallback`
+
+---
+
 ## Task 4: Ship (필수)
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
 - [ ] 전체 테스트 실행 → `test-role-model-config.sh` PASS + 회귀 무 NEW
-- [ ] 코드 리뷰 게이트 (§6.3 — Gemini 권장 / Opus / Skip)
+- [ ] 코드 리뷰 게이트 (§6.3 — Gemini 오작동 → Opus 재리뷰 Approve, 권고 1+2 반영)
 - [ ] **walkthrough.md 작성** (검증 결과, 단어수 before/after, 결정 기록)
 - [ ] **pr_description.md 작성** (템플릿 준수)
 - [ ] **Ship Commit**: `docs(spec-21-04): ship walkthrough and pr description`

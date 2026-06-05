@@ -109,6 +109,29 @@ else
   fail "sdd 미러 불일치"
 fi
 
+# --- C6: 미지원 role → 에러 (NFR — 에러 경로) ---
+echo "▶ C6: 미지원 role → exit 1"
+F6=$(make_fixture)
+FIXTURES_TO_CLEAN="$FIXTURES_TO_CLEAN $F6"
+if run_sdd "$F6" config models reviewer opus >/dev/null 2>&1; then
+  fail "미지원 role(reviewer) 이 에러 없이 통과됨"
+else
+  ok "미지원 role → exit 1"
+fi
+
+# --- C7: .models 미존재 → list fallback (NFR1 backward compat) ---
+echo "▶ C7: .models 삭제 → list fallback 기본값"
+F7=$(make_fixture)
+FIXTURES_TO_CLEAN="$FIXTURES_TO_CLEAN $F7"
+TMP7=$(mktemp)
+jq 'del(.models)' "$F7/.harness-kit/installed.json" > "$TMP7" && mv "$TMP7" "$F7/.harness-kit/installed.json"
+OUT7=$(run_sdd "$F7" config models)
+if echo "$OUT7" | grep -q "director" && echo "$OUT7" | grep -q "opus" && echo "$OUT7" | grep -q "sonnet"; then
+  ok ".models 미존재 시 fallback(opus/sonnet) 출력"
+else
+  fail "fallback 출력 누락 — 실제: $OUT7"
+fi
+
 echo ""
 echo "=== 결과: PASS=$PASS FAIL=$FAIL ==="
 [ "$FAIL" -eq 0 ] || exit 1
