@@ -19,9 +19,9 @@
 > 브랜치는 사전 생성됨(main 기준). 본 task 는 테스트부터.
 
 ### 1-1. 테스트 작성 (TDD Red)
-- [ ] `tests/test-gemini-review-guard.sh` 작성 — stub `gemini`(PATH 주입) + make_fixture. T1 rogue commit 감지+원복+리뷰파일 부재, T2 rogue 파일쓰기 감지, T3 비-리뷰 출력 거부, T4 정상 리뷰 성공.
-- [ ] 테스트 실행 → Fail 확인 (현 gemini-review.sh 는 부수효과 무감지 → T1~T3 Red)
-- [ ] Commit: `test(spec-x-gemini-review-sandbox): add guard test for workspace mutation`
+- [x] `tests/test-gemini-review-guard.sh` 작성 — stub `gemini`(PATH 주입) + make_fixture. T1 rogue commit 감지+원복+리뷰파일 부재, T2 rogue 파일쓰기 감지, T3 비-리뷰 출력 거부, T4 정상 리뷰 성공.
+- [x] 테스트 실행 → Fail 확인 (PASS=2 FAIL=7 — T1~T3 Red, T4 만 구 스크립트로 통과)
+- [x] Commit: `test(spec-x-gemini-review-sandbox): add guard test for workspace mutation`
 
 ---
 
