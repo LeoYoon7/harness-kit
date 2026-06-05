@@ -4,5 +4,6 @@
   "installedAt": "2026-06-04T04:50:53Z",
   "uxMode": "interactive",
   "directorMode": false,
+  "models": { "director": "opus", "worker": "sonnet", "scout": "opus" },
   "installedCommands": ["hk","hk-align","hk-archive","hk-ask-mode","hk-cleanup","hk-code-review","hk-doctor","hk-gemini-review","hk-phase-review","hk-phase-ship","hk-plan-accept","hk-pr-bb","hk-pr-gh","hk-report-issue","hk-ship","hk-spec-critique","hk-update"]
 }

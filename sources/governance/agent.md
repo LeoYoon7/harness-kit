@@ -248,14 +248,13 @@ When the project has static analysis tools configured (type-checker, linter), us
 
 ### 6.6 Model & Context Allocation Strategy
 
-The main session runs on **Opus** (planning, coordination, judgment). Sub-agents are dispatched with explicit model overrides:
+The main session runs as the **director** (`models.director`) — planning, coordination, judgment. Sub-agents are dispatched per role. Model tiers are role-based config (`sdd config models`), de-hardcoded so governance survives model churn (→ ADR-011).
 
-| Role | Model | Rationale |
+| Role | Tier | Scope |
 |---|---|---|
-| Spec / Plan / Task authoring | Opus (main) | Architecture decisions and scope require deep reasoning |
-| Task execution | Sonnet (sub-agent, `model: "sonnet"`) | Task execution is relatively mechanical; faster and cheaper |
-| Code review / critique | Opus (sub-agent, `model: "opus"`) | Catching subtle issues requires deep analysis from a different context |
-| Code analysis | Opus (sub-agent, `model: "opus"`) | Structural understanding and impact assessment |
+| **director** | `models.director` | Spec/Plan/Task authoring, judgment, code review / critique — deep reasoning |
+| **worker** | `models.worker` (sub-agent) | Task execution — relatively mechanical; faster, cheaper |
+| **scout** | `models.scout` (sub-agent) | Code analysis / broad search — structural understanding, impact assessment |
 
 **Context offloading (orchestrator–worker)** — the main session is a *context orchestrator*. When delegating: (1) **delegate** token-heavy / polluting labor (multi-file impl, broad search; boundary → §6.7 threshold), keeping judgment and verification on main; (2) inject a **scoped slice** (files, expected behavior, test command, commit format), not full history; (3) the worker returns a **distilled contract** (commit SHA, test + completion status [full/partial/failed], decisions), never the transcript; (4) orchestrator **retains verification** (on failure → §7 Hard Stop); (5) **fan out** independent jobs (→ §6.7). Applies always; director mode (→ §6.8) toggles delegation *aggressiveness*, not on/off. Rationale: ADR-010.
 
