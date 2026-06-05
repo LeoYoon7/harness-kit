@@ -8,13 +8,14 @@
 ## 📦 진행 중 Phase
 
 <!-- sdd:active:start -->
-(active phase 없음. `bin/sdd phase new <slug>` 로 시작)
+- **phase-21** — ? — 4 spec — 다음: spec-x-gemini-review-sandbox
 <!-- sdd:active:end -->
 
 ## 📥 spec-x 대기
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-gemini-review-sandbox — gemini-review-sandbox
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
