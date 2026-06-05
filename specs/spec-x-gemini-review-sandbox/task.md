@@ -50,15 +50,15 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 전체 테스트 실행 → `test-gemini-review-guard.sh` PASS + 회귀 무
-- [ ] 코드 리뷰 게이트 — **Opus(/hk-code-review)** (gemini 회피 — 고치는 대상)
-- [ ] **walkthrough.md 작성**
-- [ ] **pr_description.md 작성**
-- [ ] **Ship Commit**: `docs(spec-x-gemini-review-sandbox): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-gemini-review-sandbox`
-- [ ] **PR 생성**: `gh pr create --base main` (spec-x → main, leaked baseBranch 무시)
-- [ ] **specx done**: `sdd specx done gemini-review-sandbox` (머지 후, queue.md done 이동)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 전체 테스트 실행 → `test-gemini-review-guard.sh` 12/12 PASS + 회귀 무
+- [x] 코드 리뷰 게이트 — **Opus(/hk-code-review)** → Approve (Minor-4/3 반영)
+- [x] **walkthrough.md 작성**
+- [x] **pr_description.md 작성**
+- [x] **Ship Commit**: `docs(spec-x-gemini-review-sandbox): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-x-gemini-review-sandbox`
+- [x] **PR 생성**: `gh pr create --base main` (spec-x → main, leaked baseBranch 무시)
+- [-] **specx done**: `sdd specx done gemini-review-sandbox` — 머지 *후* 단계라 push 전 불가, 의도적 연기(post-merge 실행)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
