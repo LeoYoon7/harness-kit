@@ -113,6 +113,8 @@ fi
 rm -f "$GEMINI_STDERR" "$INPUT_FILE"
 
 # 7. 부수효과 감지 — gemini 가 read-only 를 어기고 워크스페이스를 변조했는가
+# 한계: git status --porcelain 은 gitignored 경로 쓰기는 감지하지 못한다
+#       (실 사고의 walkthrough/pr_description 은 비-ignored 라 감지됨 — 핵심 사고 커버).
 AFTER_HEAD=$(git rev-parse HEAD 2>/dev/null || echo "")
 POST_STATUS=$(git status --porcelain 2>/dev/null || echo "")
 if [ "$AFTER_HEAD" != "$BEFORE_HEAD" ] || [ "$PRE_STATUS" != "$POST_STATUS" ]; then

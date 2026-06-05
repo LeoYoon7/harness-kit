@@ -117,6 +117,15 @@ RC4=$(run_review "$FX4" valid)
 if [ "$RC4" -eq 0 ]; then ok "정상 리뷰 → 성공(exit 0)"; else fail "정상 리뷰가 실패함(exit=$RC4)"; fi
 if [ -f "$(review_file "$FX4")" ]; then ok "리뷰 파일 생성됨"; else fail "정상인데 리뷰 파일 미생성"; fi
 
+# --- T5: dirty 사전 상태 → 자동원복 생략 + 사용자 작업 보존 (안전 가드 negative path) ---
+echo "▶ T5: dirty 사전 → 자동원복 생략 + 사용자 미커밋 보존"
+FX5=$(setup_fixture); CLEAN="$CLEAN $FX5"
+printf 'user work\n' > "$FX5/user_uncommitted.txt"   # 사용자 미커밋 작업 (dirty)
+RC5=$(run_review "$FX5" rogue_commit)
+if [ "$RC5" -ne 0 ]; then ok "dirty+rogue → 거부(exit=$RC5)"; else fail "dirty+rogue 가 통과됨"; fi
+if [ -f "$FX5/user_uncommitted.txt" ]; then ok "사용자 미커밋 파일 보존됨 (자동원복 생략)"; else fail "사용자 파일 삭제됨 (clean -fd 오작동 — 가드 실패)"; fi
+if [ ! -f "$(review_file "$FX5")" ]; then ok "리뷰 파일 미생성"; else fail "거부인데 리뷰 파일 생성됨"; fi
+
 echo ""
 echo "=== 결과: PASS=$PASS FAIL=$FAIL ==="
 [ "$FAIL" -eq 0 ] || exit 1

@@ -36,6 +36,16 @@
 
 ---
 
+## Task 2.5: 코드 리뷰 반영 (Opus, ship 전)
+
+> Opus 리뷰: Approve / Minor 4. Minor-4(강력권고)+Minor-3 반영, Minor-1/2 선택 skip.
+
+- [x] **Minor-4**: T5(dirty 사전 → 자동원복 생략 + 사용자 미커밋 보존) 테스트 추가 → 12/12 PASS. 안전 가드 negative path 고정.
+- [x] **Minor-3**: `git status --porcelain` 의 gitignored 쓰기 미감지 한계를 부수효과 블록에 주석.
+- [x] Commit: `test(spec-x-gemini-review-sandbox): cover dirty-branch guard + document ignored-write limit`
+
+---
+
 ## Task 3: Ship (필수)
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
