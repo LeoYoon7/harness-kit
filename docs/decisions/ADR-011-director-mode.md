@@ -47,6 +47,15 @@ ADR-010 의 always-on 전략을 **사용자가 `/hk-director` 로 켜는 명시�
 Accepted (2026-06-05). 적용: `agent.md §6.8 Director Mode Protocol` stub + `§6.1 Director Mode delegation` 단락 + `director-mode.md` 운영 가이드 (spec-21-03).
 선행: `/hk-director` 토글 + `directorMode` 영속화 (spec-21-02 → ADR-010 토대).
 
+## 🔁 Amendment — 역할 기반 모델 config (spec-21-04, 2026-06-05)
+
+본 ADR 의 디렉터/워커 역할 분업을 운영하려면 역할→모델 매핑이 거버넌스에 *하드코딩*되지 않아야 한다 — 모델 세대 churn(예: 4.7→4.8)마다 거버넌스를 수정하는 부채를 피하기 위함. spec-21-04 가 이를 구체화한다.
+
+- **결정**: 역할(director/worker/scout)→모델 매핑을 `installed.json` `.models` 로 분리하고 `sdd config models` 로 노출. agent.md §6.6 의 모델 이름(Opus/Sonnet) 하드코딩을 역할 참조(`models.*`)로 de-hardcode.
+- **기본값**: director=opus / worker=sonnet / scout=opus (현 동작 보존). `.models` 미존재 시 fallback.
+- **근거**: 거버넌스는 *정책*(어떤 역할에 어떤 티어)이어야 하며, 모델 이름(구현 디테일)에 묶이면 세대 교체마다 거버넌스를 고쳐야 한다. config 분리로 거버넌스가 모델 churn 을 견딘다.
+- **적용**: agent.md §6.6, `sdd config models`, `installed.json .models` (spec-21-04).
+
 ## 🔗 Related
 
 - ADR-010 (context-orchestration) — 본 ADR 의 토대(always-on 전략), 이를 사용자 호출형 운영 프로토콜로 구체화
