@@ -8,7 +8,7 @@
 ## 📦 진행 중 Phase
 
 <!-- sdd:active:start -->
-- **phase-21** — director-mode — 4 spec — 다음: spec-21-04-role-model-config
+- **phase-21** — director-mode — 4 spec — 다음: (spec 없음)
 <!-- sdd:active:end -->
 
 ## 📥 spec-x 대기
