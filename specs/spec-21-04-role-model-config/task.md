@@ -70,14 +70,14 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 전체 테스트 실행 → `test-role-model-config.sh` PASS + 회귀 무 NEW
-- [ ] 코드 리뷰 게이트 (§6.3 — Gemini 오작동 → Opus 재리뷰 Approve, 권고 1+2 반영)
-- [ ] **walkthrough.md 작성** (검증 결과, 단어수 before/after, 결정 기록)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-21-04): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-21-04-role-model-config`
-- [ ] **PR 생성**: `/hk-pr-gh` — base = `phase-21-director-mode`
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 전체 테스트 실행 → `test-role-model-config.sh` 9/9 PASS + 회귀 무 NEW
+- [x] 코드 리뷰 게이트 (§6.3 — Gemini 오작동 → Opus 재리뷰 Approve, 권고 1+2 반영)
+- [x] **walkthrough.md 작성** (Gemini 오작동 산출물 덮어쓰기 — 전체 경위 포함)
+- [x] **pr_description.md 작성** (템플릿 준수, Gemini 산출물 덮어쓰기)
+- [x] **Ship Commit**: `docs(spec-21-04): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-21-04-role-model-config`
+- [x] **PR 생성**: `/hk-pr-gh` — base = `phase-21-director-mode`
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -85,7 +85,7 @@
 
 | 항목 | 값 |
 |---|---|
-| **총 Task 수** | 4 (작업 3 + Ship) |
-| **예상 commit 수** | 5 (planning / test / config / de-hardcode / ship) |
-| **현재 단계** | Planning |
+| **총 Task 수** | 4 (작업 3 + 리뷰반영 + Ship) |
+| **실제 commit 수** | 8 (planning / test / config / de-hardcode / ADR-amend / test-C6C7 / [gemini stray 9d07f91] / ship) |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-06-05 |
