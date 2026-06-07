@@ -25,12 +25,12 @@
 
 ## Task 2: agent.md 추출 + stale 제거
 
-### 2-1. §6.7 추출 + §8.4 제거
-- [ ] `sources/governance/agent.md`: §6.7 native-feature 단락 → stub(규칙+가이드 참조), §8.4 AskUserQuestion → 1줄 stub.
-- [ ] `.harness-kit/agent/agent.md` 미러 동기화 (cp).
-- [ ] 측정: `wc -w` + `test-governance-dedup.sh` Check 3 추적 (아직 red 가능).
-- [ ] 검증: §6.7 stub 이 참조하는 `native-feature-usage.md` 가 상세 보유 확인 (빈 참조 방지).
-- [ ] Commit: `refactor(spec-21-05): extract 6.7 native-feature + drop stale 8.4 AUQ`
+### 2-1. §6.7 추출 + §8.4 압축
+- [x] `sources/governance/agent.md`: §6.7 native-feature 단락 → stub(규칙+가이드 참조). §8.4 AUQ → **압축**(제거 아님 — 배포 대상엔 AUQ 가이드 유효, fork 의 no-AUQ 는 fragment override. NFR1 의미무변경 정합).
+- [x] `.harness-kit/agent/agent.md` 미러 동기화 (cp).
+- [x] 측정: agent.md 4696→**4491w (-205w)**, 합계 7289w (still red — 예상, 점진 감소).
+- [x] 검증: §6.7 stub 이 `native-feature-usage.md` 참조 — 가이드 상세 보유 확인.
+- [x] Commit: `refactor(spec-21-05): extract 6.7 native-feature stub + compress 8.4 AUQ`
 
 ---
 

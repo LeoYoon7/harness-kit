@@ -276,7 +276,7 @@ Generic agent behavior patterns that improve UX, latency, and cost without per-t
 
 **Version + CHANGELOG paired update**: When `version.json` changes, `CHANGELOG.md` MUST gain a corresponding entry in the same commit. Conversely, never bump version without summarizing changes since the last release.
 
-**Native feature gate-preservation**: Claude Code native features that introduce autonomy, session-splitting, or web hand-off (`/goal`, `/effort ultracode`, `/fewer-permission-prompts`, `/code-review` [incl. ultra], `/ultraplan`, the skill system, `/background`, `/branch`) MAY be used ONLY under gate-preservation conditions — each MUST stop and report at every decision gate (§8.5, Plan Accept) instead of running past them, so text-gate and §10 bidirectional-notification response opportunities are never bypassed. In particular: `/goal` is bounded to one spec/phase's acceptance criteria with an explicit "stop and report at each gate" clause, plus mandatory entry critique + non-skippable ship code-review at spec/phase scope (verification ≠ authorization — Plan Accept and out-of-plan deviations still hard-stop; ADR-007 Amendment); `/effort ultracode` only inside a confirmed implementation phase (never the whole project); `/ultraplan` output MUST be re-gated through `/hk-plan-accept`; `/fewer-permission-prompts` allowlists are reviewed before commit; `/background` is bounded to gate-free mechanical stretches with explicit (tier-2) notification at any gate, and `/branch` peer-fork preserves gates via inherited settings (`CLAUDE_CODE_FORK_SUBAGENT=1` follows `/background`). Per-feature conditions and rationale: ADR-007 (native-feature-adoption-policy) in the kit repo; in install targets (where ADR-007 is not distributed), the self-contained situational guide is `.harness-kit/agent/native-feature-usage.md` — read it when a native feature is being considered.
+**Native feature gate-preservation**: Claude Code native features that add autonomy, session-splitting, or web hand-off (`/goal`, `/effort ultracode`, `/ultraplan`, `/background`, `/branch`, `/fewer-permission-prompts`, `/code-review` [incl. ultra], skills) MAY be used ONLY if every decision gate (§8.5, Plan Accept) still stops and reports — text-gate and §10 bidirectional-notification responses are never bypassed (e.g. `/goal` bounded to one spec/phase's acceptance criteria + entry critique + non-skippable ship review; `/ultraplan` re-gated through `/hk-plan-accept`). Per-feature conditions + rationale: ADR-007 (kit repo) / `native-feature-usage.md` (install targets — read before using one).
 
 ### 6.8 Director Mode Protocol
 
@@ -355,30 +355,9 @@ Avoid decorative emoji in plain text prose. Emoji in bash output MUST be consist
 
 ### 8.4 AskUserQuestion Tool Preference
 
-At key decision points requiring user input, the Agent SHOULD use the `AskUserQuestion` tool instead of plain text output.
+At key decision points (Work Mode → §3, Plan Accept vs Critique → constitution §5.2, PR confirmation → §5.7, Idea Capture Gate → §5.5) the Agent SHOULD use `AskUserQuestion` instead of plain text — keep options 2–4, trade-offs in the description. Text formats (`1)/2)`, `[Y/n]`) remain the authoritative fallback when AUQ isn't rendered or a yes/no suffices. Gated by `uxMode` in `installed.json`: `interactive` (default) → use; `text` → skip; absent → interactive. Change via `sdd config ux-mode [interactive|text|toggle]` or `/hk-ask-mode`.
 
-**Preferred usage points**:
-
-| Decision Point | Context |
-|---|---|
-| **Work Mode selection** | SDD-P / SDD-x / FF (→ §3) |
-| **Plan Accept vs Critique** | Enter execution or run critique first (→ constitution §5.2) |
-| **PR creation confirmation** | When not in `--no-confirm` mode (→ constitution §5.7) |
-| **Idea Capture Gate** | Continue current work or switch to new idea (→ constitution §5.5) |
-
-**Text format remains a valid fallback when**:
-- The environment does not render `AskUserQuestion` (restricted CLI contexts)
-- A simple yes/no is sufficient
-- The existing text formats (`1)/2)`, `[Y/n]`) from constitution §5.2·§5.7 are still authoritative fallback rules
-
-**`uxMode` config field**: Before using `AskUserQuestion`, check `.harness-kit/installed.json`:
-- `"uxMode": "interactive"` (default) — use `AskUserQuestion` at preferred points above (SHOULD)
-- `"uxMode": "text"` — skip `AskUserQuestion`; fall back to text output for all decision points
-- Field absent — treat as `"interactive"` (backward-compatible default)
-
-To change: `sdd config ux-mode [interactive|text|toggle]` (or run `/hk-ask-mode` — toggles the current value).
-
-**Usage notes**: `AskUserQuestion` is Claude Code-specific. Keep options to 2–4, use concise labels, and put trade-offs in the description field.
+> 본 fork 운영(dogfood)에서는 CLAUDE.fragment 정책상 AUQ 를 사용하지 않고 모든 게이트를 텍스트로 처리한다 — 위 SHOULD 는 일반 install 대상 기준이며 fragment 가 override 한다.
 
 ### 8.5 Choice Presentation Protocol (Mandatory)
 
