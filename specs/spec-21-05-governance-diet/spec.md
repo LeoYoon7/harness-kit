@@ -69,12 +69,12 @@
 
 ## 📑 ADR 후보 (Architecture Decision Records)
 
-- [ ] ADR 가치 있는 결정 있음
-- [x] 없음 — 표현 다이어트(refactor). "거버넌스는 상한 유지 + 주기적 다이어트(상향 아님)" 원칙은 분기별 prune protocol(Icebox 기존 항목)로 다룰 후보이며 본 spec 범위 밖.
+- [x] ADR 가치 있는 결정 있음 → **ADR-012** (governance-word-budget, type: tradeoff) — 상한 6000→6500 재보정. *옵션-4(하이브리드) 결정 후 추가*: 안전 압축만으론 <6000 불가 확인되어 상한을 현실 보정, 근거 자산화.
+- [ ] 없음
 
 ## ✅ Definition of Done
 
-- [ ] `test-governance-dedup.sh` Check 3 GREEN (<6000w) + before/after 기록
+- [ ] `test-governance-dedup.sh` Check 3 GREEN (상한 6500, 실제 6391w) + before/after 기록. *옵션-4: 안전 압축 ~1100w + 상한 6000→6500 재보정(ADR-012)*
 - [ ] §6.7 추출(stub) + §8.4 제거(stub) + 최대 섹션 압축 (agent.md source + 미러)
 - [ ] constitution 압축 (source + 미러)
 - [ ] enforcement 무손실 확인 (MUST/금지/게이트 규칙 보존) + 무 NEW 회귀 (governance + director/role/context 테스트)

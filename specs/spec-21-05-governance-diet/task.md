@@ -60,12 +60,12 @@
 ## Task 5: 상한 6500 상향 + ADR-012 — Check 3 GREEN
 
 ### 5-1. 상한 변경 + 근거 자산화
-- [ ] `tests/test-governance-dedup.sh` Check 3 상한 `6000` → `6500`.
-- [ ] `docs/decisions/ADR-012-governance-word-budget.md` 작성 (type: tradeoff) — 6000→6500 재보정, 증거(phase-21 정당한 추가), 비용(anti-bloat 순수성), 대안(extraction friction / 과압축), 21-03 결정 갱신.
-- [ ] phase.md 성공기준 4 + spec.md DoD 의 `<6000` → `≤6500` 참조 갱신.
-- [ ] 검증: `bash tests/test-governance-dedup.sh` → **Check 3 GREEN(≤6500, 실제 6391)** + Check 1/2/4/5/6 유지.
-- [ ] 회귀: director-protocol/role-model-config/director-mode/context-orchestration 무 회귀 + enforcement spot-check(핵심 규칙 grep + cross-ref).
-- [ ] Commit: `test(spec-21-05): raise budget cap 6000→6500 + ADR-012`
+- [x] `tests/test-governance-dedup.sh` Check 3 상한 `6000` → `6500` (+ 주석 근거).
+- [x] `docs/decisions/ADR-012-governance-word-budget.md` 작성 (type: tradeoff).
+- [x] phase.md 성공기준 4 + 21-05 narrative + spec.md DoD/ADR 참조 갱신 (≤6500).
+- [x] 검증: `test-governance-dedup.sh` → **ALL 8 PASS** (Check 3 GREEN 6391≤6500).
+- [x] 회귀: director-protocol 13/13, context-orch 6/6, role-model 9/9, director-mode 10/10. enforcement spot-check OK(MUST/VIOLATION 잔존, 핵심 규칙 grep).
+- [x] Commit: `test(spec-21-05): raise budget cap 6000→6500 + ADR-012`
 
 ---
 

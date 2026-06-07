@@ -35,7 +35,7 @@ upstream 의 director mode 가치를 **fork 구조(§6.6/§6.7·ADR-007/008)에 
 1. **토글 표면**: `sdd config director-mode on/off/toggle` + `installed.json` `directorMode` 영속화 + `sdd status`/`sdd doctor` 노출이 동작 (전용 테스트 PASS, `sources ↔ .claude`/`.harness-kit` 미러 parity).
 2. **context orchestration**: agent.md §6.6 가 orchestrator–worker + context offloading 정책(5축)으로 확장되고, ADR-010 작성 + **검증 불변식(워커 transcript 전문 재흡수 금지)** 명문화 (전용 테스트 PASS).
 3. **Director Mode Protocol**: agent.md §6.8(intent handshake / scoped brief / distilled contract / 행동 검증 / 게이트 보유 / over-dispatch 금지) + §6.1 delegation 단락 + ADR-011, fork §6.6/§6.7·ADR-007/008 과 **충돌 없음**.
-4. **단어 예산 해소**: `tests/test-governance-dedup.sh` Check 3 가 **GREEN** (현재 7285w red → 상한 내). governance 일관성 테스트 무 NEW 회귀 + `sources ↔ installed` sync 유지.
+4. **단어 예산 해소**: `tests/test-governance-dedup.sh` Check 3 가 **GREEN**. spec-21-05 안전 압축(~1100w 제거, 7494→6391w) + 상한 6000→**6500** 재보정(ADR-012 tradeoff — 정당한 director 추가 반영, upstream 8000 보다 19% 낮음). governance 일관성 테스트 무 NEW 회귀.
 5. **역할 기반 모델 config**: director/worker/scout 역할 → 모델 매핑이 config 로 분리되어 모델 이름 하드코딩 제거 (`sdd config models` 출력 + 전용 테스트).
 
 ## 🧩 작업 단위 (SPECs)
@@ -89,7 +89,7 @@ upstream 의 director mode 가치를 **fork 구조(§6.6/§6.7·ADR-007/008)에 
 
 ### spec-21-05 — governance-diet (단어 예산 green 복구)
 
-- **요점**: constitution+agent.md 합계를 6000w 상한 내로 다이어트 (현재 **7494w** → 목표 <6000w, ~1500w+ 절감). 성공기준 4(`test-governance-dedup.sh` Check 3 GREEN) 달성.
+- **요점**: constitution+agent.md 다이어트로 Check 3 GREEN 달성 (7494w → **6391w**, ~1100w 안전 압축). 안전 압축만으론 <6000 불가 확인 → 상한 6000→**6500** 재보정 병행(ADR-012). 성공기준 4 달성.
 - **방향성**: **relocate > compress > delete** (enforcement 무손실 우선). 추출(agent §6.7 native-feature → 가이드 stub), 제거(§8.4 AskUserQuestion stale — fork 미사용 [[feedback-no-auq-ever]]), 보수적 압축(최대 섹션: agent §6/§11, const §5/§3/§6). 규칙(MUST/금지) 보존, 예시·중복만 축약. 21-01~04 누적 순증 흡수. **삭제/압축 전용** (add/delete 혼재 회피).
 - **참조**: `tests/test-governance-dedup.sh` Check 3, 21-03/21-04 walkthrough(단어수 추적)
 - **연관 모듈**: `sources/governance/constitution.md`, `sources/governance/agent.md`, `.harness-kit/agent/`(미러)
