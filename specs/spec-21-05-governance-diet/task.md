@@ -37,10 +37,11 @@
 ## Task 3: agent.md 압축
 
 ### 3-1. 최대 섹션 prose 압축
-- [ ] `sources/governance/agent.md`: §6/§11/§4/§3/§8.5 의 prose·예시·중복 축약. **MUST/금지/용어(intent handshake·distilled contract·models.*·orchestrator/worker)·§6.6/§6.8/§6.1 보존**.
-- [ ] `.harness-kit/agent/agent.md` 미러 동기화 (cp).
-- [ ] 측정: `wc -w` + Check 3 추적.
-- [ ] Commit: `refactor(spec-21-05): compress agent.md prose (rules preserved)`
+- [x] `sources/governance/agent.md`: §4.1(ASCII 트리)/§4.5/§8.1/§8.5/§6.3-8/§6.4 prose·예시·중복 축약. MUST/금지/용어·§6.6/§6.8/§6.1 보존.
+- [x] `.harness-kit/agent/agent.md` 미러 동기화 (cp).
+- [x] 측정: agent.md 4696→**4121w (-575w)**, 합계 6919w (still red — const 압축이 green 달성).
+- [x] 회귀: director-protocol 13/13, context-orchestration PASS, dedup Check 1/2 OK (용어 보존).
+- [x] Commit: `refactor(spec-21-05): compress agent.md prose (rules preserved)`
 
 ---
 
