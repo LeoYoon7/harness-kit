@@ -71,14 +71,14 @@
 
 ## Task 6: Ship (필수)
 
-- [ ] 전체 테스트 → Check 3 GREEN + 전 governance/director/role/context 테스트 무 회귀
-- [ ] 코드 리뷰 게이트 — **Opus** (phase base 에 gemini fix 미반영 + 규칙 보존 검증에 Opus 적합)
-- [ ] **walkthrough.md 작성** (단어수 before/after, 보존 규칙 증빙, 결정 기록)
-- [ ] **pr_description.md 작성**
-- [ ] **Ship Commit**: `docs(spec-21-05): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-21-05-governance-diet`
-- [ ] **PR 생성**: `/hk-pr-gh` — base = `phase-21-director-mode`
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 전체 테스트 → dedup ALL 8 PASS(Check 3 GREEN) + director-protocol 13/13·role-model 9/9·director-mode 10/10·context-orch 6/6 무 회귀
+- [x] 코드 리뷰 게이트 — **Opus** → Approve(Critical 0/Major 0/Minor 1), Minor-1(§8.4 한정자) 즉시 복원
+- [x] **walkthrough.md 작성** (단어수 before/after, 규칙 보존 증빙, 결정 기록)
+- [x] **pr_description.md 작성**
+- [x] **Ship Commit**: `docs(spec-21-05): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-21-05-governance-diet`
+- [x] **PR 생성**: `/hk-pr-gh` — base = `phase-21-director-mode`
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
