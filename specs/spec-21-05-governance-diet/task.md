@@ -45,19 +45,31 @@
 
 ---
 
-## Task 4: constitution 압축 — Check 3 GREEN
+## Task 4: constitution 압축
+
+> **옵션-4 재범위 (2026-06-08)**: 안전 압축만으로 <6000 도달 불가 확인(§7 결정) → 사용자 선택 **하이브리드(옵션 4)**: 안전압축 최대 + 상한 6000→**6500** 상향 + ADR. GREEN 은 Task 5(상한)에서 달성.
 
 ### 4-1. 최대 섹션 압축
-- [ ] `sources/governance/constitution.md`: §5/§3/§6/§2 prose·예시·중복 축약. **MUST/CRITICAL VIOLATION/식별자 포맷/게이트 규칙 보존**.
-- [ ] `.harness-kit/agent/constitution.md` 미러 동기화 (cp).
-- [ ] 검증: `bash tests/test-governance-dedup.sh` → **Check 3 GREEN(<6000w)** + Check 1/2/4/5/6 유지.
-- [ ] 회귀: `test-director-protocol.sh`/`test-role-model-config.sh`/`test-director-mode.sh`/`test-context-orchestration.sh` 무 회귀.
-- [ ] enforcement spot-check: 핵심 규칙 grep 잔존 + cross-ref 무결성.
-- [ ] Commit: `refactor(spec-21-05): compress constitution prose → budget green`
+- [x] `sources/governance/constitution.md`: §2.4/§3.1-3.4/§5.2/§5.5/§5.6/§5.7/§6.1-6.5/§9 prose·예시·중복·ASCII 축약. MUST/CRITICAL VIOLATION/식별자/게이트 규칙 보존.
+- [x] `.harness-kit/agent/constitution.md` 미러 동기화 (cp).
+- [x] 측정: const 2798→**2295w (-503w)**, agent 4696→4096w(-600w), **합계 6391w** (총 -1103w). 상한 6500 대비 ~109w headroom.
+- [x] Commit: `refactor(spec-21-05): compress constitution prose`
 
 ---
 
-## Task 5: Ship (필수)
+## Task 5: 상한 6500 상향 + ADR-012 — Check 3 GREEN
+
+### 5-1. 상한 변경 + 근거 자산화
+- [ ] `tests/test-governance-dedup.sh` Check 3 상한 `6000` → `6500`.
+- [ ] `docs/decisions/ADR-012-governance-word-budget.md` 작성 (type: tradeoff) — 6000→6500 재보정, 증거(phase-21 정당한 추가), 비용(anti-bloat 순수성), 대안(extraction friction / 과압축), 21-03 결정 갱신.
+- [ ] phase.md 성공기준 4 + spec.md DoD 의 `<6000` → `≤6500` 참조 갱신.
+- [ ] 검증: `bash tests/test-governance-dedup.sh` → **Check 3 GREEN(≤6500, 실제 6391)** + Check 1/2/4/5/6 유지.
+- [ ] 회귀: director-protocol/role-model-config/director-mode/context-orchestration 무 회귀 + enforcement spot-check(핵심 규칙 grep + cross-ref).
+- [ ] Commit: `test(spec-21-05): raise budget cap 6000→6500 + ADR-012`
+
+---
+
+## Task 6: Ship (필수)
 
 - [ ] 전체 테스트 → Check 3 GREEN + 전 governance/director/role/context 테스트 무 회귀
 - [ ] 코드 리뷰 게이트 — **Opus** (phase base 에 gemini fix 미반영 + 규칙 보존 검증에 Opus 적합)
@@ -74,7 +86,7 @@
 
 | 항목 | 값 |
 |---|---|
-| **총 Task 수** | 5 (작업 4 + Ship) |
-| **예상 commit 수** | 5 (planning / extract+stale / agent압축 / const압축-green / ship) |
-| **현재 단계** | Planning |
+| **총 Task 수** | 6 (작업 5 + Ship) — 옵션-4 재범위로 Task 5(상한+ADR) 추가 |
+| **예상 commit 수** | 6 (planning / extract+stale / agent압축 / const압축 / 상한+ADR-green / ship) |
+| **현재 단계** | Execution (Task 4 완료) |
 | **마지막 업데이트** | 2026-06-08 |

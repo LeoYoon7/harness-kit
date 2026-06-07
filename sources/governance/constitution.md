@@ -47,15 +47,7 @@ Step 2 — Is a Phase required?
   NO  → SDD-x  (Mode B)  spec-x-{slug}
 ```
 
-**Edge Cases**
-
-| Example | PR? | Phase? | Mode |
-|---|:---:|:---:|:---:|
-| One-line typo fix in agent.md | NO | — | FF |
-| `hk-pr-gh.md` PR confirmation UX standardization | YES | NO | SDD-x |
-| `update.sh` version detection rewrite | YES | NO | SDD-x |
-| Adding 5 new hooks (feature addition) | YES | YES | SDD-P |
-| New spec self-critique workflow | YES | YES | SDD-P |
+**Edge Cases**: one-line typo → FF; `update.sh` rewrite or PR-UX standardization (PR, no phase) → SDD-x; adding 5 hooks or a new critique workflow (feature) → SDD-P.
 
 ## 3. Work Type Model
 
@@ -64,41 +56,21 @@ This section defines the roles and boundaries of work types used in harness-kit.
 ### 3.1 Phase (Epic)
 
 - **Role**: A grouping of related work (Specs plus small phase-FF commits). Can serve as an independent integration test and release unit.
-- **In-Phase Work Sizing (phase-FF)**: Not every item in a Phase must be a Spec. Within an active Phase (base-branch mode), small/clear/reversible items (1–2 commits) MAY be committed directly to the phase branch as **phase-FF** — no spec artifacts, no per-item re-approval. phase-FF is a first-class *up-front* choice sized at item start, not only a re-adjustment fallback (→ agent.md §11.4; ADR-009). It differs from FF (Mode C, §2.3): phase-FF lands in the Phase PR and MUST NOT change `state.json`'s active spec.
+- **In-Phase Work Sizing (phase-FF)**: Not every Phase item is a Spec — small/clear/reversible items (1–2 commits) MAY commit directly to the phase branch as **phase-FF** (no spec artifacts, no per-item re-approval; a first-class up-front choice, not just a fallback → agent.md §11.4, ADR-009). Unlike FF (§2.3), phase-FF lands in the Phase PR and MUST NOT change `state.json`'s active spec.
 - **Entry Condition**: 3+ Specs, or inter-Spec dependencies exist, or integration testing is required.
 - **Exit Condition**: All Specs merged, integration tests PASS, User go/no-go via `/hk-phase-ship`, and (base mode) Phase PR merge (→ agent.md §6.3.2).
-- **Phase Ship Rule**: The Agent MUST NOT create a Phase PR (phase branch → main) without explicit User go/no-go approval. The `/hk-phase-ship` procedure — including success criteria verification, integration test execution, and go/no-go report — MUST be completed before PR creation. The Phase PR body MUST follow the `phase-ship.md` template.
-- **Base Branch (opt-in)**: A Phase MAY optionally have a `phase-N-{slug}` base branch. In this case, Spec PRs target the phase branch instead of main, and the phase branch merges to main after all Specs are complete. The base branch is created just-in-time at the first Spec's hk-ship.
+- **Phase Ship Rule**: a Phase PR (phase branch → main) MUST NOT be created without explicit User go/no-go; `/hk-phase-ship` (success-criteria + integration-test verification + go/no-go report) MUST complete before PR creation. Phase PR body follows the `phase-ship.md` template.
+- **Base Branch (opt-in)**: a Phase MAY have a `phase-{N}-{slug}` base branch — Spec PRs target it instead of main, and it merges to main after all Specs complete (created just-in-time at the first Spec's hk-ship).
 - **Identifier**: `phase-{N}` (→ §6.1)
 
 ### 3.2 Spec
-
-- **Role**: A single PR unit within a Phase. Must be independently testable and fully functional.
-- **Entry Condition**: A User-approved Plan exists within the Phase.
-- **Exit Condition**: Unit tests PASS + walkthrough/pr_description written + PR merge.
-- **PR Target**: `phase-N-{slug}` if Phase base branch mode, otherwise `main`.
-- **Identifier**: `spec-{phaseN}-{seq}-{slug}` (→ §6.2)
+A single PR unit within a Phase, independently testable + fully functional. **Entry**: a User-approved Plan in the Phase. **Exit**: unit tests PASS + walkthrough/pr_description + PR merge. **PR Target**: `phase-{N}-{slug}` (base mode) else `main`. **Identifier**: `spec-{phaseN}-{seq}-{slug}` (→ §6.2).
 
 ### 3.3 spec-x (Solo Spec)
-
-- **Role**: A standalone PR not affiliated with any Phase. For urgent fixes, one-off improvements too small for a Phase.
-- **Entry Condition**: ALL of the following must be met (→ §5.1 Solo Spec conditions):
-  1. Completable in a single PR
-  2. Type limited to `chore`, `fix`, `docs`, or small-scope `refactor`
-  3. No new architectural decisions or feature additions
-- **Exit Condition**: PR merge + queue.md done section update.
-- **PR Target**: Always `main`.
-- **Identifier**: `spec-x-{slug}` (→ §6.2)
+A standalone PR with no Phase — urgent fixes / one-offs too small for a Phase. **Entry** (ALL, → §5.1): single-PR-completable; type `chore`/`fix`/`docs`/small `refactor`; no new architecture or features. **Exit**: PR merge + queue.md done update. **PR Target**: always `main`. **Identifier**: `spec-x-{slug}` (→ §6.2).
 
 ### 3.4 Icebox
-
-- **Role**: A holding area for ideas, deferred items, and future work. Recorded in free-form in the queue.md Icebox section.
-- **Entry Condition**: Any time an idea or item arises that should not be executed immediately.
-- **Exit Condition (Promotion)**:
-  - When related items accumulate → promote to a new Phase
-  - When standalone → promote to spec-x
-- **Execution Prohibition**: Icebox items are NON-EXECUTABLE. No code changes, tasks, or commits may be created until promoted to a Phase or spec-x (→ §12).
-- **Identifier**: None (free-form in queue.md Icebox section)
+Holding area for ideas/deferred/future work (free-form in queue.md Icebox section). **Promotion**: related items accumulate → new Phase; standalone → spec-x. **NON-EXECUTABLE** — no code/tasks/commits until promoted to a Phase or spec-x (→ §12).
 
 ## 4. Alignment Requirement (Mandatory)
 
@@ -120,18 +92,9 @@ Before any Spec, Plan, or execution:
   - Solo Specs do NOT require a `phase.md` entry or `queue.md` update.
 
 ### 5.2 Plan Accept & Critique Recognition
-- A Plan is an execution contract. No execution is allowed without an approved Plan.
-- The Plan MUST include branch creation and test execution tasks.
-- **Mandatory Offer**: When a plan is complete, the Agent MUST present both options explicitly before waiting for input:
-  ```
-  Plan review complete.
-    1) Accept — start execution
-    2) Critique — provide feedback / raise concerns
-  ```
-- **Plan Accept Recognition (SSOT)**: The following expressions are all treated as Plan Accept (case-insensitive):
-  `1`, `Y`, `yes`, `ok`, `accept`, `plan accept`, `/hk-plan-accept`
-- **Critique Entry**: Input of `2` or `/hk-spec-critique` enters the Critique phase.
-- **Unrecognized Response**: For any response not in the above list, the Agent MUST re-request the selection.
+- A Plan is an execution contract — no execution without an approved Plan. The Plan MUST include branch-creation and test-execution tasks.
+- **Mandatory Offer**: on plan completion the Agent MUST present both options ("1) Accept — start execution / 2) Critique — feedback") before waiting for input.
+- **Plan Accept Recognition (SSOT)** (case-insensitive): `1`, `Y`, `yes`, `ok`, `accept`, `plan accept`, `/hk-plan-accept`. **Critique**: `2` or `/hk-spec-critique`. Any other response → the Agent MUST re-request the selection.
 
 ### 5.3 Premature Execution (Critical)
 - **Zero Tolerance**: Writing production code or changing project state BEFORE the User has explicitly approved the `plan.md` is a **CRITICAL VIOLATION**.
@@ -143,43 +106,17 @@ Before any Spec, Plan, or execution:
 - **Quality Bar**: Each artifact MUST be rich enough to be self-contained for review. Vague placeholders are not acceptable in finalized artifacts.
 
 ### 5.5 Idea Capture Gate
-- **No Undocumented Pivots**: When a new idea, request, or tangential topic arises during active work (Spec execution, PR review, or any SDD phase), the Agent MUST NOT execute it immediately.
-- **Capture First**: The Agent MUST record the idea as a one-line entry in `backlog/queue.md` Icebox section before any further discussion.
-- **Present Options**: After recording, the Agent MUST present exactly two choices:
-  ```
-  New idea captured → Icebox.
-    1) Continue current work — address after completion
-    2) Park current work — switch to the new idea now
-  ```
-  - **Option 1 (Continue)**: Resume the active task. The idea stays in Icebox for future promotion.
-  - **Option 2 (Park)**: The Agent MUST update `task.md` with current progress (mark completed tasks `[x]`, leave remaining `[ ]`), then proceed to alignment for the new work.
-- **Violation**: Executing code or changing project state for an unplanned idea without first recording it in Icebox and obtaining the User's explicit choice is a VIOLATION.
+When a new idea/request/tangent arises during active work (Spec execution, PR review, any SDD phase), the Agent MUST NOT execute it immediately — first record it as a one-line `backlog/queue.md` Icebox entry, then present exactly two choices: **1) Continue** (resume active task; idea stays in Icebox) or **2) Park** (update `task.md` progress — `[x]` done, `[ ]` remaining — then re-align to the new work). Executing an unplanned idea without Icebox capture + the User's explicit choice is a VIOLATION.
 
 ### 5.6 Opinion Divergence Protocol
-- When the User expresses an opinion, preference, or direction that **conflicts** with the current active Plan, Spec scope, or Phase goals, the Agent MUST:
-  1. **Acknowledge the conflict explicitly**: State what the current plan says vs. what the User is suggesting.
-  2. **Propose reconciliation options**: e.g., amend the plan, defer to Icebox, split into a new Spec.
-  3. **Wait for User selection**: No action until the User chooses.
-  4. **Record the decision**: Update the relevant artifact (`plan.md`, `walkthrough.md`, `backlog/queue.md`, or `phase.md`) to reflect the agreed direction. When the divergence happens during PR review (after Ship, before merge), `walkthrough.md` is the primary target since it is the living decision log (→ agent.md §6.3).
-- The Agent MUST NOT silently follow a divergent opinion without surfacing the conflict first.
+When the User's opinion/direction **conflicts** with the active Plan, Spec scope, or Phase goals, the Agent MUST: (1) acknowledge the conflict explicitly (plan says X vs. User suggests Y), (2) propose reconciliation options (amend plan / defer to Icebox / split new Spec), (3) wait for the User's selection, (4) record the decision in the relevant artifact (`plan.md`/`walkthrough.md`/`queue.md`/`phase.md`; during PR review → `walkthrough.md`, the living decision log → agent.md §6.3). The Agent MUST NOT silently follow a divergent opinion without surfacing the conflict first.
 
 ### 5.7 Action Confirmation Rules
 
 Governs how the Agent confirms irreversible external actions (push, PR creation).
 
 **Push (`git push`)**
-- After Plan Accept, push is **fully automatic** — display the info block below, then push immediately with **NO user response required**.
-- Info block format (display only, no prompt):
-  ```
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  🚀 Push
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    브랜치    <head>  ▶  🎯 <base>
-    제목      <pr_description.md 첫 줄>
-    커밋 수   <N>개
-    변경 파일 <M>개
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ```
+- After Plan Accept, push is **fully automatic** — display a push info block (🚀 Push: 브랜치 `<head> ▶ <base>` / 제목 = `pr_description.md` 첫 줄 / 커밋 수 / 변경 파일 수), then push immediately with **NO user response required**.
 
 **PR Creation**
 - Display the info block, then ask exactly one question: `생성할까요? [Y/n]`
@@ -192,26 +129,16 @@ Governs how the Agent confirms irreversible external actions (push, PR creation)
 ## 6. Identifier System (lowercase, hyphen-separated)
 
 ### 6.1 Phase Identifier
-- Format: `phase-{N}` where `N` is a positive integer.
-- Examples: `phase-01`, `phase-02`.
-- Descriptive name lives only inside `phase.md`'s title, not in the ID/directory.
-- **Phase Base Branch**: In phase base branch mode, a `phase-{N}-{slug}` branch is created. The slug is a concise identifier derived from the phase.md title. Example: `phase-08-work-model`.
+- `phase-{N}` (N positive integer; e.g. `phase-01`). Descriptive name lives only in `phase.md`'s title, not the ID/directory.
+- **Phase Base Branch**: base-branch mode adds a `phase-{N}-{slug}` branch (slug from phase.md title; e.g. `phase-08-work-model`).
 
 ### 6.2 Spec Identifier
-- Format: `spec-{phaseN}-{seq}` where `phaseN` matches the parent phase number and `seq` is a 2-digit number reset per phase.
-- Examples: `spec-01-01`, `spec-01-02`, `spec-02-01`.
-- A Spec ID is immutable once assigned.
-- **Solo Spec format**: `spec-x-{slug}` — used when no Phase affiliation exists (→ §5.1 Solo Spec conditions).
-  - `x` is a literal character, not a phase number.
-  - `{slug}` must be unique across all specs in the repository.
-  - Example: `spec-x-update-migration`
+- `spec-{phaseN}-{seq}` (seq = 2-digit, reset per phase; e.g. `spec-01-01`). A Spec ID is immutable once assigned.
+- **Solo Spec**: `spec-x-{slug}` when no Phase affiliation (→ §5.1). `x` is literal (not a phase number); `{slug}` unique across all specs. E.g. `spec-x-update-migration`.
 
 ### 6.3 Layout (Flat)
-- Queue dashboard: `backlog/queue.md` (sdd-managed)
-- Phase definition: `backlog/phase-{N}.md` (single file per phase, contains spec table + integration tests + ADR refs)
-- Spec work: `specs/spec-{phaseN}-{seq}-{slug}/` (actual artifacts)
-- ADR: `docs/decisions/ADR-{NNN}-{slug}.md` — for architectural / cross-Spec / long-lived decisions. Routine decisions stay in `walkthrough.md` / `plan.md` / `phase.md`. Template: `.harness-kit/agent/templates/adr.md`. Frontmatter MUST include `type:` from the §6.4 vocabulary (typically `decision`, optionally `invariant` / `convention` / `tradeoff`).
-- Note: `backlog/` and `specs/` are sibling directories — `backlog/` is the *plan*, `specs/` is the *progress log*. Phase definition lives as a *single flat file* in `backlog/`, not a subdirectory.
+- `backlog/queue.md` (sdd-managed dashboard) · `backlog/phase-{N}.md` (one flat file/phase: spec table + integration tests + ADR refs) · `specs/spec-{phaseN}-{seq}-{slug}/` (artifacts). `backlog/` = plan, `specs/` = progress log (sibling dirs).
+- ADR: `docs/decisions/ADR-{NNN}-{slug}.md` for architectural/cross-Spec/long-lived decisions (routine ones stay in walkthrough/plan/phase). Template `.harness-kit/agent/templates/adr.md`; frontmatter MUST include `type:` from §6.4 vocabulary.
 
 ### 6.4 Knowledge Type Vocabulary
 
@@ -231,10 +158,7 @@ Rules:
 - Vocabulary changes (add / rename / remove) are themselves architecture decisions — record as an ADR with `type: decision`.
 
 ### 6.5 Branch Naming
-- Spec branch name = spec directory name. **No `feature/` prefix.**
-- Format: `spec-{phaseN}-{seq}-{slug}`
-- Example: `spec-01-01-stock-row-locking`
-- Phase base branch format: `phase-{N}-{slug}` (→ §6.1). Example: `phase-08-work-model`
+- Spec branch name = spec directory name (`spec-{phaseN}-{seq}-{slug}`), **no `feature/` prefix** (e.g. `spec-01-01-stock-row-locking`). Phase base branch: `phase-{N}-{slug}` (→ §6.1).
 
 ## 7. Execution Delegation
 
@@ -255,16 +179,13 @@ Once a Plan is explicitly accepted (Plan Accept), the Agent is authorized to:
 ## 9. Testing Requirements (Two-Tier)
 
 ### 9.1 Spec-level (Unit Tests, Mandatory)
-- For all testable behavior introduced by a SPEC, unit tests MUST be written and pass before the SPEC is considered Done.
-- **No Test, No Commit**: Committing code without passing tests is prohibited unless explicitly justified (e.g., documentation-only changes).
+All testable behavior a SPEC introduces MUST have passing unit tests before the SPEC is Done. **No Test, No Commit** — committing code without passing tests is prohibited unless justified (e.g. docs-only).
 
 ### 9.2 Spec-level Integration Tests (Optional, Declared)
-- A SPEC MAY require integration tests. If so, the SPEC document MUST declare it explicitly in its `Integration Test Required` field.
-- Declared integration tests MUST pass before SPEC ship.
+A SPEC MAY require integration tests; if so it MUST declare them in its `Integration Test Required` field, and they MUST pass before ship.
 
 ### 9.3 Phase-level (Integration Tests, Mandatory)
-- A PHASE is considered Done only when all its SPECs are merged AND the phase-level integration test scenarios (inline in `backlog/phase-{N}.md`) pass end-to-end.
-- The phase walkthrough MUST attach integration test evidence.
+A PHASE is Done only when all SPECs are merged AND the phase-level integration scenarios (inline in `backlog/phase-{N}.md`) pass end-to-end; the phase walkthrough MUST attach evidence.
 
 ## 10. Git Law (Strict Enforcement)
 
