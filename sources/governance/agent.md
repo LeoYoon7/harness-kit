@@ -296,7 +296,7 @@ Avoid decorative emoji in plain text prose. Emoji in bash output MUST be consist
 
 ### 8.4 AskUserQuestion Tool Preference
 
-At key decision points (Work Mode → §3, Plan Accept vs Critique → constitution §5.2, PR confirmation → §5.7, Idea Capture Gate → §5.5) the Agent SHOULD use `AskUserQuestion` instead of plain text — keep options 2–4, trade-offs in the description. Text formats (`1)/2)`, `[Y/n]`) remain the authoritative fallback when AUQ isn't rendered or a yes/no suffices. Gated by `uxMode` in `installed.json`: `interactive` (default) → use; `text` → skip; absent → interactive. Change via `sdd config ux-mode [interactive|text|toggle]` or `/hk-ask-mode`.
+At key decision points (Work Mode → §3, Plan Accept vs Critique → constitution §5.2, PR confirmation → constitution §5.7, Idea Capture Gate → constitution §5.5) the Agent SHOULD use `AskUserQuestion` instead of plain text — keep options 2–4, trade-offs in the description. Text formats (`1)/2)`, `[Y/n]`) remain the authoritative fallback when AUQ isn't rendered or a yes/no suffices. Gated by `uxMode` in `installed.json`: `interactive` (default) → use; `text` → skip; absent → interactive. Change via `sdd config ux-mode [interactive|text|toggle]` or `/hk-ask-mode`.
 
 > 본 fork 운영(dogfood)에서는 CLAUDE.fragment 정책상 AUQ 를 사용하지 않고 모든 게이트를 텍스트로 처리한다 — 위 SHOULD 는 일반 install 대상 기준이며 fragment 가 override 한다.
 
@@ -346,7 +346,7 @@ SDD ceremony has a fixed token + time cost. When the work itself is smaller than
 
 ### 11.1 SDD Ceremony Cost (Awareness)
 
-The full SDD ceremony — `spec.md` + `plan.md` + `task.md` + Plan Accept + `walkthrough.md` + `pr_description.md` + PR + review — costs roughly 6,000–8,000 tokens plus user review time, regardless of work size. Before invoking SDD, the Agent MUST estimate scope and recommend the appropriate work mode. Do not default to SDD for trivial work.
+Full SDD ceremony (spec+plan+task + Plan Accept + walkthrough+pr_description + PR + review) costs ~6,000–8,000 tokens + review time regardless of work size. Before invoking SDD, the Agent MUST estimate scope and recommend the work mode — do not default to SDD for trivial work.
 
 ### 11.2 Scope Economy Thresholds
 
@@ -375,7 +375,7 @@ The Agent reports the assessment to the User before continuing with the next spe
 
 ### 11.4 In-Phase Work Sizing & Re-Adjustment
 
-**Size each item up front — phase-FF is a first-class choice, not only a fallback.** When starting any item inside an active Phase, the Agent first sizes it: substantial or uncertain → full **Spec**; small/clear/reversible (1–2 commits) → **phase-FF** (direct commit to the phase base branch, no spec artifacts, no per-item re-approval — → constitution §3.1, ADR-009). Do NOT default to "every in-phase item is a Spec," and do NOT bundle small items into a Spec merely to avoid phase-FF.
+**Size each item up front — phase-FF is a first-class choice, not only a fallback.** Starting any item in an active Phase, the Agent sizes it: substantial/uncertain → full **Spec**; small/clear/reversible (1–2 commits) → **phase-FF** (direct commit to phase branch, no spec artifacts/re-approval → constitution §3.1, ADR-009). Don't default to "every item is a Spec," nor bundle small items into a Spec just to avoid phase-FF.
 
 Re-adjustment (when an already-planned spec's assumptions shift mid-phase, → §11.3) prefers **bundle** or **phase-FF** over spec-x demotion (preserves thematic cohesion + saves ceremony):
 
