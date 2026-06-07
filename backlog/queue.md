@@ -8,7 +8,7 @@
 ## 📦 진행 중 Phase
 
 <!-- sdd:active:start -->
-- **phase-21** — director-mode — 4 spec — 다음: (spec 없음)
+- **phase-21** — director-mode — 5 spec — 다음: spec-21-05-governance-diet
 <!-- sdd:active:end -->
 
 ## 📥 spec-x 대기
