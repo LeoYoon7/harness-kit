@@ -71,6 +71,8 @@ fi
 # base-branch 모드 phase 의 첫 spec 은 base 브랜치가 hk-ship 시점에 just-in-time 생성되어
 # 작업 중에는 아직 없다 (constitution §3.1). ref 부재를 빈-diff 로 오진단하지 않도록 명시적 fallback.
 if ! git rev-parse --verify --quiet "${BASE_BRANCH}^{commit}" >/dev/null 2>&1; then
+    # main 은 캐논 base 전제 — main 자체가 부재한 저장소(default 가 master/trunk 등)는 범위 외.
+    # 이 경우 fallback 미발동 → 이어지는 git diff 가 빈 결과 → "리뷰할 변경이 없습니다" 로 보고된다.
     if [ "$BASE_BRANCH" != "main" ]; then
         echo "⚠ base 브랜치 '$BASE_BRANCH' 부재 (첫 spec 추정) → main 으로 fallback" >&2
         BASE_BRANCH="main"
