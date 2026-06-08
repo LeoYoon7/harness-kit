@@ -40,6 +40,13 @@ cat > "$STUB_DIR/gemini" <<'STUB'
 #!/usr/bin/env bash
 # stub gemini — 실 CLI 대체. CWD = gemini-review.sh 가 cd 한 PROJECT_ROOT(fixture).
 # 인자/stdin 은 무시. $STUB_MODE 로 동작 결정. 리뷰 텍스트는 stdout 으로.
+# capture 모드: argv/stdin 을 repo 밖 $CAPTURE_DIR 로 기록(부수효과 미발생) 후 정상 리뷰.
+if [ "${STUB_MODE:-valid}" = "capture" ]; then
+  printf '%s\n' "$@" > "${CAPTURE_DIR:?}/argv"
+  cat > "${CAPTURE_DIR:?}/stdin"
+  echo "# Code Review (Gemini): stub"; echo "## 요약"; echo "- 전체 평가: Approve / Critical 0"
+  exit 0
+fi
 cat >/dev/null 2>&1 || true   # stdin 소비
 case "${STUB_MODE:-valid}" in
   rogue_commit)
@@ -125,6 +132,38 @@ RC5=$(run_review "$FX5" rogue_commit)
 if [ "$RC5" -ne 0 ]; then ok "dirty+rogue → 거부(exit=$RC5)"; else fail "dirty+rogue 가 통과됨"; fi
 if [ -f "$FX5/user_uncommitted.txt" ]; then ok "사용자 미커밋 파일 보존됨 (자동원복 생략)"; else fail "사용자 파일 삭제됨 (clean -fd 오작동 — 가드 실패)"; fi
 if [ ! -f "$(review_file "$FX5")" ]; then ok "리뷰 파일 미생성"; else fail "거부인데 리뷰 파일 생성됨"; fi
+
+# --- T6: 비-ASCII argv 안전 (지시문이 argv 아닌 stdin 으로 전달) ---
+# 마커는 ASCII("Feature Envy", INSTRUCTION 고유)만 사용 — git-bash 의 grep argv 손상 회피.
+echo "▶ T6: 비-ASCII argv 안전 (argv 순수 ASCII + 지시문 stdin 전달)"
+FX6=$(setup_fixture); CLEAN="$CLEAN $FX6"
+CAP6=$(mktemp -d); CLEAN="$CLEAN $CAP6"
+( cd "$FX6" && PATH="$STUB_DIR:$PATH" STUB_MODE=capture CAPTURE_DIR="$CAP6" HARNESS_DRIFT_FETCH=0 \
+    bash "$FX6/.harness-kit/bin/gemini-review.sh" >/dev/null 2>&1 )
+if [ -f "$CAP6/argv" ]; then
+  if LC_ALL=C grep -q '[^[:print:][:space:]]' "$CAP6/argv"; then
+    fail "argv 에 비-ASCII 포함 (CP949 손상 위험)"
+  else
+    ok "argv 순수 ASCII"
+  fi
+else
+  fail "argv 캡처 실패 (stub 미호출)"
+fi
+if [ -f "$CAP6/stdin" ] && grep -q "Feature Envy" "$CAP6/stdin"; then
+  ok "지시문이 stdin 으로 전달됨"
+else
+  fail "지시문이 stdin 에 없음 (여전히 argv 전달 의심)"
+fi
+
+# --- T7: base 브랜치 부재 → main fallback ---
+echo "▶ T7: base 브랜치 부재 → main fallback"
+FX7=$(setup_fixture); CLEAN="$CLEAN $FX7"
+STATE7="$FX7/.claude/state/current.json"
+TMP7=$(mktemp)
+jq '.baseBranch="phase-99-missing"' "$STATE7" > "$TMP7" && mv "$TMP7" "$STATE7"
+RC7=$(run_review "$FX7" valid)
+if [ "$RC7" -eq 0 ]; then ok "base 부재 → fallback 성공(exit 0)"; else fail "base 부재인데 리뷰 실패(exit=$RC7)"; fi
+if [ -f "$(review_file "$FX7")" ]; then ok "리뷰 파일 생성됨(main fallback)"; else fail "fallback 실패 — 리뷰 파일 미생성"; fi
 
 echo ""
 echo "=== 결과: PASS=$PASS FAIL=$FAIL ==="

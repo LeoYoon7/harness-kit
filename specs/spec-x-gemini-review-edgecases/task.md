@@ -10,30 +10,30 @@
 - [x] plan.md 작성
 - [x] task.md 작성 (이 파일)
 - [x] 백로그 — spec-x 라 phase.md 불요. queue.md specx 마커 등록 완료(specx new).
-- [ ] 사용자 Plan Accept
+- [x] 사용자 Plan Accept
 
 ---
 
 ## Task 1: 브랜치 생성 + 계획 산출물 커밋
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-x-gemini-review-edgecases` (main 기준 사전 분기)
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-x-gemini-review-edgecases` (main 기준 사전 분기)
+- [x] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. 계획 산출물 커밋
-- [ ] `git add specs/spec-x-gemini-review-edgecases/{spec,plan,task}.md backlog/queue.md`
-- [ ] Commit: `docs(spec-x-gemini-review-edgecases): add spec/plan/task`
+- [x] `git add specs/spec-x-gemini-review-edgecases/{spec,plan,task}.md backlog/queue.md`
+- [x] Commit: `docs(spec-x-gemini-review-edgecases): add spec/plan/task` (`1ac7316`)
 
 ---
 
 ## Task 2: 검증 테스트 추가 (TDD Red)
 
 ### 2-1. T6/T7 테스트 작성
-- [ ] `tests/test-gemini-review-guard.sh` — stub `gemini` 에 `capture` 모드 추가(argv/stdin 을 repo 밖 `$CAPTURE_DIR` 로 기록).
-- [ ] **T6**: argv 순수 ASCII 검증(`LC_ALL=C grep '[^[:print:][:space:]]'` 무매치) + 지시문이 stdin 에 존재.
-- [ ] **T7**: state.json `baseBranch`=`phase-99-missing` 주입 → 리뷰 성공(main fallback) + 리뷰 파일 생성.
-- [ ] 테스트 실행 → Fail 확인 (T6/T7 Red, 기존 T1~T5 유지)
-- [ ] Commit: `test(spec-x-gemini-review-edgecases): add edge-case tests for argv safety and base fallback`
+- [x] `tests/test-gemini-review-guard.sh` — stub `gemini` 에 `capture` 모드 추가(argv/stdin 을 repo 밖 `$CAPTURE_DIR` 로 기록).
+- [x] **T6**: argv 순수 ASCII 검증(`LC_ALL=C grep '[^[:print:][:space:]]'` 무매치) + 지시문(`Feature Envy` ASCII 마커)이 stdin 에 존재.
+- [x] **T7**: state.json `baseBranch`=`phase-99-missing` 주입 → 리뷰 성공(main fallback) + 리뷰 파일 생성.
+- [x] 테스트 실행 → Fail 확인 (Red: PASS=12 FAIL=4 — T6×2/T7×2, 기존 T1~T5 유지)
+- [x] Commit: `test(spec-x-gemini-review-edgecases): add edge-case tests for argv safety and base fallback`
 
 ---
 
