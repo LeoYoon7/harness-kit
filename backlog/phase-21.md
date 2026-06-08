@@ -35,7 +35,7 @@ upstream 의 director mode 가치를 **fork 구조(§6.6/§6.7·ADR-007/008)에 
 1. **토글 표면**: `sdd config director-mode on/off/toggle` + `installed.json` `directorMode` 영속화 + `sdd status`/`sdd doctor` 노출이 동작 (전용 테스트 PASS, `sources ↔ .claude`/`.harness-kit` 미러 parity).
 2. **context orchestration**: agent.md §6.6 가 orchestrator–worker + context offloading 정책(5축)으로 확장되고, ADR-010 작성 + **검증 불변식(워커 transcript 전문 재흡수 금지)** 명문화 (전용 테스트 PASS).
 3. **Director Mode Protocol**: agent.md §6.8(intent handshake / scoped brief / distilled contract / 행동 검증 / 게이트 보유 / over-dispatch 금지) + §6.1 delegation 단락 + ADR-011, fork §6.6/§6.7·ADR-007/008 과 **충돌 없음**.
-4. **단어 예산 해소**: `tests/test-governance-dedup.sh` Check 3 가 **GREEN** (현재 7285w red → 상한 내). governance 일관성 테스트 무 NEW 회귀 + `sources ↔ installed` sync 유지.
+4. **단어 예산 해소**: `tests/test-governance-dedup.sh` Check 3 가 **GREEN**. spec-21-05 안전 압축(~1100w 제거, 7494→6391w) + 상한 6000→**6500** 재보정(ADR-012 tradeoff — 정당한 director 추가 반영, upstream 8000 보다 19% 낮음). governance 일관성 테스트 무 NEW 회귀.
 5. **역할 기반 모델 config**: director/worker/scout 역할 → 모델 매핑이 config 로 분리되어 모델 이름 하드코딩 제거 (`sdd config models` 출력 + 전용 테스트).
 
 ## 🧩 작업 단위 (SPECs)
@@ -53,6 +53,7 @@ upstream 의 director mode 가치를 **fork 구조(§6.6/§6.7·ADR-007/008)에 
 | `spec-21-02` | director-mode-switch | P? | Merged | `specs/spec-21-02-director-mode-switch/` |
 | `spec-21-03` | director-protocol | P? | Merged | `specs/spec-21-03-director-protocol/` |
 | `spec-21-04` | role-model-config | P? | Merged | `specs/spec-21-04-role-model-config/` |
+| `spec-21-05` | governance-diet | P? | Active | `specs/spec-21-05-governance-diet/` |
 <!-- sdd:specs:end -->
 
 > 상태 허용값: `Backlog` / `In Progress` / `Merged`
@@ -86,21 +87,22 @@ upstream 의 director mode 가치를 **fork 구조(§6.6/§6.7·ADR-007/008)에 
 - **참조**: upstream spec-20-04(director-protocol Out of Scope 참조), upstream `tests/test-director-mode.sh` T12
 - **연관 모듈**: `sources/bin/sdd`, `installed.json`, `sources/governance/agent.md`
 
-### spec-21-05 — persona-review-panel
+### spec-21-05 — governance-diet (단어 예산 green 복구)
+
+- **요점**: constitution+agent.md 다이어트로 Check 3 GREEN 달성 (7494w → **6391w**, ~1100w 안전 압축). 안전 압축만으론 <6000 불가 확인 → 상한 6000→**6500** 재보정 병행(ADR-012). 성공기준 4 달성.
+- **방향성**: **relocate > compress > delete** (enforcement 무손실 우선). 추출(agent §6.7 native-feature → 가이드 stub), 제거(§8.4 AskUserQuestion stale — fork 미사용 [[feedback-no-auq-ever]]), 보수적 압축(최대 섹션: agent §6/§11, const §5/§3/§6). 규칙(MUST/금지) 보존, 예시·중복만 축약. 21-01~04 누적 순증 흡수. **삭제/압축 전용** (add/delete 혼재 회피).
+- **참조**: `tests/test-governance-dedup.sh` Check 3, 21-03/21-04 walkthrough(단어수 추적)
+- **연관 모듈**: `sources/governance/constitution.md`, `sources/governance/agent.md`, `.harness-kit/agent/`(미러)
+
+### spec-21-06 — persona-review-panel
 
 - **요점**: review 커맨드(`hk-code-review`/`hk-spec-critique`/`hk-phase-review`)에 **페르소나 패널** 오케스트레이션 — 단일 Opus 대신 페르소나 부여 워커 패널 + 보고 종합/중재.
 - **방향성**: upstream spec-20-06 — fork 의 `hk-*-review` 커맨드 텍스트에 페르소나 패널 절 추가 + 미러 parity. upstream 도 중재 패턴(spec-20-05)은 research-only 였으므로, 종료조건·증류 난점은 §11.3 재검증으로 신중히(분해 또는 후순위 판단).
 - **참조**: upstream spec-20-06(director-protocol Out of Scope 참조), upstream `tests/test-director-mode.sh` T13/T14
 - **연관 모듈**: `sources/commands/hk-code-review.md`, `sources/commands/hk-spec-critique.md`, `sources/commands/hk-phase-review.md`, `.claude/commands/`(미러)
 
-### spec-21-06 — governance-diet (단어 예산 green 복구)
-
-- **요점**: constitution+agent.md 합계를 6000w 상한 내로 다이어트 (현재 7333w → 목표 <6000w, ~1333w+ 절감). 성공기준 4(`test-governance-dedup.sh` Check 3 GREEN) 달성.
-- **방향성**: 의미 손실 없이 중복/장황 prose 압축 + 별도 가이드(native-feature-usage·director-mode)로 분리 가능한 인라인 잔재 정리. 21-03 의 §6.8 stub 순증분도 흡수. **add/delete 혼재 회피를 위해 protocol(21-03)과 분리** — 본 spec 은 *삭제/압축 전용*.
-- **참조**: `tests/test-governance-dedup.sh` Check 3, 21-01 walkthrough(±50w 순증 이월 결정)
-- **연관 모듈**: `sources/governance/constitution.md`, `sources/governance/agent.md`, `.harness-kit/agent/`(미러)
-
-> **agent.md 다이어트(성공기준 4)** 는 spec-21-03 §11.3 재검증서 그 규모(~1333w)가 protocol 추가와 독립적이고 크다고 확인되어 **별도 spec-21-06 으로 분리**한다(위 narrative). 21-03 은 §6.8 배치 전략(별도 `director-mode.md` 가이드 + 간결 stub)으로 agent.md 순증을 최소화하는 데 그치고, 단어 예산 green(<6000w)은 21-06 이 책임진다. 따라서 Check 3 GREEN 은 21-03 의 DoD 가 아니라 **phase Done 조건**이다.
+> **번호 정정 (2026-06-08)**: governance-diet 를 persona-review-panel 보다 먼저 착수해 sdd 가 생성순서로 diet=`spec-21-05`, persona=`spec-21-06` 부여. 기존 walkthrough(21-03/04)의 "→ spec-21-06"(diet) 포워드 참조는 그 시점 DRAFT 계획이라 historical (실제 diet=21-05).
+> **agent.md 다이어트(성공기준 4)** 는 spec-21-03 §11.3 재검증서 그 규모(~1500w)가 protocol 추가와 독립적이고 크다고 확인되어 **별도 spec(21-05)으로 분리**한다. 21-03 은 §6.8 배치 전략(별도 `director-mode.md` 가이드 + 간결 stub)으로 agent.md 순증을 최소화하는 데 그치고, 단어 예산 green(<6000w)은 본 spec(21-05) 책임이며 **phase Done 조건**이다.
 
 ## 📌 결정 기록 (Review)
 
