@@ -50,10 +50,10 @@
 ## Task 4: (a) base 브랜치 fallback 구현 (TDD Green)
 
 ### 4-1. base 실재 확인 + main fallback
-- [ ] `sources/bin/gemini-review.sh`: base 결정부 뒤 `git rev-parse --verify --quiet "${BASE}^{commit}"` 가드 추가 (부재 + base≠main → main fallback + ⚠).
-- [ ] `.harness-kit/bin/gemini-review.sh` 미러 동기화 (`cp`).
-- [ ] 테스트 실행 → T7 Green (전체 14/14)
-- [ ] Commit: `fix(spec-x-gemini-review-edgecases): fall back to main when phase base branch is absent`
+- [x] `sources/bin/gemini-review.sh`: base 결정부 뒤 `git rev-parse --verify --quiet "${BASE}^{commit}"` 가드 추가 (부재 + base≠main → main fallback + ⚠).
+- [x] `.harness-kit/bin/gemini-review.sh` 미러 동기화 (`cp`).
+- [x] 테스트 실행 → T7 Green (전체 **16/16 PASS**)
+- [x] Commit: `fix(spec-x-gemini-review-edgecases): fall back to main when phase base branch is absent`
 
 ---
 

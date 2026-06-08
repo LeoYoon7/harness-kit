@@ -67,6 +67,16 @@ if [ -z "$BASE_BRANCH" ] || [ "$BASE_BRANCH" = "null" ]; then
     BASE_BRANCH="main"
 fi
 
+# base 브랜치 실재 확인 — 없으면 main 으로 fallback.
+# base-branch 모드 phase 의 첫 spec 은 base 브랜치가 hk-ship 시점에 just-in-time 생성되어
+# 작업 중에는 아직 없다 (constitution §3.1). ref 부재를 빈-diff 로 오진단하지 않도록 명시적 fallback.
+if ! git rev-parse --verify --quiet "${BASE_BRANCH}^{commit}" >/dev/null 2>&1; then
+    if [ "$BASE_BRANCH" != "main" ]; then
+        echo "⚠ base 브랜치 '$BASE_BRANCH' 부재 (첫 spec 추정) → main 으로 fallback" >&2
+        BASE_BRANCH="main"
+    fi
+fi
+
 # 4. diff 범위 확인
 DIFF_STAT=$(git diff "${BASE_BRANCH}...HEAD" --stat 2>/dev/null)
 if [ -z "$DIFF_STAT" ]; then
