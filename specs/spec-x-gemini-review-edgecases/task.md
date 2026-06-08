@@ -70,15 +70,15 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 전체 테스트 실행 → `test-gemini-review-guard.sh` 14/14 PASS + 회귀 무
-- [ ] 코드 리뷰 게이트 — **Opus(/hk-code-review)** (gemini 가 본 spec 의 수정 대상 → 자기 리뷰 회피, sandbox 와 동일 논리)
-- [ ] **walkthrough.md 작성**
-- [ ] **pr_description.md 작성**
-- [ ] **Ship Commit**: `docs(spec-x-gemini-review-edgecases): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-gemini-review-edgecases`
-- [ ] **PR 생성**: `gh pr create --base main` (spec-x → main)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
-- [ ] **specx done** (post-merge): `sdd specx done gemini-review-edgecases`
+- [x] 전체 테스트 실행 → `test-gemini-review-guard.sh` **16/16 PASS** + 회귀 무(bash-policy 4/4, manifest-sync 6/6)
+- [x] 코드 리뷰 게이트 — **Opus(/hk-code-review)** → Approve / 0C 0Maj 3Min. Minor-1 반영(`ef92490`), Minor-2/3 skip
+- [x] **walkthrough.md 작성**
+- [x] **pr_description.md 작성**
+- [x] **Ship Commit**: `docs(spec-x-gemini-review-edgecases): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-x-gemini-review-edgecases`
+- [x] **PR 생성**: `gh pr create --base main` (spec-x → main)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [-] **specx done** (post-merge): `sdd specx done gemini-review-edgecases` — 머지 *후* 단계라 push 전 불가, 의도적 연기
 
 ---
 
@@ -88,5 +88,5 @@
 |---|---|
 | **총 Task 수** | 6 (계획커밋 + 테스트 + fix×2 + 정리 + Ship) |
 | **예상 commit 수** | 6 (docs-plan / test / fix-b / fix-a / chore / ship) |
-| **현재 단계** | Planning |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-06-09 |
