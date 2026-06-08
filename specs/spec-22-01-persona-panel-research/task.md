@@ -19,12 +19,12 @@
 ## Task 1: 브랜치 + 연구 리포트 스캐폴딩
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-22-01-persona-panel-research`
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-22-01-persona-panel-research`
+- [x] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. report.md 스캐폴딩
-- [ ] `specs/spec-22-01-persona-panel-research/report.md` 생성 — 섹션 골격(5난점 설계 / 측정 설계 / POC 설계 / 실행 결과(liveness+value) / Go-No-Go)
-- [ ] Commit: `docs(spec-22-01): scaffold research report`
+- [x] `specs/spec-22-01-persona-panel-research/report.md` 생성 — 섹션 골격(5난점 설계 / 측정 설계 / POC 설계 / 실행 결과(liveness+value) / Go-No-Go)
+- [x] Commit: `docs(spec-22-01): scaffold research report`
 
 ---
 
