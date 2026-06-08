@@ -60,9 +60,9 @@
 ## Task 5: stale Icebox 라인 정리
 
 ### 5-1. queue.md Icebox 정리
-- [ ] plan-mode 위반 라인 → strike-through + `spec-x-gemini-review-sandbox` 해결 참조.
-- [ ] 엣지케이스 2종 라인 → strike-through + `spec-x-gemini-review-edgecases` 해결 참조.
-- [ ] Commit: `chore(spec-x-gemini-review-edgecases): tidy resolved gemini-review icebox items`
+- [x] plan-mode 위반 라인 → strike-through + `spec-x-gemini-review-sandbox` 해결 참조.
+- [x] 엣지케이스 2종 라인 → strike-through + `spec-x-gemini-review-edgecases` 해결 참조.
+- [x] Commit: `chore(spec-x-gemini-review-edgecases): tidy resolved gemini-review icebox items`
 
 ---
 
