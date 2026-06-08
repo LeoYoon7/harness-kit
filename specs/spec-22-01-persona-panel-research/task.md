@@ -40,8 +40,8 @@
 
 ## Task 3: POC 프로토타입 정의
 
-- [ ] `scripts/research/persona-panel-poc.md` 작성 — 페르소나 정의, dispatch(fan-out·결과 계약만), 종료조건, 증류 단계, **baseline(단일 Opus N회 투표) 프로토콜**
-- [ ] Commit: `docs(spec-22-01): define persona-panel POC prototype`
+- [x] `scripts/research/persona-panel-poc.md` 작성 — 페르소나 정의, dispatch(fan-out·결과 계약만), 종료조건, 증류 단계, **baseline(단일 Opus N회 투표) 프로토콜**
+- [x] Commit: `docs(spec-22-01): define persona-panel POC prototype`
 
 ---
 

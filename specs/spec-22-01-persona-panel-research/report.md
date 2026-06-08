@@ -88,8 +88,13 @@ baseline = **동일 리뷰 프롬프트를 단일 Opus 로 N회(기본 3회) 실
 
 ## 4. POC 설계
 
-<!-- Task 3 — scripts/research/persona-panel-poc.md 요약 -->
-_(미작성)_
+전문: `scripts/research/persona-panel-poc.md`. 요지:
+- **페르소나 3**: 설계자(아키텍처·단순성) / 규제자(거버넌스·리스크) / 사용자 옹호자(DX·도그푸딩).
+- **dispatch**: 3 sub-agent 병렬 팬아웃, 각자 구조화 결과 계약(`issue/severity/rationale`)만 반환 — transcript 금지(ADR-010), 메인은 계약만 수신(격리).
+- **종료**: 라운드1 병렬 → 충돌 이슈만 라운드2 재질의 → 신규 0 또는 **≤3 라운드** 상한 + 의미적 중복 차단.
+- **증류**: 이슈별 구조화 표(제기 페르소나/합의/심각도/근거) — 이견은 "미합의"로 보존(평탄화 X).
+- **baseline**: 단일 Opus 3회(self-consistency) 합집합 — 페르소나 다양성 기여 분리.
+- **표본**: 설계 갈렸던 archived spec 1건 (Task 4 확정).
 
 ## 5. POC 실행 결과
 
