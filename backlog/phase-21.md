@@ -53,7 +53,7 @@ upstream 의 director mode 가치를 **fork 구조(§6.6/§6.7·ADR-007/008)에 
 | `spec-21-02` | director-mode-switch | P? | Merged | `specs/spec-21-02-director-mode-switch/` |
 | `spec-21-03` | director-protocol | P? | Merged | `specs/spec-21-03-director-protocol/` |
 | `spec-21-04` | role-model-config | P? | Merged | `specs/spec-21-04-role-model-config/` |
-| `spec-21-05` | governance-diet | P? | Active | `specs/spec-21-05-governance-diet/` |
+| `spec-21-05` | governance-diet | P? | Merged | `specs/spec-21-05-governance-diet/` |
 <!-- sdd:specs:end -->
 
 > 상태 허용값: `Backlog` / `In Progress` / `Merged`
