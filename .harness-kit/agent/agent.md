@@ -83,34 +83,7 @@ Once SDD is selected:
 
 ### 4.1 Layout (Flat — One File Per Phase)
 
-`backlog/` and `specs/` are **sibling directories** with distinct roles:
-- `backlog/` = phase-level *planning* (dashboard + work map)
-- `specs/`   = actual *progress/completed* spec artifacts (work log)
-
-```
-backlog/
-├── queue.md            # Dashboard: active / queued / done phases at a glance
-├── phase-01.md          # All specs for phase 1 in one file (summary + direction + integration tests + ADR refs)
-├── phase-02.md
-└── ...
-
-specs/                  # Actual work (flat layout)
-├── spec-01-01-{slug}/
-│   ├── spec.md         # Detailed spec expanding phase-01.md's spec-01-01 entry
-│   ├── plan.md
-│   ├── task.md
-│   ├── walkthrough.md
-│   └── pr_description.md
-├── spec-01-02-{slug}/
-├── spec-02-01-{slug}/
-└── ...
-
-docs/decisions/         # ADR (referenced from phase-x.md / spec.md)
-├── ADR-001-{slug}.md
-└── ADR-002-{slug}.md
-```
-
-> ID formats, directory paths, and branch naming rules → constitution §6.
+`backlog/` and `specs/` are **sibling directories**: `backlog/` = phase planning (`queue.md` dashboard + one `phase-{N}.md` work map per phase), `specs/` = per-spec work log (flat `spec-{N}-{seq}-{slug}/` holding spec/plan/task/walkthrough/pr_description.md). ADRs live in `docs/decisions/ADR-{NNN}-{slug}.md` (referenced from phase/spec). ID formats, paths, and branch naming → constitution §6.
 
 ### 4.2 Template Enforcement
 
@@ -147,14 +120,7 @@ After writing `spec.md`, `plan.md`, and `task.md`, the Agent MUST:
 3. **STRICTLY PROHIBITED**: Generating code or running non-read commands until the User selects an option and, if option 1, explicitly approves the Plan.
 
 ### 4.5 Critique Step (Optional)
-Before Plan Accept, the User MAY invoke `/hk-spec-critique` to get an independent Opus sub-agent critique of `spec.md`.
-
-- **When**: After spec.md/plan.md/task.md are written, before Plan Accept
-- **Purpose**: Research similar approaches + identify requirement gaps, contradictions, over-engineering + propose alternatives
-- **Output**: `specs/<spec-dir>/critique.md`
-- **Optional**: Not invoking it does not affect workflow progression
-- The Agent MAY include a one-line note about the critique option when reporting artifacts:
-  `(Optional) You can run /hk-spec-critique for a requirements critique.`
+Before Plan Accept, the User MAY run `/hk-spec-critique` for an independent Opus critique of `spec.md` (research similar approaches + flag requirement gaps/contradictions/over-engineering + propose alternatives → `specs/<spec-dir>/critique.md`). Optional — skipping does not block progression. The Agent MAY note this option when reporting artifacts.
 
 ## 5. Plan & Task Strategy
 
@@ -176,6 +142,8 @@ For **EVERY** Task in the approved Plan, the Agent MUST:
 5. **Commit**: One Task = One Commit (→ constitution §8), using the commit format (→ constitution §10.2).
 6. **Update task.md**: Mark the task status (see §6.2).
 7. **Auto-proceed or Stop**: If no issues occurred, update `task.md` and **automatically proceed** to the next task — including the Ship task (ship → push → PR creation). If any issue occurs (test failure, unexpected error, scope deviation, push failure), immediately **STOP** and report to the user. On successful PR creation, report the PR URL and wait for User merge.
+
+**Director Mode delegation** (when `directorMode` enabled, → §6.8): the director MAY delegate a task's Strict Loop execution to a worker, who runs test→implement→verify→commit and commits the in-scope artifact files (task.md status, planning artifacts). The director retains gates and verification (§6.8). Single short tasks stay inline (§6.7).
 
 ### 6.2 Task Status Management
 
@@ -215,7 +183,7 @@ When passing a task with `[-]`, the Agent MUST:
     5. **Push**: `git push -u origin spec-{phaseN}-{seq}-{slug}`.
     6. **Ship**: Push and create PR automatically. Report the PR URL to the User and wait for merge.
     7. **Review pivots by scope**: `walkthrough.md` (default), `plan.md` (substantial change), ADR (architectural). Push before merge (→ §5.6, §6.3).
-    8. **Code Review Gate (default-run, auditable skip)**: Before push, `/hk-ship` pre-flight (§1.5) presents a review choice — `/hk-gemini-review` (cross-model, recommended), `/hk-code-review` (Opus same-model), or Skip. The default is to **run** a review (Gemini recommended); Skip is allowed but is **not free** — the Agent MUST record a one-line reason in the `walkthrough.md` 코드 리뷰 (Code Review) field. This turns "not reviewing" into a deliberate, auditable act instead of a silent default — closing the gap where `optional` collapsed to always-skip. Docs/markdown-only changes may use `docs-only` as the reason. Cross-model reduces self-evaluation bias (LLM-as-judge research). Results saved to `code-review-gemini.md` / `code-review.md` respectively.
+    8. **Code Review Gate (default-run, auditable skip)**: Before push, `/hk-ship` pre-flight (§1.5) offers `/hk-gemini-review` (cross-model, recommended — reduces self-eval bias), `/hk-code-review` (Opus), or Skip. Default is to **run**; Skip is allowed but the Agent MUST record a one-line reason in the `walkthrough.md` 코드 리뷰 field (`docs-only` suffices for markdown-only) — making "not reviewing" deliberate, not silent. Results → `code-review-gemini.md` / `code-review.md`.
 
 ### 6.3.1 Post-Merge Protocol
 
@@ -233,31 +201,25 @@ Base mode: `/hk-phase-ship` creates PR; `sdd phase done` deferred until user mer
 
 ### 6.4 Bash Single-Command Principle
 
-When calling the Bash tool, the Agent MUST follow these rules:
-- **One command per Bash call.** Do NOT chain commands with `||`, `&&`, or `;`.
-- **Pipes (`|`) are allowed** within a single logical command (e.g., `jq '.phase' < file.json`).
-- If multiple commands are needed, make **sequential Bash tool calls** or delegate to `sdd` CLI.
-- **Quoted arguments are fine**, but avoid constructing shell scripts inline (e.g., `for ... do ... done`).
-- Rationale: compound commands trigger Claude Code's "quoted characters" safety check, causing unnecessary permission prompts even when all individual commands are already allowed.
+When calling Bash, the Agent MUST use **one command per call** — no `||`/`&&`/`;` chaining (pipes `|` within one logical command are fine, e.g. `jq '.phase' < file.json`). For multiple commands, make sequential calls or delegate to `sdd`. Avoid inline shell scripts (`for…do…done`). Rationale: compound commands trip Claude Code's "quoted characters" safety check → needless permission prompts even when each command is allowed.
 
 ### 6.5 Static Analysis First
 
 When the project has static analysis tools configured (type-checker, linter), use them as the primary diagnostic authority before making corrections. The Agent MUST NOT guess or over-correct beyond their findings.
 
-### 6.6 Model Allocation Strategy
+### 6.6 Model & Context Allocation Strategy
 
-The main session runs on **Opus** (planning, coordination, judgment). Sub-agents are dispatched with explicit model overrides:
+The main session runs as the **director** (`models.director`) — planning, coordination, judgment. Sub-agents are dispatched per role. Model tiers are role-based config (`sdd config models`), de-hardcoded so governance survives model churn (→ ADR-011).
 
-| Role | Model | Rationale |
+| Role | Tier | Scope |
 |---|---|---|
-| Spec / Plan / Task authoring | Opus (main) | Architecture decisions and scope require deep reasoning |
-| Task execution | Sonnet (sub-agent, `model: "sonnet"`) | Task execution is relatively mechanical; faster and cheaper |
-| Code review / critique | Opus (sub-agent, `model: "opus"`) | Catching subtle issues requires deep analysis from a different context |
-| Code analysis | Opus (sub-agent, `model: "opus"`) | Structural understanding and impact assessment |
+| **director** | `models.director` | Spec/Plan/Task authoring, judgment, code review / critique — deep reasoning |
+| **worker** | `models.worker` (sub-agent) | Task execution — relatively mechanical; faster, cheaper |
+| **scout** | `models.scout` (sub-agent) | Code analysis / broad search — structural understanding, impact assessment |
 
-When delegating implementation to a Sonnet sub-agent, the main Opus agent MUST provide clear, specific instructions including: target files, expected behavior, test expectations, and commit message format.
+**Context offloading (orchestrator–worker)** — the main session is a *context orchestrator*. When delegating: (1) **delegate** token-heavy / polluting labor (multi-file impl, broad search; boundary → §6.7 threshold), keeping judgment and verification on main; (2) inject a **scoped slice** (files, expected behavior, test command, commit format), not full history; (3) the worker returns a **distilled contract** (commit SHA, test + completion status [full/partial/failed], decisions), never the transcript; (4) orchestrator **retains verification** (on failure → §7 Hard Stop); (5) **fan out** independent jobs (→ §6.7). Applies always; director mode (→ §6.8) toggles delegation *aggressiveness*, not on/off. Rationale: ADR-010.
 
-**Dispatch exception — docs-only tasks**: When all Spec tasks are limited to markdown/documentation file creation or editing (no code, scripts, or tests), run them in the main thread — sub-agent spin-up overhead exceeds the saving. See §6.7 sub-agent dispatch threshold for the general rule.
+**Dispatch exception — docs-only tasks**: all-markdown Spec tasks stay in the main thread (spin-up overhead > saving; → §6.7 dispatch threshold).
 
 ### 6.7 Workflow Patterns
 
@@ -275,7 +237,18 @@ Generic agent behavior patterns that improve UX, latency, and cost without per-t
 
 **Version + CHANGELOG paired update**: When `version.json` changes, `CHANGELOG.md` MUST gain a corresponding entry in the same commit. Conversely, never bump version without summarizing changes since the last release.
 
-**Native feature gate-preservation**: Claude Code native features that introduce autonomy, session-splitting, or web hand-off (`/goal`, `/effort ultracode`, `/fewer-permission-prompts`, `/code-review` [incl. ultra], `/ultraplan`, the skill system, `/background`, `/branch`) MAY be used ONLY under gate-preservation conditions — each MUST stop and report at every decision gate (§8.5, Plan Accept) instead of running past them, so text-gate and §10 bidirectional-notification response opportunities are never bypassed. In particular: `/goal` is bounded to one spec/phase's acceptance criteria with an explicit "stop and report at each gate" clause, plus mandatory entry critique + non-skippable ship code-review at spec/phase scope (verification ≠ authorization — Plan Accept and out-of-plan deviations still hard-stop; ADR-007 Amendment); `/effort ultracode` only inside a confirmed implementation phase (never the whole project); `/ultraplan` output MUST be re-gated through `/hk-plan-accept`; `/fewer-permission-prompts` allowlists are reviewed before commit; `/background` is bounded to gate-free mechanical stretches with explicit (tier-2) notification at any gate, and `/branch` peer-fork preserves gates via inherited settings (`CLAUDE_CODE_FORK_SUBAGENT=1` follows `/background`). Per-feature conditions and rationale: ADR-007 (native-feature-adoption-policy) in the kit repo; in install targets (where ADR-007 is not distributed), the self-contained situational guide is `.harness-kit/agent/native-feature-usage.md` — read it when a native feature is being considered.
+**Native feature gate-preservation**: Claude Code native features that add autonomy, session-splitting, or web hand-off (`/goal`, `/effort ultracode`, `/ultraplan`, `/background`, `/branch`, `/fewer-permission-prompts`, `/code-review` [incl. ultra], skills) MAY be used ONLY if every decision gate (§8.5, Plan Accept) still stops and reports — text-gate and §10 bidirectional-notification responses are never bypassed (e.g. `/goal` bounded to one spec/phase's acceptance criteria + entry critique + non-skippable ship review; `/ultraplan` re-gated through `/hk-plan-accept`). Per-feature conditions + rationale: ADR-007 (kit repo) / `native-feature-usage.md` (install targets — read before using one).
+
+### 6.8 Director Mode Protocol
+
+Active only when `directorMode` is enabled (→ `/hk-director`). How-to + examples: `director-mode.md`; rationale: ADR-011. Builds on §6.6 — director mode raises delegation aggressiveness, not on/off.
+
+1. **Intent handshake** before dispatch.
+2. **Scoped brief**: target files, expected behaviour, test command, commit format, artifact commit scope — never full history.
+3. **Distilled contract**: commit SHA + test status + decisions only; full transcript return is a VIOLATION.
+4. **Verification by action**: test re-run + live smoke + contract review; re-ingesting the worker's full transcript is PROHIBITED (→ ADR-010 ④).
+5. **Gates stay with director**: Plan Accept, Ship, §5/§9 notification gates never delegated (→ ADR-008).
+6. **No over-dispatch**: respect §6.7; single short commands inline. Strict Loop execution delegation → §6.1 Director Mode delegation.
 
 ## 7. Deviation & Hard Stop
 
@@ -297,27 +270,7 @@ When stopping for a decision, the Agent MUST follow §8.5 **Choice Presentation 
 
 ### 8.1 File Path Format
 
-All file and directory paths in Agent output MUST use paths relative to `$HARNESS_ROOT`.
-
-- Correct: `specs/spec-x-foo/spec.md`, `backlog/phase-01.md`
-- Wrong: `/Users/alice/projects/myapp/specs/spec-x-foo/spec.md`
-
-This applies to: spec/plan/task references, `sdd` command output, `doctor.sh` output, and any inline path mentions in chat.
-
-When listing multiple spec artifact files, output each file as a standalone full relative path on its own line — never as indented filenames under a directory heading. This makes paths clickable in Claude Code.
-
-- Correct:
-  ```
-  specs/spec-x-foo/spec.md
-  specs/spec-x-foo/plan.md
-  specs/spec-x-foo/task.md
-  ```
-- Wrong:
-  ```
-  specs/spec-x-foo/
-      spec.md   ✓
-      plan.md   ✓
-  ```
+All paths in Agent output MUST be relative to `$HARNESS_ROOT` (e.g. `specs/spec-x-foo/spec.md`, never absolute like `/Users/alice/...`). Applies to spec/plan/task refs, `sdd`/`doctor.sh` output, and inline mentions. When listing multiple spec artifacts, put each full relative path on its own line (not indented filenames under a directory heading) so they stay clickable in Claude Code.
 
 ### 8.2 Emoji Usage
 
@@ -343,75 +296,26 @@ Avoid decorative emoji in plain text prose. Emoji in bash output MUST be consist
 
 ### 8.4 AskUserQuestion Tool Preference
 
-At key decision points requiring user input, the Agent SHOULD use the `AskUserQuestion` tool instead of plain text output.
+At key decision points (Work Mode → §3, Plan Accept vs Critique → constitution §5.2, PR confirmation → constitution §5.7, Idea Capture Gate → constitution §5.5) the Agent SHOULD use `AskUserQuestion` instead of plain text — keep options 2–4, trade-offs in the description. Text formats (`1)/2)`, `[Y/n]`) remain the authoritative fallback when AUQ isn't rendered or a yes/no suffices. Gated by `uxMode` in `installed.json`: `interactive` (default) → use; `text` → skip; absent → interactive. Change via `sdd config ux-mode [interactive|text|toggle]` or `/hk-ask-mode`.
 
-**Preferred usage points**:
-
-| Decision Point | Context |
-|---|---|
-| **Work Mode selection** | SDD-P / SDD-x / FF (→ §3) |
-| **Plan Accept vs Critique** | Enter execution or run critique first (→ constitution §5.2) |
-| **PR creation confirmation** | When not in `--no-confirm` mode (→ constitution §5.7) |
-| **Idea Capture Gate** | Continue current work or switch to new idea (→ constitution §5.5) |
-
-**Text format remains a valid fallback when**:
-- The environment does not render `AskUserQuestion` (restricted CLI contexts)
-- A simple yes/no is sufficient
-- The existing text formats (`1)/2)`, `[Y/n]`) from constitution §5.2·§5.7 are still authoritative fallback rules
-
-**`uxMode` config field**: Before using `AskUserQuestion`, check `.harness-kit/installed.json`:
-- `"uxMode": "interactive"` (default) — use `AskUserQuestion` at preferred points above (SHOULD)
-- `"uxMode": "text"` — skip `AskUserQuestion`; fall back to text output for all decision points
-- Field absent — treat as `"interactive"` (backward-compatible default)
-
-To change: `sdd config ux-mode [interactive|text|toggle]` (or run `/hk-ask-mode` — toggles the current value).
-
-**Usage notes**: `AskUserQuestion` is Claude Code-specific. Keep options to 2–4, use concise labels, and put trade-offs in the description field.
+> 본 fork 운영(dogfood)에서는 CLAUDE.fragment 정책상 AUQ 를 사용하지 않고 모든 게이트를 텍스트로 처리한다 — 위 SHOULD 는 일반 install 대상 기준이며 fragment 가 override 한다.
 
 ### 8.5 Choice Presentation Protocol (Mandatory)
 
-Whenever the Agent presents multiple options to the User and requests a decision — **anywhere in the workflow**, not only during Alignment Phase — the output MUST include a [Recommendation] line. This rule has no exceptions.
-
-**Applies to**:
-- Alignment Phase work mode selection (§3).
-- Hard Stop for Review after spec/plan/task (§4.4).
-- Task decomposition proposals mid-loop.
-- Implementation strategy A/B/C choices.
-- Unexpected edge case handling decisions.
-- Any ad-hoc option presentation during Execution Phase (§6).
-- Go/No-Go decisions at Phase Ship (`/hk-phase-ship`).
+Whenever the Agent presents 2+ options and requests a decision — **anywhere in the workflow** (Alignment §3, Hard Stop §4.4, mid-loop task decomposition, impl strategy A/B/C, edge-case handling, Phase Ship Go/No-Go) — the output MUST include a **[Recommendation]** line. No exceptions.
 
 **Required format**:
 
 ```
-[Intent / Context]
-<What decision is needed and why — 1-2 lines>
-
-[Options]
-1. <Option A — concise summary>
-2. <Option B — concise summary>
-3. <Option C — concise summary>  ← only if applicable
-
-[Recommendation]
-<Option number> — <short justification based on prior patterns, risk, or project constraints>
-
-[Decision Request]
-<One explicit question asking the User to choose>
+[Intent / Context] <what decision + why, 1-2 lines>
+[Options] 1. <A> 2. <B> 3. <C>  (3rd only if applicable)
+[Recommendation] <option #> — <reason: prior pattern / risk / constraint>
+[Decision Request] <one explicit question>
 ```
 
-**Rationale**:
-- The User often reviews these decisions on mobile (via remote channel notifications — Telegram/Discord — or Remote Control) where reading long options is slow.
-- A [Recommendation] with reasoning lets the User make a fast, informed choice.
-- "Missing recommendation" is a recurring failure mode — the Agent MUST self-check before sending any multi-option message.
+**Why + self-check**: the User often decides on mobile (Telegram/Discord) where long options are slow — a justified [Recommendation] enables a fast call; "missing recommendation" is a recurring failure. Before sending, verify: (1) 2+ options → [Recommendation] required; (2) reason is concrete (pattern/risk/constraint); (3) one unambiguous question. Revise if any fails.
 
-**Self-check before output**: Before presenting options, the Agent MUST internally verify:
-1. Are there 2+ distinct options? → If yes, [Recommendation] is required.
-2. Is the recommendation justified by a concrete reason (prior pattern, risk, constraint)?
-3. Is the decision question unambiguous (one question, not multiple)?
-
-If any of the three fails, the Agent MUST revise before sending.
-
-**Exception**: Binary confirmation questions (Yes/No to proceed) do not require [Recommendation] if the default direction is already stated. Example: "Plan 을 이대로 수락하시겠습니까? [Y/n]" is acceptable as-is.
+**Exception**: binary Yes/No with a stated default needs no [Recommendation] (e.g. "Plan 을 수락하시겠습니까? [Y/n]").
 
 ## 9. Research Spec Protocol
 
@@ -442,7 +346,7 @@ SDD ceremony has a fixed token + time cost. When the work itself is smaller than
 
 ### 11.1 SDD Ceremony Cost (Awareness)
 
-The full SDD ceremony — `spec.md` + `plan.md` + `task.md` + Plan Accept + `walkthrough.md` + `pr_description.md` + PR + review — costs roughly 6,000–8,000 tokens plus user review time, regardless of work size. Before invoking SDD, the Agent MUST estimate scope and recommend the appropriate work mode. Do not default to SDD for trivial work.
+Full SDD ceremony (spec+plan+task + Plan Accept + walkthrough+pr_description + PR + review) costs ~6,000–8,000 tokens + review time regardless of work size. Before invoking SDD, the Agent MUST estimate scope and recommend the work mode — do not default to SDD for trivial work.
 
 ### 11.2 Scope Economy Thresholds
 
@@ -471,7 +375,7 @@ The Agent reports the assessment to the User before continuing with the next spe
 
 ### 11.4 In-Phase Work Sizing & Re-Adjustment
 
-**Size each item up front — phase-FF is a first-class choice, not only a fallback.** When starting any item inside an active Phase, the Agent first sizes it: substantial or uncertain → full **Spec**; small/clear/reversible (1–2 commits) → **phase-FF** (direct commit to the phase base branch, no spec artifacts, no per-item re-approval — → constitution §3.1, ADR-009). Do NOT default to "every in-phase item is a Spec," and do NOT bundle small items into a Spec merely to avoid phase-FF.
+**Size each item up front — phase-FF is a first-class choice, not only a fallback.** Starting any item in an active Phase, the Agent sizes it: substantial/uncertain → full **Spec**; small/clear/reversible (1–2 commits) → **phase-FF** (direct commit to phase branch, no spec artifacts/re-approval → constitution §3.1, ADR-009). Don't default to "every item is a Spec," nor bundle small items into a Spec just to avoid phase-FF.
 
 Re-adjustment (when an already-planned spec's assumptions shift mid-phase, → §11.3) prefers **bundle** or **phase-FF** over spec-x demotion (preserves thematic cohesion + saves ceremony):
 

@@ -1,0 +1,91 @@
+# Task List: spec-21-04
+
+> 모든 task 는 한 commit 에 대응합니다 (One Task = One Commit).
+> 매 commit 직후 본 파일의 체크박스를 갱신해야 합니다.
+
+## Pre-flight (Plan 작성 단계)
+
+- [x] Spec ID 확정 및 디렉토리 생성 (`sdd spec new role-model-config`)
+- [x] spec.md 작성
+- [x] plan.md 작성
+- [x] task.md 작성 (이 파일)
+- [x] 백로그 업데이트 (phase-21.md SPEC 표 자동 갱신 — spec-21-04 Active)
+- [x] 사용자 Plan Accept (Telegram "1")
+
+---
+
+## Task 1: 브랜치 + 검증 테스트 (TDD Red)
+
+### 1-1. 브랜치 생성
+- [x] `git checkout -b spec-21-04-role-model-config` (시작점 = `phase-21-director-mode`)
+- [x] Commit: 없음 (브랜치 생성만)
+
+### 1-2. 테스트 작성 (TDD Red)
+- [x] `tests/test-role-model-config.sh` 작성 — C1 `.models` 3역할, C2 `sdd config models` list, C3 `set` 갱신(fixture), C4 §6.6 `models.*` 참조 + 모델명 부재, C5 이중 미러 parity(agent.md+sdd).
+- [x] 테스트 실행 → Fail 확인 (PASS=2 FAIL=7 — Red)
+- [x] Commit: `test(spec-21-04): add failing test for role-model config`
+
+---
+
+## Task 2: config 표면 — sdd config models + 시드
+
+> 논리 단위: "역할→모델 매핑 config 도입" (명령 + 시드 + 로컬값).
+
+### 2-1. config 구현
+- [x] `sources/bin/sdd`: `cmd_config` 에 `models)` 분기 + `_config_models`(list/set, fallback director=opus/worker=sonnet/scout=opus) + `cmd_help` config 사용법 1줄.
+- [x] `.harness-kit/bin/sdd` 미러 동기화 (cp 로 보장).
+- [x] `install.sh`: installed.json heredoc 에 `.models` 기본값 시드.
+- [x] `.harness-kit/installed.json` (로컬, tracked): `.models` 3역할 추가.
+- [x] 검증: `bash tests/test-role-model-config.sh` → C1/C2/C3/C5 PASS (C4 agent.md 아직 red)
+- [x] Commit: `feat(spec-21-04): add sdd config models (role-model mapping)`
+
+---
+
+## Task 3: §6.6 de-hardcode — GREEN
+
+### 3-1. agent.md §6.6 역할 참조 전환
+- [x] `sources/governance/agent.md`: §6.6 prose "runs on Opus" → "runs as director(`models.director`)", 표 모델명 → 역할(director/worker/scout)+`models.*` 참조(4행→3행, review→director 흡수), config 명시(→ ADR-011).
+- [x] `.harness-kit/agent/agent.md` 미러 동기화 (cp 로 보장).
+- [x] 검증: `bash tests/test-role-model-config.sh` → **7/7 PASS (GREEN)**
+- [x] 회귀: governance-dedup 1/8(Check 3 만 red, 무 NEW 회귀) — agent.md 4706→**4696w (-10w)**. director-protocol 13/13, director-mode 10/10 무 회귀.
+- [x] Commit: `refactor(spec-21-04): de-hardcode 6.6 model names to role config`
+
+---
+
+## Task 3.5: 코드 리뷰 반영 (Opus, ship 전)
+
+> Gemini 오작동(할루시네이션) → Opus 서브에이전트 재리뷰: Approve / Minor 4. 권고 1+2 반영(3/4 는 KISS 잔존).
+
+### 3.5-1. ADR-011 귀속 정합 (권고 1)
+- [x] `docs/decisions/ADR-011-director-mode.md` 에 Amendment 추가 — role-based model config 근거(§6.6 `(→ ADR-011)` 포인터 정합화).
+- [x] Commit: `docs(spec-21-04): amend ADR-011 with role-based model config rationale`
+
+### 3.5-2. 테스트 엣지 보강 (권고 2)
+- [x] `tests/test-role-model-config.sh` C6(미지원 role → exit 1) + C7(`.models` 미존재 → fallback) 추가 → 9/9 PASS.
+- [x] Commit: `test(spec-21-04): cover unsupported role + .models fallback`
+
+---
+
+## Task 4: Ship (필수)
+
+> 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
+
+- [x] 전체 테스트 실행 → `test-role-model-config.sh` 9/9 PASS + 회귀 무 NEW
+- [x] 코드 리뷰 게이트 (§6.3 — Gemini 오작동 → Opus 재리뷰 Approve, 권고 1+2 반영)
+- [x] **walkthrough.md 작성** (Gemini 오작동 산출물 덮어쓰기 — 전체 경위 포함)
+- [x] **pr_description.md 작성** (템플릿 준수, Gemini 산출물 덮어쓰기)
+- [x] **Ship Commit**: `docs(spec-21-04): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-21-04-role-model-config`
+- [x] **PR 생성**: `/hk-pr-gh` — base = `phase-21-director-mode`
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
+
+---
+
+## 진행 요약
+
+| 항목 | 값 |
+|---|---|
+| **총 Task 수** | 4 (작업 3 + 리뷰반영 + Ship) |
+| **실제 commit 수** | 8 (planning / test / config / de-hardcode / ADR-amend / test-C6C7 / [gemini stray 9d07f91] / ship) |
+| **현재 단계** | Ship |
+| **마지막 업데이트** | 2026-06-05 |

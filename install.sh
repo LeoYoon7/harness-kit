@@ -585,6 +585,7 @@ else
   "kitOrigin": "$_kit_origin",
   "installedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
   "uxMode": "interactive",
+  "models": { "director": "opus", "worker": "sonnet", "scout": "opus" },
   "installedCommands": $_cmd_json
 }
 EOF
