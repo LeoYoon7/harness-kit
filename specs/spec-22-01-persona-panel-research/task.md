@@ -66,14 +66,14 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 리뷰 게이트 — research/docs-only 이므로 Skip 가능 (walkthrough 코드리뷰 칸에 `docs-only` 기록)
-- [ ] 전체 키트 테스트 회귀 확인 (영향권만) → PASS
-- [ ] **walkthrough.md 작성** (연구 결정·발견·증빙 로그)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-22-01): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-22-01-persona-panel-research`
-- [ ] **PR 생성**: `gh pr create` (base = `main`, repo = fork) — 사용자 승인 후
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 리뷰 게이트 — Skip (`docs-only`, walkthrough 코드리뷰 칸 기록)
+- [x] 회귀 확인 — production 코드 미변경(docs/research only) → 회귀 대상 없음
+- [x] **walkthrough.md 작성** (연구 결정·발견·증빙 로그)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `docs(spec-22-01): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-22-01-persona-panel-research`
+- [x] **PR 생성**: `gh pr create` (base = `main`, repo = fork)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -83,5 +83,5 @@
 |---|---|
 | **총 Task 수** | 6 (작업 5 + Ship 1) |
 | **예상 commit 수** | 6 |
-| **현재 단계** | Planning (Critique 반영 완료) |
+| **현재 단계** | Ship (완료) |
 | **마지막 업데이트** | 2026-06-08 |
