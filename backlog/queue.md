@@ -8,7 +8,7 @@
 ## 📦 진행 중 Phase
 
 <!-- sdd:active:start -->
-- **phase-21** — director-mode — 5 spec — 다음: (spec 없음)
+(active phase 없음. `bin/sdd phase new <slug>` 로 시작)
 <!-- sdd:active:end -->
 
 ## 📥 spec-x 대기
@@ -148,6 +148,7 @@
 - **phase-20** — upstream-parity — completed 2026-06-04
 - [x] spec-x-icebox-prune (완료)
 - [x] spec-x-gemini-review-sandbox (완료)
+- **phase-21** — director-mode — completed 2026-06-08
 <!-- sdd:done:end -->
 
 ---
