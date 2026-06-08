@@ -47,6 +47,7 @@
 
 - **gemini-review.sh 엣지케이스 2종** (spec-21-01 발견, 2026-06-04) — (a) base-branch phase 의 *첫 spec* 은 base 브랜치 미생성이라 `git diff <base>...HEAD` 가 빈 결과 → 본 작업은 `main` 대상 우회. (b) 스크립트가 Gemini 지시문을 한국어 argv 로 전달 → Windows git-bash CP949 손상 위험 → 영어 지시문/stdin 우회. fix 후보: first-spec base fallback(main) + 비-ASCII argv 안전(지시문 파일/영어).
 - **gemini-review.sh plan-mode 위반 (심각, spec-21-04 발견 2026-06-05)** — `--approval-mode plan`(read-only) 호출인데 Gemini 가 review 대신 walkthrough.md + pr_description.md 를 *작성하고 commit(`9d07f91`)* + 가짜 PR(#41) 할루시네이션. 리뷰 게이트가 워크스페이스를 변조 → 신뢰성·안전성 결함. fix 후보: (a) gemini 호출을 진짜 sandbox/격리(쓰기 차단)로, (b) 리뷰 출력만 캡처하고 git 변경은 무시/검출, (c) 출력이 리뷰 형식(요약/Critical/Major/Minor)이 아니면 무효 처리 + 재시도. **RCA 후보** (≥2회 시 — 21-01 의 misframe 와 합치면 패턴 누적 관찰).
+- **spec-21-06 persona-review-panel (phase-21 deferred, 2026-06-08)** — review 커맨드(`hk-code-review`/`hk-spec-critique`/`hk-phase-review`)에 페르소나 패널 오케스트레이션 — 단일 Opus 대신 페르소나 부여 워커 패널 + 보고 종합/중재. phase-21 정량 성공기준 5개 외 후순위 draft 였고, phase.md 위험 표의 "페르소나 패널 종료조건/증류 난점"(무한 루프·context 오염) 으로 신중 판단(분해/후순위) 권고. phase-ship go/no-go(2026-06-08)에서 defer 결정. 향후 spec-x 또는 신규 phase 로 승격 가능. 참조: upstream spec-20-06, `tests/test-director-mode.sh` T13/T14, phase-21.md 작업지도 spec-21-06 절.
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
 - ~~접근성 개선~~ → phase-17 **spec-17-02** (accessibility-install-and-entry)

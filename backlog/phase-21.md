@@ -115,6 +115,7 @@ upstream 의 director mode 가치를 **fork 구조(§6.6/§6.7·ADR-007/008)에 
 | ADR 번호 | upstream 005/006 재사용 / fork 신규 | **fork 신규 010/011** | fork ADR-005/006 은 ignore-symmetry/code-review-gate — 의미 충돌. upstream 005/006 은 참조로만 |
 | §6.8 배치 | agent.md 인라인 / 별도 가이드 문서 | **별도 `director-mode.md` 가이드 + agent.md 간결 stub** | native-feature-usage.md 패턴. agent.md 순증 최소화(stub). 21-01 이 §6.8 을 분리 후보로 표시 (spec-21-03 §11.3 재검증서 확정) |
 | 단어 예산 상한 | 6000w 유지 / 8000w 상향(upstream) | **6000w 유지 + 다이어트는 spec-21-06 분리** | fork "컨텍스트 비용 0 우선". 다이어트 ~1333w 가 protocol 추가와 독립·대규모 → add/delete 혼재 회피. 상향은 anti-bloat 충돌 (spec-21-03 §11.3 재검증서 확정) |
+| spec-21-06 (persona-panel) | 착수 / defer | **defer → Icebox** | 정량 성공기준 5/5 가 21-01~05 로 충족(21-06 은 기준 외 후순위 draft). 위험 표 "종료조건/증류 난점" 신중 권고. phase-ship go/no-go(2026-06-08)에서 사용자 Go + defer 승인. 향후 spec-x/phase 승격 가능 |
 
 ## 🧪 통합 테스트 시나리오 (간결)
 
@@ -166,11 +167,30 @@ bash tests/test-governance-dedup.sh
 
 ## 🏁 Phase Done 조건
 
-- [ ] 모든 SPEC 이 merge (base branch 모드: `phase-21-director-mode` → main)
-- [ ] 통합 테스트 전 시나리오 PASS
-- [ ] 성공 기준 정량 측정 결과 기록 (특히 단어 예산 green 증빙)
-- [ ] 사용자 최종 승인 (`/hk-phase-ship` go/no-go)
+- [ ] 모든 SPEC 이 merge (base branch 모드: `phase-21-director-mode` → main) — Phase PR 머지 대기 중
+- [x] 통합 테스트 전 시나리오 PASS
+- [x] 성공 기준 정량 측정 결과 기록 (특히 단어 예산 green 증빙)
+- [x] 사용자 최종 승인 (`/hk-phase-ship` go/no-go) — Go (2026-06-08)
 
 ## 📊 검증 결과 (phase 완료 시 작성)
 
-<!-- 통합 테스트 로그, 성공 기준 측정값(단어 예산 before/after), 회귀 점검 결과 -->
+### phase-ship 검증 (2026-06-08)
+
+**성공 기준: 5/5 PASS**
+
+| # | 기준 | 결과 | 증거 |
+|:---:|---|:---:|---|
+| 1 | 토글 표면 | ✅ PASS | `test-director-mode.sh` 10/10 |
+| 2 | context orchestration (ADR-010 + 불변식) | ✅ PASS | `test-context-orchestration.sh` 6/6 checks |
+| 3 | Director Mode Protocol (§6.8+§6.1+ADR-011) | ✅ PASS | `test-director-protocol.sh` 13/13 |
+| 4 | 단어 예산 GREEN | ✅ PASS | `test-governance-dedup.sh` Check 3 = 6393w ≤ 6500w |
+| 5 | 역할 기반 모델 config | ✅ PASS | `test-role-model-config.sh` 9/9 |
+
+**통합 테스트: 3/3 시나리오 PASS**
+- 시나리오 1 (토글+거버넌스 정합): PASS — director-mode+protocol+미러 parity 무충돌
+- 시나리오 2 (단어 예산 green + 무회귀): PASS — `test-governance-dedup.sh` Check 1~6 (8 checks) ALL PASS (이전 red → green)
+- 시나리오 3 (역할 모델 config 노출): PASS — director/worker/scout 매핑 + 하드코딩 부재
+
+**단어 예산 before/after**: 7494w (phase 시작, 상한 6000 초과 red) → **6393w** (상한 6500 재보정 후 GREEN, ADR-012)
+
+**잔여**: spec-21-06 (persona-review-panel) → Icebox defer (성공기준 외 후순위)
