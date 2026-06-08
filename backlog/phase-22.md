@@ -58,7 +58,7 @@ review 커맨드(`hk-code-review`/`hk-spec-critique`/`hk-phase-review`)에 **페
 <!-- sdd:specs:start -->
 | ID | 슬러그 | 우선순위 | 상태 | 디렉토리 |
 |---|---|:---:|---|---|
-| `spec-22-01` | persona-panel-research | P? | Active | `specs/spec-22-01-persona-panel-research/` |
+| `spec-22-01` | persona-panel-research | P? | Merged | `specs/spec-22-01-persona-panel-research/` |
 <!-- sdd:specs:end -->
 
 > 상태 허용값: `Backlog` / `In Progress` / `Merged`
@@ -91,6 +91,8 @@ review 커맨드(`hk-code-review`/`hk-spec-critique`/`hk-phase-review`)에 **페
 | 접근 | 구현 직행 / research-first | **research-first** | defer 사유(5난점) 미해결. upstream 도 중재 research-only. 수렴성 검증 후 구현이 안전 |
 | Base 모드 | base / non-base | **non-base** | research 결과가 no-go/재설계 가능 → base 브랜치 선결정 회피 (유연성) |
 | upstream 통합 | 포팅 / 재설계 | **재설계** | upstream 에 구현 명세(spec-20-06) 부재. T13/T14 테스트만 존재 → fork 가 설계 확정 |
+| 연구 결론 | Go / No-Go / 표본추가 | **Conditional No-Go** (사용자 수용 2026-06-08) | POC(n=1)에서 패널이 self-consistency baseline 을 지배 못함(상보적, 비용 동급). value 미입증 = Go 전제 불충족 |
+| spec-22-02 | 구현 / drop | **drop** | value 미입증 → 단순 패널 구현 보류. 하이브리드(패널+generalist)는 별도 research 로 Icebox |
 
 ## 🧪 통합 테스트 시나리오 (간결)
 
@@ -133,12 +135,24 @@ bash tests/test-persona-panel.sh   # spec-22-02 구현 시 신설 (research Go �
 
 ## 🏁 Phase Done 조건
 
-- [ ] spec-22-01(research) merge — report.md(5난점 설계 + POC + Go/No-Go) 완성
-- [ ] (Go 시) spec-22-02(impl) merge — 3개 커맨드 패널 절 + 미러 + 테스트 PASS
-- [ ] 통합 테스트 시나리오 PASS (No-Go 면 시나리오 1만)
-- [ ] 성공 기준 정량 측정 결과 기록
-- [ ] 사용자 최종 승인 (`/hk-phase-ship` go/no-go)
+- [x] spec-22-01(research) merge — report.md(5난점 설계 + POC + Go/No-Go) 완성 (PR #45)
+- [-] (Go 시) spec-22-02(impl) merge — **N/A (Conditional No-Go → drop)**
+- [x] 통합 테스트 시나리오 1 PASS (POC liveness — 수렴/격리)
+- [x] 성공 기준 정량 측정 결과 기록 (아래 검증 결과)
+- [x] 사용자 최종 승인 — No-Go 수용 (2026-06-08)
 
 ## 📊 검증 결과 (phase 완료 시 작성)
 
-<!-- research report 요지, POC 로그, Go/No-Go 결론, (구현 시) 테스트 결과 -->
+### phase-22 종료 (2026-06-08) — Conditional No-Go
+
+**성공 기준 측정**
+1. ✅ 5난점 ≥2안 설계 — `report.md §2`
+2. ✅ POC 수렴 실증 — 라운드 1 종료 + 결과 계약만 반환(context 격리) + retention ~0.87 (`report.md §5.1`, `scripts/research/persona-panel-poc-run.md`)
+3. ✅ Go/No-Go 권고 — **Conditional No-Go** (`report.md §6`)
+4. ⏭ N/A — 구현 기준(spec-22-02)은 No-Go 로 비해당
+
+**통합 테스트**: 시나리오 1 (POC liveness) PASS. 시나리오 2 (구현) N/A.
+
+**핵심 결과**: 패널은 framing 폭(이 spec 의 실제 핵심 모바일→embed 이슈 포착)에서 우위였으나, self-consistency baseline(Opus×3)이 잡은 구체 버그(awk locale, 3/3)를 **전원 놓침**. 비용 동급 → **패널이 baseline 을 지배 못함(상보적)**. n=1 한계.
+
+**산출 자산**: 재사용 측정틀(value/retention/cost + self-consistency baseline) + 하이브리드(패널+generalist) 방향. spec-22-02 drop, 하이브리드·`review-value-baseline` ADR 후보는 Icebox.
