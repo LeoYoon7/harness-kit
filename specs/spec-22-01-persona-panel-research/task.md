@@ -57,8 +57,8 @@
 
 ## Task 5: Go/No-Go 권고
 
-- [ ] report.md "Go/No-Go" 섹션 — 명시적 결론 + 근거(난점 해소도 + **value > baseline 입증 여부**). Go 면 spec-22-02 범위 제안, No-Go 면 근거 + Icebox 처리안
-- [ ] Commit: `docs(spec-22-01): document go/no-go recommendation`
+- [x] report.md "Go/No-Go" 섹션 — **Conditional No-Go** (value 미입증). spec-22-02(단순 패널) drop, 하이브리드 재설계를 Icebox/신규 research 로 권고
+- [x] Commit: `docs(spec-22-01): document go/no-go recommendation`
 
 ---
 

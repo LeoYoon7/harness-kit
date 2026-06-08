@@ -5,8 +5,7 @@
 
 ## 0. 요약 (Executive Summary)
 
-<!-- Task 5 에서 최종 작성: 한 문단 결론 + Go/No-Go -->
-_(연구 완료 후 작성)_
+페르소나 리뷰 패널의 5난점(종료조건/증류/무한루프/검증불변식/context오염)은 모두 설계로 해소 가능했고 POC 가 **liveness 를 실증**했다(라운드 1 수렴, 결과 계약만 반환해 context 격리, issue retention ~0.87). 그러나 **value 측면에서 단일-Opus self-consistency baseline(Opus×3)을 지배하지 못했다** (n=1). 패널은 framing 폭(구조·UX·이 spec 의 실제 핵심 모바일→embed 이슈)에서, baseline 은 구체 구현 버그(awk locale 의존, 패널 전원 놓침)에서 각각 우위였고 **비용은 동급**. 따라서 **단순 페르소나 패널의 즉시 구현(spec-22-02)은 보류(Conditional No-Go)** 하고, *하이브리드(패널 + generalist 정독 패스)* 재설계 + 표본 확대를 다음 단계로 권고한다. — No-Go 도 유효 결과: ROI 불명확한 기능을 짓지 않고, 더 나은 방향 + 재사용 가능한 측정틀(value/retention/cost + self-consistency baseline)을 자산화했다.
 
 ## 1. 문제 정의
 
@@ -121,5 +120,17 @@ baseline = **동일 리뷰 프롬프트를 단일 Opus 로 N회(기본 3회) 실
 
 ## 6. Go / No-Go 권고
 
-<!-- Task 5 — value > baseline 입증 여부 기반 명시 결론 + 근거 -->
-_(미작성)_
+### 결론: **Conditional No-Go** (단순 페르소나 패널의 spec-22-02 즉시 구현 보류)
+
+**근거**
+1. **value 미입증 (Go 전제 불충족)** — spec.md 는 "value > baseline 입증" 을 Go 전제로 명시했다. POC(n=1)에서 패널은 self-consistency baseline 을 *지배하지 못했고*, 오히려 구체 구현 지뢰(awk locale)를 전원 놓쳤다. 비용 동급이라 *단순 페르소나 패널*의 순 ROI 가 불명확.
+2. **5난점은 장애물이 아님** — 종료(이견-한정+상한)/증류(구조화 머지)/무한루프(의미중복)/불변식(결과 계약)/격리(sub-agent)는 모두 설계·실증으로 해소됨. 즉 *기술적으로 못 만드는* 게 아니라 *현 형태로는 가치가 baseline 을 못 넘는* 것이 문제.
+
+**다음 단계 권고 (택1, 별도 spec)**
+- **A. 하이브리드 재설계 (권장)** — 페르소나 패널(framing 폭) + generalist 정독 1패스(구체 버그 깊이)를 결합. 렌즈 제약이 깊이를 희생시킨 원인을 보완. → 새 research/spec 으로 ≥2 표본 검증 후 구현.
+- **B. 페르소나를 "렌즈 제약" 대신 "추가 정독자"로** 재정의 — 다양성은 주되 각자 전반 정독.
+- **C. 보류 유지** — 단일-Opus + self-consistency(저비용 N회)로 충분하다고 보고 패널 미도입.
+
+**spec-22-02 처리**: 원 계획의 *단순 패널 구현* spec-22-02 는 **drop**. 대신 위 A(하이브리드)를 Icebox/신규 research 후보로 이관. phase-22 는 본 research(spec-22-01) 의 자산화로 Done 가능 (성공기준 1~3 충족, 기준 4 는 No-Go 로 비해당).
+
+**최종 결정권**: 본 권고는 에이전트 분석이며, Go/No-Go 의 최종 결정은 사용자(`/hk-phase-ship` go/no-go). n=1 한계를 감안해 사용자가 "표본 더 보고 결정" 을 택할 수도 있음.
