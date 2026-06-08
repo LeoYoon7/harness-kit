@@ -147,6 +147,7 @@
 - [x] spec-x-goal-verify-gate (완료)
 - **phase-20** — upstream-parity — completed 2026-06-04
 - [x] spec-x-icebox-prune (완료)
+- [x] spec-x-gemini-review-sandbox (완료)
 <!-- sdd:done:end -->
 
 ---
