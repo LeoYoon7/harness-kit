@@ -40,10 +40,10 @@
 ## Task 3: (b) 비-ASCII argv 안전 구현 (TDD Green)
 
 ### 3-1. 지시문을 argv → stdin 이동
-- [ ] `sources/bin/gemini-review.sh`: INPUT_FILE 최상단에 `INSTRUCTION` prepend, `-p` 를 ASCII 영어 포인터로 교체.
-- [ ] `.harness-kit/bin/gemini-review.sh` 미러 동기화 (`cp`).
-- [ ] 테스트 실행 → T6 Green
-- [ ] Commit: `fix(spec-x-gemini-review-edgecases): pass reviewer instruction via stdin to avoid non-ascii argv`
+- [x] `sources/bin/gemini-review.sh`: INPUT_FILE 최상단에 `INSTRUCTION` prepend, `-p` 를 ASCII 영어 포인터(`PROMPT`)로 교체.
+- [x] `.harness-kit/bin/gemini-review.sh` 미러 동기화 (`cp`).
+- [x] 테스트 실행 → T6 Green (PASS=14 FAIL=2 — T7 만 잔여 Red)
+- [x] Commit: `fix(spec-x-gemini-review-edgecases): pass reviewer instruction via stdin to avoid non-ascii argv`
 
 ---
 
