@@ -165,6 +165,7 @@ if [ -f "$TARGET/.gitignore" ]; then
     inblk==1 && /^\.env\.telegram$/     { next }
     inblk==1 && /^\.env\.discord$/      { next }
     inblk==1 && /^specs\/\*\*\/code-review\*\.md$/ { next }
+    inblk==1 && /^archive\/specs\/\*\*\/code-review\*\.md$/ { next }
     inblk==1 && /^\/claude-dangerously-skip-permissions\.sh$/ { next }
     inblk==1                           { inblk=0 }
     { print }

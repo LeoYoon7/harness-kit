@@ -32,13 +32,13 @@
 
 > ADR-005 symmetry — 세 사이트를 한 commit 으로 동기 변경.
 
-- [ ] `.gitignore` — `archive/specs/**/code-review*.md` 추가
-- [ ] `install.sh` (~552) — `_gi_ensure` archive 라인 추가
-- [ ] `uninstall.sh` — awk 제거 패턴에 archive 라인 추가 (install/uninstall 대칭, ADR-005)
-- [ ] `sources/bin/sdd` (~2383) — doctor 점검에 archive 패턴 추가
-- [ ] `.harness-kit/bin/sdd` — sdd 변경 미러 동기 (parity)
-- [ ] 테스트 실행 → Pass 확인 (test-gitignore-config / test-doctor-ignore-coverage / governance-dedup 미러 parity)
-- [ ] Commit: `fix(spec-x-gitignore-archive-coverage): cover archive review outputs in ignore symmetry sites`
+- [x] `.gitignore` — `archive/specs/**/code-review*.md` 추가
+- [x] `install.sh` (~552) — `_gi_ensure` archive 라인 추가
+- [x] `uninstall.sh` — awk 제거 패턴에 archive 라인 추가 (install/uninstall 대칭, ADR-005)
+- [x] `sources/bin/sdd` (~2383) — doctor 점검에 archive 패턴 추가
+- [x] `.harness-kit/bin/sdd` — sdd 변경 미러 동기 (parity, diff 동일 확인)
+- [x] 테스트 Pass — gitignore 24/24, doctor 10/10, sdd 미러 diff 동일. upgrade 경로는 update.sh=uninstall+install 로 자동 커버
+- [x] Commit: `fix(spec-x-gitignore-archive-coverage): cover archive review outputs in ignore symmetry sites`
 
 ---
 
