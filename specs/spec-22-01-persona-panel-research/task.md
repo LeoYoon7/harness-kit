@@ -47,11 +47,11 @@
 
 ## Task 4: POC 실행 + baseline 비교 + value/수렴 증빙
 
-- [ ] archived spec 1건(이견 갈리는 표본)에 POC 패널 실행 (페르소나 sub-agent 팬아웃)
-- [ ] **동일 spec 에 baseline(단일 Opus N회 투표) 실행** — 앙상블 vs 페르소나 기여 분리
-- [ ] `scripts/research/persona-panel-poc-run.md` 에 실행 로그(페르소나별 결과 계약 / 라운드 수 / 증류 산출물 / 격리 + baseline 결과 + value 비교표) 기록
-- [ ] report.md "실행 결과" 섹션 — liveness(수렴/격리) + **value(놓친 이슈·거짓 양성·issue retention rate·비용/지연) 패널 vs baseline 비교**
-- [ ] Commit: `docs(spec-22-01): run POC + baseline and capture value/convergence evidence`
+- [x] archived spec 1건(spec-x-notify-channel-formatter)에 POC 패널 실행 (페르소나 sub-agent 팬아웃)
+- [x] **동일 spec 에 baseline(단일 Opus 3회 투표) 실행** — 앙상블 vs 페르소나 기여 분리
+- [x] `scripts/research/persona-panel-poc-run.md` 에 실행 로그 기록 (격리/라운드/증류 + baseline + value 비교표)
+- [x] report.md "실행 결과" 섹션 — liveness + value 패널 vs baseline 비교
+- [x] Commit: `docs(spec-22-01): run POC + baseline and capture value/convergence evidence`
 
 ---
 

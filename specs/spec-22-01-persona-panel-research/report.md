@@ -98,12 +98,26 @@ baseline = **동일 리뷰 프롬프트를 단일 Opus 로 N회(기본 3회) 실
 
 ## 5. POC 실행 결과
 
-<!-- Task 4 — scripts/research/persona-panel-poc-run.md 증빙 -->
+전문 로그: `scripts/research/persona-panel-poc-run.md`. 표본 = `archive/specs/spec-x-notify-channel-formatter`(n=1), 패널 3 + baseline(Opus×3) 병렬.
+
 ### 5.1 liveness (수렴 / 증류 / 격리)
-_(미작성)_
+
+- **격리 ✅**: 6 워커 전원 JSON 결과 계약만 반환 — 메인 context 에 transcript 미유입 (ADR-010 불변식 실증).
+- **종료 ✅**: 라운드 **1** 수렴 (페르소나 이슈가 상충 아닌 *상보* → 이견-한정 2차 불필요, 하드 상한 ≤3 미접근). 무한 루프 없음.
+- **증류 ✅**: 구조화 머지표 생성, 이견 보존. issue retention rate ~0.87.
 
 ### 5.2 value (패널 vs baseline 비교표)
-_(미작성)_
+
+| 지표 | 패널 | baseline (Opus×3) |
+|---|---|---|
+| distinct 이슈 | ~15 | ~16 |
+| 고유 발견 | ~6 (설계·UX framing) | ~4 (구체 기술 버그) |
+| ground truth 핵심(모바일→embed) | ✅ P3 포착 | △ 약함 |
+| 구체 기술 지뢰(awk locale 의존) | ❌ 전원 놓침 | ✅ **3/3** |
+| 비용(서브에이전트 토큰) | ~141k | ~161k (동급) |
+| 라운드 | 1 | 1(투표) |
+
+**핵심**: 패널은 *framing 폭* + 이 spec 의 실제 핵심 이슈(모바일→embed)에서 우위였으나, baseline 이 3/3 으로 잡은 **구체적 구현 지뢰(awk locale)를 전원 놓침**. 비용 동급. → 패널이 self-consistency baseline 을 **지배하지 못함 — 둘은 상보적**(패널=폭/framing, baseline=깊이/구체버그). n=1 한계로 일반화 금지.
 
 ## 6. Go / No-Go 권고
 
