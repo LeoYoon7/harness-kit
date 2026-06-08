@@ -17,14 +17,14 @@
 ## Task 1: 가드 테스트 (TDD Red)
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-x-gitignore-archive-coverage`
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-x-gitignore-archive-coverage`
+- [x] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. 실패 테스트 작성
-- [ ] `tests/test-gitignore-config.sh` 에 `archive/specs/**/code-review*.md` 커버 케이스 추가 (`.gitignore` + install fixture 출력)
-- [ ] `tests/test-doctor-ignore-coverage.sh` 에 archive 패턴 doctor 점검 케이스 추가
-- [ ] 실행 → Fail 확인 (현재 패턴 미존재)
-- [ ] Commit: `test(spec-x-gitignore-archive-coverage): add failing guard for archive review-output coverage`
+- [x] `tests/test-gitignore-config.sh` 에 archive 커버 케이스 추가 (A-5 install / H-4 self-host / J-2b uninstall 대칭)
+- [x] `tests/test-doctor-ignore-coverage.sh` 에 archive doctor WARN 케이스 추가 (a-3)
+- [x] 실행 → Fail 확인 (A-5/H-4/a-3 red; J-2b 는 install 추가 후 의미化)
+- [x] Commit: `test(spec-x-gitignore-archive-coverage): add failing guard for archive review-output coverage`
 
 ---
 

@@ -96,6 +96,18 @@ echo "▶ .dockerignore 점검 (b) 매트릭스"
 
 echo 'specs/**/code-review*.md' >> "$FIX/.gitignore"
 
+# (a-3) archive 라인 제거 → doctor WARN (spec-x-gitignore-archive-coverage)
+sed -i.bak '/^archive\/specs\/\*\*\/code-review\*\.md$/d' "$FIX/.gitignore"
+rm -f "$FIX/.gitignore.bak"
+out_arch="$(cd "$FIX" && bash "$SDD" doctor 2>/dev/null || true)"
+check
+if printf '%s' "$out_arch" | grep -q "archive.*code-review.*미등재"; then
+  pass "a-3: archive 라인 제거 후 doctor WARN 검출"
+else
+  fail "a-3: archive WARN 미검출"
+fi
+echo 'archive/specs/**/code-review*.md' >> "$FIX/.gitignore"
+
 # b-1: Dockerfile 없음 → .dockerignore silent skip
 check
 rm -f "$FIX/Dockerfile" "$FIX/.dockerignore"
