@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-gemini-review-edgecases — gemini-review-edgecases
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
