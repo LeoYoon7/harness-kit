@@ -30,11 +30,11 @@
 
 ## Task 2: 5난점 설계 분석 (각 ≥2안) + 측정 설계
 
-- [ ] 종료조건(consensus+라운드상한≤3) / 증류(이견보존+issue retention rate) / 무한루프(의미중복탐지) / 불변식양립 / context격리 각각 ≥2안 트레이드오프 비교 → report.md 설계 섹션
-- [ ] **측정 설계**: value 축(놓친 이슈/거짓 양성/retention) + 비용/지연 + baseline(단일 Opus N회 투표) 정의
-- [ ] **연구 파라미터**: 페르소나 수·구성 + archived spec 표본 선정 기준 확정
-- [ ] ADR-008/010/011 정합 점검 명시
-- [ ] Commit: `docs(spec-22-01): analyze 5 difficulties + define value/cost measurement`
+- [x] 종료조건(consensus+라운드상한≤3) / 증류(이견보존+issue retention rate) / 무한루프(의미중복탐지) / 불변식양립 / context격리 각각 ≥2안 트레이드오프 비교 → report.md 설계 섹션
+- [x] **측정 설계**: value 축(놓친 이슈/거짓 양성/retention) + 비용/지연 + baseline(단일 Opus N회 투표) 정의
+- [x] **연구 파라미터**: 페르소나 수·구성 + archived spec 표본 선정 기준 확정
+- [x] ADR-008/010/011 정합 점검 명시
+- [x] Commit: `docs(spec-22-01): analyze 5 difficulties + define value/cost measurement`
 
 ---
 
