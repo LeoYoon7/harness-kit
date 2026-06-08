@@ -33,5 +33,5 @@ Accepted (2026-06-02, `spec-x-review-gate-default` 머지 시점). 첫 적용: `
 
 ## 🔗 Related
 
-- spec: `specs/spec-x-review-gate-default/`
+- spec: `archive/specs/spec-x-review-gate-default/`
 - ADR-003 (도그푸드 동기화 정책 — sources 원본만 변경하는 근거)
