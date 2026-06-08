@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-gitignore-archive-coverage — gitignore-archive-coverage
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -153,6 +152,7 @@
 - [x] spec-x-gemini-review-sandbox (완료)
 - **phase-21** — director-mode — completed 2026-06-08
 - **phase-22** — persona-review-panel — completed 2026-06-08
+- [x] spec-x-gitignore-archive-coverage (완료)
 <!-- sdd:done:end -->
 
 ---
