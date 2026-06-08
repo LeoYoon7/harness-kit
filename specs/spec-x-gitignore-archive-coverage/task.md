@@ -46,14 +46,14 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차.
 
-- [ ] 코드 리뷰 게이트 — `/hk-gemini-review` 또는 `/hk-code-review` 또는 Skip(사유 기록)
-- [ ] 전체 영향권 테스트 실행 → 모두 PASS
-- [ ] **walkthrough.md 작성**
-- [ ] **pr_description.md 작성**
-- [ ] **Ship Commit**: `docs(spec-x-gitignore-archive-coverage): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-gitignore-archive-coverage`
-- [ ] **PR 생성**: `gh pr create` (base = `main`, repo = fork)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 코드 리뷰 게이트 — `/hk-code-review` (Opus) **Approve** (C0/M0/Minor3, #1 보강)
+- [x] 전체 영향권 테스트 실행 → gitignore 25/25, doctor 10/10 PASS
+- [x] **walkthrough.md 작성**
+- [x] **pr_description.md 작성**
+- [x] **Ship Commit**: `docs(spec-x-gitignore-archive-coverage): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-x-gitignore-archive-coverage`
+- [x] **PR 생성**: `gh pr create` (base = `main`, repo = fork)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 - [ ] 머지 후: `sdd specx done gitignore-archive-coverage`
 
 ---
@@ -63,6 +63,6 @@
 | 항목 | 값 |
 |---|---|
 | **총 Task 수** | 3 (가드 + fix + Ship) |
-| **예상 commit 수** | 3 |
-| **현재 단계** | Planning |
+| **실제 commit 수** | 5 (scaffold + test red + fix + test I-1b + ship) |
+| **현재 단계** | Ship (PR 대기) |
 | **마지막 업데이트** | 2026-06-08 |
