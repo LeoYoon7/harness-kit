@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-gitignore-archive-coverage — gitignore-archive-coverage
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox

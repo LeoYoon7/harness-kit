@@ -1,0 +1,68 @@
+# Task List: spec-x-gitignore-archive-coverage
+
+> 모든 task 는 한 commit 에 대응합니다 (One Task = One Commit).
+> 매 commit 직후 본 파일의 체크박스를 갱신해야 합니다.
+
+## Pre-flight (Plan 작성 단계)
+
+- [x] Spec ID 확정 및 디렉토리 생성
+- [x] spec.md 작성
+- [x] plan.md 작성
+- [x] task.md 작성 (이 파일)
+- [x] 백로그 업데이트 (queue.md specx 섹션 — sdd 자동)
+- [ ] 사용자 Plan Accept
+
+---
+
+## Task 1: 가드 테스트 (TDD Red)
+
+### 1-1. 브랜치 생성
+- [x] `git checkout -b spec-x-gitignore-archive-coverage`
+- [x] Commit: 없음 (브랜치 생성만)
+
+### 1-2. 실패 테스트 작성
+- [x] `tests/test-gitignore-config.sh` 에 archive 커버 케이스 추가 (A-5 install / H-4 self-host / J-2b uninstall 대칭)
+- [x] `tests/test-doctor-ignore-coverage.sh` 에 archive doctor WARN 케이스 추가 (a-3)
+- [x] 실행 → Fail 확인 (A-5/H-4/a-3 red; J-2b 는 install 추가 후 의미化)
+- [x] Commit: `test(spec-x-gitignore-archive-coverage): add failing guard for archive review-output coverage`
+
+---
+
+## Task 2: symmetry 사이트 fix (TDD Green, 원자)
+
+> ADR-005 symmetry — 세 사이트를 한 commit 으로 동기 변경.
+
+- [x] `.gitignore` — `archive/specs/**/code-review*.md` 추가
+- [x] `install.sh` (~552) — `_gi_ensure` archive 라인 추가
+- [x] `uninstall.sh` — awk 제거 패턴에 archive 라인 추가 (install/uninstall 대칭, ADR-005)
+- [x] `sources/bin/sdd` (~2383) — doctor 점검에 archive 패턴 추가
+- [x] `.harness-kit/bin/sdd` — sdd 변경 미러 동기 (parity, diff 동일 확인)
+- [x] 테스트 Pass — gitignore 24/24, doctor 10/10, sdd 미러 diff 동일. upgrade 경로는 update.sh=uninstall+install 로 자동 커버
+- [x] Commit: `fix(spec-x-gitignore-archive-coverage): cover archive review outputs in ignore symmetry sites`
+
+---
+
+## Task 3: Ship (필수)
+
+> 모든 작업 task 완료 후 `/hk-ship` 절차.
+
+- [x] 코드 리뷰 게이트 — `/hk-code-review` (Opus) **Approve** (C0/M0/Minor3, #1 보강)
+- [x] 전체 영향권 테스트 실행 → gitignore 25/25, doctor 10/10 PASS
+- [x] **walkthrough.md 작성**
+- [x] **pr_description.md 작성**
+- [x] **Ship Commit**: `docs(spec-x-gitignore-archive-coverage): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-x-gitignore-archive-coverage`
+- [x] **PR 생성**: `gh pr create` (base = `main`, repo = fork)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [ ] 머지 후: `sdd specx done gitignore-archive-coverage`
+
+---
+
+## 진행 요약
+
+| 항목 | 값 |
+|---|---|
+| **총 Task 수** | 3 (가드 + fix + Ship) |
+| **실제 commit 수** | 5 (scaffold + test red + fix + test I-1b + ship) |
+| **현재 단계** | Ship (PR 대기) |
+| **마지막 업데이트** | 2026-06-08 |

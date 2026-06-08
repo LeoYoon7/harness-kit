@@ -79,6 +79,14 @@ else
   fail "A-4: .gitignore 에 'specs/**/code-review*.md' 없음"
 fi
 
+check
+# spec-x-gitignore-archive-coverage: archive 이동 후에도 리뷰 출력 ignore
+if grep -q '^archive/specs/\*\*/code-review\*\.md$' "$FIX_A/.gitignore" 2>/dev/null; then
+  pass "A-5: .gitignore 에 'archive/specs/**/code-review*.md' 포함 (archive 리뷰 출력 ignore)"
+else
+  fail "A-5: .gitignore 에 'archive/specs/**/code-review*.md' 없음"
+fi
+
 echo ""
 
 # ──────────────────────────────────────────────
@@ -207,6 +215,15 @@ else
   fail "I-1: update × 3 후 라인이 ${_count}개"
 fi
 
+# I-1b: archive 라인도 update 멱등 (spec-x-gitignore-archive-coverage — code-review Minor #1)
+check
+_acount=$(grep -c '^archive/specs/\*\*/code-review\*\.md$' "$FIX_A/.gitignore" 2>/dev/null || echo "0")
+if [ "$_acount" -eq 1 ]; then
+  pass "I-1b: update × 3 후 'archive/specs/**/code-review*.md' 라인 1개 (멱등)"
+else
+  fail "I-1b: update × 3 후 archive 라인이 ${_acount}개"
+fi
+
 check
 _hdr=$(grep -c '^# harness-kit$' "$FIX_A/.gitignore" 2>/dev/null || echo "0")
 if [ "$_hdr" -eq 1 ]; then
@@ -273,6 +290,14 @@ else
   fail "H-3: self-host 시 'specs/**/code-review*.md' 미추가"
 fi
 
+# H-4: self-host 시 archive 패턴도 추가 (spec-x-gitignore-archive-coverage)
+check
+if grep -q '^archive/specs/\*\*/code-review\*\.md$' "$FIX_H/.gitignore" 2>/dev/null; then
+  pass "H-4: self-host 시 'archive/specs/**/code-review*.md' 추가됨"
+else
+  fail "H-4: self-host 시 'archive/specs/**/code-review*.md' 미추가"
+fi
+
 echo ""
 
 # ──────────────────────────────────────────────
@@ -303,6 +328,14 @@ if ! grep -q '^specs/\*\*/code-review\*\.md$' "$FIX_J/.gitignore" 2>/dev/null; t
   pass "J-2: uninstall 후 'specs/**/code-review*.md' 제거 (대칭성 invariant)"
 else
   fail "J-2: uninstall 후 'specs/**/code-review*.md' 잔존 (uninstall awk 패턴 누락 — ADR-005 위반)"
+fi
+
+# J-2b: archive 라인도 uninstall 대칭 제거 (spec-x-gitignore-archive-coverage)
+check
+if ! grep -q '^archive/specs/\*\*/code-review\*\.md$' "$FIX_J/.gitignore" 2>/dev/null; then
+  pass "J-2b: uninstall 후 'archive/specs/**/code-review*.md' 제거 (archive 대칭성)"
+else
+  fail "J-2b: uninstall 후 'archive/specs/**/code-review*.md' 잔존 (uninstall awk archive 패턴 누락)"
 fi
 
 # J-3: 기존 알려진 라인들도 모두 제거됐는가 (회귀 보장)

@@ -550,6 +550,8 @@ else
   # ephemeral 산출물. specs/ 하위로 한정해 .claude/commands/, sources/commands/ 의
   # 슬래시 커맨드 정의 파일에는 영향 없음. uninstall.sh awk 도 대칭 등재 필수 (ADR-005).
   _gi_ensure '^specs/\*\*/code-review\*\.md$' 'specs/**/code-review*.md'
+  # archive 이동분 — sdd archive 가 specs/ → archive/specs/ 로 옮긴 뒤에도 ignore 유지 (spec-x-gitignore-archive-coverage).
+  _gi_ensure '^archive/specs/\*\*/code-review\*\.md$' 'archive/specs/**/code-review*.md'
   # (opt-in) 권한 우회 런처 — 설치 시에만 등재해 대상 repo 커밋 차단.
   # uninstall.sh §7 awk 에도 대칭 패턴 등록 필수 (ADR-005 orphan 방지).
   [ "$HK_SKIP_LAUNCHER" -eq 1 ] && _gi_ensure '^/claude-dangerously-skip-permissions\.sh$' '/claude-dangerously-skip-permissions.sh'

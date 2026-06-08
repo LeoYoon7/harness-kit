@@ -2385,6 +2385,12 @@ cmd_doctor() {
   else
     _doc_warn ".gitignore 에 'specs/**/code-review*.md' 미등재 — /hk-code-review, /hk-gemini-review 출력이 untracked 로 누적될 수 있음. 갱신: bash update.sh ."
   fi
+  # (a2) archive 이동분 — sdd archive 후에도 리뷰 출력 ignore 유지 (spec-x-gitignore-archive-coverage)
+  if [ -f "$SDD_ROOT/.gitignore" ] && grep -qE '^archive/specs/\*\*/code-review\*\.md$' "$SDD_ROOT/.gitignore" 2>/dev/null; then
+    _doc_pass ".gitignore — archive 리뷰 출력 패턴 등재 (archive/specs/**/code-review*.md)"
+  else
+    _doc_warn ".gitignore 에 'archive/specs/**/code-review*.md' 미등재 — sdd archive 후 리뷰 출력이 untracked 로 누적될 수 있음. 갱신: bash update.sh ."
+  fi
   # (b) Dockerfile 존재 시 .dockerignore 의 .harness-kit 등재 여부 점검 (관대 패턴)
   # 매칭: '.harness-kit/', '.harness-kit' (슬래시 없이), '**/.harness-kit/' 등 사용자 자유도 보장.
   # Dockerfile 부재 시 silent skip — 컨테이너 미사용 사용자에게 노이즈 없음.
