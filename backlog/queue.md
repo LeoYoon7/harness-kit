@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-gemini-review-edgecases — gemini-review-edgecases
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -154,6 +153,7 @@
 - **phase-21** — director-mode — completed 2026-06-08
 - **phase-22** — persona-review-panel — completed 2026-06-08
 - [x] spec-x-gitignore-archive-coverage (완료)
+- [x] spec-x-gemini-review-edgecases (완료)
 <!-- sdd:done:end -->
 
 ---
