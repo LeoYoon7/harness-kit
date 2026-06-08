@@ -67,6 +67,18 @@ if [ -z "$BASE_BRANCH" ] || [ "$BASE_BRANCH" = "null" ]; then
     BASE_BRANCH="main"
 fi
 
+# base 브랜치 실재 확인 — 없으면 main 으로 fallback.
+# base-branch 모드 phase 의 첫 spec 은 base 브랜치가 hk-ship 시점에 just-in-time 생성되어
+# 작업 중에는 아직 없다 (constitution §3.1). ref 부재를 빈-diff 로 오진단하지 않도록 명시적 fallback.
+if ! git rev-parse --verify --quiet "${BASE_BRANCH}^{commit}" >/dev/null 2>&1; then
+    # main 은 캐논 base 전제 — main 자체가 부재한 저장소(default 가 master/trunk 등)는 범위 외.
+    # 이 경우 fallback 미발동 → 이어지는 git diff 가 빈 결과 → "리뷰할 변경이 없습니다" 로 보고된다.
+    if [ "$BASE_BRANCH" != "main" ]; then
+        echo "⚠ base 브랜치 '$BASE_BRANCH' 부재 (첫 spec 추정) → main 으로 fallback" >&2
+        BASE_BRANCH="main"
+    fi
+fi
+
 # 4. diff 범위 확인
 DIFF_STAT=$(git diff "${BASE_BRANCH}...HEAD" --stat 2>/dev/null)
 if [ -z "$DIFF_STAT" ]; then
@@ -74,9 +86,18 @@ if [ -z "$DIFF_STAT" ]; then
     exit 1
 fi
 
-# 5. 입력 본문 구성 (stdin 으로 전달 — argv 크기 한계 회피)
+# 5. 리뷰 지시문 (한국어). argv 가 아닌 stdin 본문 최상단으로 전달한다 —
+#    Windows git-bash 는 네이티브 프로그램 argv 를 CP949 로 재인코딩해 비-ASCII 를
+#    손상시키므로, 지시문은 stdin/파일로만 전달한다 (gitbash-nonascii-argv-codepage).
+INSTRUCTION="당신은 독립적인 시니어 개발자 코드 리뷰어입니다. 아래 spec 의 요구사항과 실제 코드 변경 (diff) 을 비교하여 다음 3가지 관점에서 리뷰하세요. (1) Spec 대비 구현 검증 — Functional Requirements 모두 충족됐는가, scope creep 은 없는가. (2) 코드 품질 — KISS / DRY / Feature Envy / Dead Code / 네이밍 / 에러 처리. (3) 테스트 커버리지 — happy path / edge case / 동작 검증 vs 구현 검증. 발견된 문제마다 심각도 (Critical / Major / Minor) 를 매기고, 반드시 파일경로:라인번호 형식으로 위치를 명시하세요. 발견 없음인 관점은 '발견 없음' 으로 표기. 출력은 한국어 마크다운 형식. 첫 줄은 '# Code Review (Gemini): ${SPEC_ID}'. 다음 섹션: ## 요약 (전체 평가 Approve/Request Changes/Comment, Critical N, Major N, Minor N), ## 상세 리뷰 (### 1. Spec 대비 구현 검증, ### 2. 코드 품질, ### 3. 테스트 커버리지), ## 권고사항. 다른 텍스트는 출력하지 마세요."
+
+# 6. 입력 본문 구성 (stdin 으로 전달 — 지시문 + spec + diff)
 INPUT_FILE=$(mktemp)
 {
+    echo "$INSTRUCTION"
+    echo
+    echo "---"
+    echo
     echo "# Spec ($SPEC_ID)"
     echo
     cat "$SPEC_DIR/spec.md"
@@ -90,9 +111,6 @@ INPUT_FILE=$(mktemp)
     echo '```'
 } > "$INPUT_FILE"
 
-# 6. 짧은 지시문 (argv 안전 크기)
-INSTRUCTION="당신은 독립적인 시니어 개발자 코드 리뷰어입니다. 위 spec 의 요구사항과 실제 코드 변경 (diff) 을 비교하여 다음 3가지 관점에서 리뷰하세요. (1) Spec 대비 구현 검증 — Functional Requirements 모두 충족됐는가, scope creep 은 없는가. (2) 코드 품질 — KISS / DRY / Feature Envy / Dead Code / 네이밍 / 에러 처리. (3) 테스트 커버리지 — happy path / edge case / 동작 검증 vs 구현 검증. 발견된 문제마다 심각도 (Critical / Major / Minor) 를 매기고, 반드시 파일경로:라인번호 형식으로 위치를 명시하세요. 발견 없음인 관점은 '발견 없음' 으로 표기. 출력은 한국어 마크다운 형식. 첫 줄은 '# Code Review (Gemini): ${SPEC_ID}'. 다음 섹션: ## 요약 (전체 평가 Approve/Request Changes/Comment, Critical N, Major N, Minor N), ## 상세 리뷰 (### 1. Spec 대비 구현 검증, ### 2. 코드 품질, ### 3. 테스트 커버리지), ## 권고사항. 다른 텍스트는 출력하지 마세요."
-
 OUTPUT_FILE="$SPEC_DIR/code-review-gemini.md"
 echo "🔍 Gemini 리뷰 실행 중 ($SPEC_ID, base=$BASE_BRANCH)..." >&2
 
@@ -103,7 +121,9 @@ PRE_STATUS=$(git status --porcelain 2>/dev/null || echo "")
 # gemini stdout 은 repo 밖 TEMP 로 받는다 (검증 통과 후에만 OUTPUT_FILE 로 이동)
 OUT_TMP=$(mktemp)
 GEMINI_STDERR=$(mktemp)
-if ! gemini -p "$INSTRUCTION" --approval-mode plan < "$INPUT_FILE" > "$OUT_TMP" 2>"$GEMINI_STDERR"; then
+# argv 는 순수 ASCII 만 (지시문은 stdin 최상단). 짧은 영어 프롬프트로 stdin 지시문을 가리킨다.
+PROMPT="Follow the reviewer instructions at the top of the input, then review the spec and diff that follow. Output Korean markdown exactly as those instructions specify."
+if ! gemini -p "$PROMPT" --approval-mode plan < "$INPUT_FILE" > "$OUT_TMP" 2>"$GEMINI_STDERR"; then
     echo "✗ gemini CLI 호출 실패" >&2
     echo "--- gemini stderr ---" >&2
     cat "$GEMINI_STDERR" >&2
