@@ -8,7 +8,7 @@
 ## 📦 진행 중 Phase
 
 <!-- sdd:active:start -->
-(active phase 없음. `bin/sdd phase new <slug>` 로 시작)
+- **phase-22** — persona-review-panel — 1 spec — 다음: spec-22-01-persona-panel-research
 <!-- sdd:active:end -->
 
 ## 📥 spec-x 대기
