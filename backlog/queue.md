@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-sdd-robustness-fixes — sdd-robustness-fixes
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
