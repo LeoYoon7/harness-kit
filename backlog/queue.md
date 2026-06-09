@@ -72,7 +72,7 @@
 > 다음에 진행할 phase 를 자유롭게 메모합니다 (사람이 직접 편집).
 > 자동 갱신되지 않습니다 — Icebox 와 동일한 정책.
 
-- **phase-21 후보 — director mode (컨텍스트 오케스트레이션)** — phase-20 성공기준 2 에서 **의식적 이관** (2026-06-04, 규모상 별도 phase 승격). upstream ADR-005/006 재구현 3부작: ① context orchestration(메인=orchestrator + worker offloading) ② `/hk-director` 모드 + ceremony 위임 ③ 페르소나 리뷰 패널. multi-spec 예상, ADR 010+(009=phase-FF), 검증 불변식(워커 transcript 전문 재흡수 금지) 포함. 참조: upstream `agent.md §6.1/6.6/6.8`, `hk-director.md`, `tests/test-director-*.sh`. **governance word-count(Check 3) 해소를 위한 agent.md 축소도 본 phase 에서 병행.**
+- (현재 대기 중인 phase 없음)
 
 ## ✅ 완료
 
