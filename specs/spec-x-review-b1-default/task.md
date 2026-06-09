@@ -38,10 +38,10 @@
 ## Task 2: ADR 2종 작성 (불변식 형식화 → C5/C6 Green)
 
 ### 2-1. ADR 작성
-- [ ] `docs/decisions/ADR-013-review-value-baseline.md` — type: `invariant`, status: accepted. 다관점 리뷰 도입 = baseline(self-consistency) 대비 value 측정을 Go 전제로. #48 사례.
-- [ ] `docs/decisions/ADR-014-review-eval-independence.md` — type: `invariant`, status: accepted. 리뷰 value 측정 채점자/GT 는 피측정 모델과 독립(cross-model/사람 blind). #48 Gemini blind 사례.
-- [ ] `bash tests/test-review-b1.sh` → **C5/C6 PASS** (C1~C4 아직 Fail)
-- [ ] Commit: `docs(spec-x-review-b1-default): add ADR-013/014 for review value baseline + eval independence`
+- [x] `docs/decisions/ADR-013-review-value-baseline.md` — type: `invariant`, status: accepted. 다관점 리뷰 도입 = baseline(직전 채택 구성, 상대정의) 대비 value 측정을 Go 전제로. #48 사례.
+- [x] `docs/decisions/ADR-014-review-eval-independence.md` — type: `invariant`, status: accepted. 리뷰 value 측정 채점자/GT 는 피측정 모델과 독립(cross-model/사람 blind) + 동일모델 self-consistency 비독립 포섭. #48 Gemini blind 사례.
+- [x] `bash tests/test-review-b1.sh` → **C5/C6 PASS** (C1~C4·C7·C8 아직 Fail) + stale-ADR clean 확인
+- [x] Commit: `docs(spec-x-review-b1-default): add ADR-013/014 for review value baseline + eval independence`
 
 ---
 
