@@ -57,7 +57,8 @@
   - **적응형 N / 폭·깊이 자동 라우팅** (#48 권고 B + spec-x-review-b1 critique 대안 A) — diff 크기·성격 판별로 N 또는 패널/B1 선택. 미검증·경계값 임의성으로 보류. B2 측정 후 재평가.
   - **hk-phase-review B1 적용 검토** — 코드 리뷰(diff) 외 phase 회고(다파일 감사)에 self-consistency 가 값하는지 별도 측정. 본 spec OOS.
 - ~~**sdd ship spec-x 커밋 subject slug truncation 버그** — `docs(spec-x-review):` 로 `-b1-default` 누락~~ → ✓ **spec-x-sdd-robustness-fixes (#50, `f495749`)** 로 해결 (2026-06-09): `sdd_ship_scope()` 신설 — `spec-x-*` 케이스 전체 id 유지 + `tests/test-sdd-ship-scope.sh` 회귀 5/5 PASS. (strike 누락분을 spec-x-stale-adr-archive-path 에서 정리.)
-- **test-drift-stale-adr.sh Step 2 Windows 플래키** — fixture(untracked ADR-999) 탐지가 간헐 실패(b6c2rakls PASS / bze38u4y7 FAIL, 동일 코드). Windows fs 쓰기→즉시 sdd status 읽기 race 또는 워킹트리 dirty 민감 의심. macOS 1차 타깃이라 best-effort — 재실행 시 green. 안정화(예: fixture write 후 sync/대기) 검토.
+- ~~**test-drift-stale-adr.sh Step 2 Windows 플래키**~~ → ✓ **spec-x-drift-test-fixture-race** 로 해결 (2026-06-09). **원인 정정**: fs-visibility race 가 아니라 *cross-test fixture 간섭* — `_drift_stale_adr` 가 `docs/decisions/ADR-*.md` 전역 glob 이라 다른 테스트(phase16)의 ADR fixture 가 동시 실행 시 잡혀 전역 count 단언이 깨짐. fix: drift+phase16 단언을 자기 fixture 특정으로. serial 은 본래 결정적. "b6c2rakls/bze38u4y7" 는 CI 아닌 백그라운드 task ID(동시 실행 아티팩트). deterministic 검증: 두 fixture 동시 존재 → count=2 → 구 단언 실패/신 단언 통과.
+- **`sdd status` Windows 성능 저하** — solo ~1m24s (sys 54s, 서브프로세스 spawn 과다 — `_drift_dogfood_sync` 의 `diff -q` 다수 + ADR grep). 동시 다중 호출 시 악화(~3.5분). macOS 1차라 best-effort. fix 후보: drift 검사 배치/캐싱 또는 Windows subprocess 절감. (spec-x-drift-test-fixture-race 조사 중 발견.)
 - ~~**`.gitignore` review 산출물 패턴이 `archive/` 미커버 (kit 버그, 2026-06-08 발견)**~~ → ✓ **spec-x-gitignore-archive-coverage (#46, `c5f28f8`)** — `.gitignore` 에 `archive/specs/**/code-review*.md` 추가(ignore 대칭). 잔여(소): 옛 archived spec 의 tracked `code-review*.md` 혼재 정리 정책 미결 — 필요 시 별도.
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
