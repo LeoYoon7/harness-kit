@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-persona-hybrid-research — persona-hybrid-research
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -49,7 +48,8 @@
 - ~~**gemini-review.sh 엣지케이스 2종** (spec-21-01 발견)~~ → ✓ **spec-x-gemini-review-edgecases** 로 해결 (2026-06-09): (a) base 브랜치 부재 시 main fallback + (b) 지시문 argv→stdin 이동(ASCII 영어 `-p`). guard 테스트 T6/T7 추가 (16/16 PASS).
 - ~~**gemini-review.sh plan-mode 위반 (심각, spec-21-04 발견)**~~ → ✓ **spec-x-gemini-review-sandbox** 로 해결 (2026-06-05 머지): `--approval-mode plan` read-only 불신 + 방어 래퍼(부수효과 감지/거부 + clean-pre 자동 원복 + 형식 검증). guard 테스트 12종. (완료 표기 누락분 — spec-x-gemini-review-edgecases 에서 정리.)
 - ~~**spec-21-06 persona-review-panel**~~ → ✓ **phase-22 research (PR #45) 로 결론 (2026-06-08)**: Conditional No-Go — POC(n=1)에서 페르소나 패널이 self-consistency baseline(Opus×3)을 지배 못함(상보적, 비용 동급). 단순 패널 미구현. 후속 = 아래 하이브리드 항목.
-- ⏳ **persona-panel 하이브리드 재설계 research** → **spec-x-persona-hybrid-research** 로 promote (2026-06-09, 진행 중, 대안 B). phase-22 결론: 페르소나 패널은 framing 폭은 우위이나 구체 버그 깊이(awk locale 류)를 놓침, self-consistency baseline 과 상보적. **하이브리드 = 페르소나 패널 + generalist 정독 1패스** 가 유망 방향. 또는 페르소나를 "렌즈 제약" 대신 "추가 정독자"로. ≥2 표본으로 재검증 필요(현 결론 n=1). 재사용 측정틀(value/issue retention/cost + self-consistency baseline)은 `archive/specs/.../spec-22-01.../report.md §3` 에 자산화. ADR 후보 `review-value-baseline`(invariant — 다관점 리뷰 도입은 baseline 대비 value 측정을 Go 전제로) 동반.
+- ~~**persona-panel 하이브리드 재설계 research**~~ → ✓ **spec-x-persona-hybrid-research (#48, 2026-06-09)**: Conditional No-Go (블랭킷 페르소나 패널). 발견 — generalist 정독=깊이 lever(항상 유효), 페르소나=폭 lever(폭 지배 리뷰 한정). Gemini cross-model blind 채점, n=2 (S1 폭 PASS / S2 깊이 FAIL, B1 cheaperEqual). 후속 = 아래 B1 항목.
+- **`hk-*-review` 기본을 B1 패턴(self-consistency Opus×N + generalist 정독 1패스)으로 업그레이드** (persona-hybrid research 권고 A, 2026-06-09) — 두 표본 모두 phase-22 깊이갭을 값싸게 회복한 win. 페르소나 패널은 *폭 지배(설계/UX/거버넌스) 리뷰 한정 opt-in* 으로 문서화. ADR 후보 `review-value-baseline` + `review-eval-independence` (invariant) 동반 트리거. 별도 spec-x/phase 승격 검토.
 - ~~**`.gitignore` review 산출물 패턴이 `archive/` 미커버 (kit 버그, 2026-06-08 발견)**~~ → ✓ **spec-x-gitignore-archive-coverage (#46, `c5f28f8`)** — `.gitignore` 에 `archive/specs/**/code-review*.md` 추가(ignore 대칭). 잔여(소): 옛 archived spec 의 tracked `code-review*.md` 혼재 정리 정책 미결 — 필요 시 별도.
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
@@ -155,6 +155,7 @@
 - **phase-22** — persona-review-panel — completed 2026-06-08
 - [x] spec-x-gitignore-archive-coverage (완료)
 - [x] spec-x-gemini-review-edgecases (완료)
+- [x] spec-x-persona-hybrid-research (완료)
 <!-- sdd:done:end -->
 
 ---
