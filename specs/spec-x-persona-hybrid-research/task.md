@@ -76,15 +76,15 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 리뷰 게이트 — 판단(연구 docs-only 면 Skip + 사유 기록 가능; gemini 는 본 연구 무관이라 사용 가능)
-- [ ] 회귀 확인 — production 코드 미변경(docs/research only) → 회귀 대상 없음
-- [ ] **walkthrough.md 작성** (연구 결정·발견·증빙 로그)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-x-persona-hybrid-research): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-persona-hybrid-research`
-- [ ] **PR 생성**: `gh pr create --base main` (spec-x → main, fork)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
-- [ ] **specx done** (post-merge): `sdd specx done persona-hybrid-research`
+- [x] 리뷰 게이트 — **Skip (`docs-only`)**: research 산출물(report/scripts/md, production 코드 0) + 내부적으로 Gemini cross-model blind 채점 수행(독립 검증 내재). walkthrough 코드리뷰 칸 기록.
+- [x] 회귀 확인 — production 코드 미변경(docs/research only) → 회귀 대상 없음
+- [x] **walkthrough.md 작성** (연구 결정·발견·증빙 로그)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `docs(spec-x-persona-hybrid-research): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-x-persona-hybrid-research`
+- [x] **PR 생성**: `gh pr create --base main` (spec-x → main, fork)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [-] **specx done** (post-merge): `sdd specx done persona-hybrid-research` — 머지 후 단계, 의도적 연기
 
 ---
 
@@ -93,6 +93,6 @@
 | 항목 | 값 |
 |---|---|
 | **총 Task 수** | 6 (작업 5 + Ship) |
-| **예상 commit 수** | 6 (계획 / 설계·측정 / POC프로토콜 / POC실행 / Go-No-Go / ship) |
-| **현재 단계** | Planning |
+| **실제 commit 수** | 7 (계획 / 설계·측정 / POC프로토콜 / S1실행 / S2+종합+Go-No-Go / ship) |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-06-09 |
