@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-stale-adr-archive-path — stale-adr-archive-path
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
