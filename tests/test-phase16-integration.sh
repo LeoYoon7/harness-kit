@@ -3,7 +3,7 @@
 #
 # phase-16 (Reliability Layer 강화) 의 통합 시나리오 3 개 자동 검증:
 #   1. Knowledge Type closure — docs/rca + docs/decisions 의 type 값이 정규 어휘 (5 closure) 안
-#   2. Stale ADR detection — fixture (missing path 참조 ADR) 주입 → drift 섹션에 stale 1 라인
+#   2. Stale ADR detection — fixture (missing path 참조 ADR) 주입 → 자기 fixture 가 stale 목록에 포함
 #   3. Reliability layer slogan — README + version.json + .harness-kit/agent/constitution.md 3 곳 hit
 #
 # 명명 규약: tests/test-phase{N}-integration.sh — 후속 phase 도 동일 패턴.
@@ -52,9 +52,12 @@ EOF
 output=$(HARNESS_DRIFT_FETCH=0 bash .harness-kit/bin/sdd status 2>&1)
 cleanup
 
-echo "$output" | grep -q "stale ADR: 1 (missing-path)" \
-  || fail "Scenario 2: fixture should produce 'stale ADR: 1 (missing-path)' line" "$output"
-pass "Scenario 2: Stale ADR detection (fixture → drift 라인)"
+# 자기 fixture 특정 단언 — 전역 count "1" 대신 자기 fixture 파일명 확인.
+# 사유: 다른 테스트(test-drift-stale-adr)가 동시 실행 중 ADR fixture 를 떨구면 전역
+# count 가 흔들린다 (spec-x-drift-test-fixture-race: cross-test 간섭 견고화).
+echo "$output" | grep -q "ADR-999-phase16-integration-fixture" \
+  || fail "Scenario 2: own fixture (missing path) should be reported stale" "$output"
+pass "Scenario 2: Stale ADR detection (자기 fixture stale 목록 포함)"
 
 # ─── Scenario 3: Reliability layer slogan 3 곳 hit ──────────────
 hits=$(grep -l "reliability layer" README.md version.json .harness-kit/agent/constitution.md 2>/dev/null | wc -l | tr -d ' ')

@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # tests/test-drift-stale-adr.sh
 #
-# Verifies _drift_stale_adr() in sources/bin/sdd:
-#   1. Clean state (no fixture ADR) → no "stale ADR" line in drift section
-#   2. Fixture ADR with missing path → "stale ADR: 1 (missing-path)" line
-#   3. ADR-001 regression: clean state after fixture removal still PASS
+# Verifies _drift_stale_adr() in sources/bin/sdd. 각 step 은 *자기 fixture* 의
+# ADR 파일명이 stale 목록에 있/없는지만 단언한다 (전역 stale count/부재 의존 금지).
+# 사유: _drift_stale_adr 는 docs/decisions/ADR-*.md 를 전역 glob 하므로, 다른
+# 테스트(예: test-phase16-integration)가 동시 실행 중 ADR fixture 를 떨구면 전역
+# count/부재 단언이 간섭받는다 (spec-x-drift-test-fixture-race: cross-test 견고화).
 #
 # bash 3.2+ compatible.
 
@@ -39,10 +40,10 @@ echo "Test: _drift_stale_adr()"
 # ─── Step 1: clean state ─────────────────────────────────────────
 cleanup
 output=$(HARNESS_DRIFT_FETCH=0 bash "$SDD_BIN" status 2>&1 || true)
-if echo "$output" | grep -q "stale ADR"; then
-  fail "clean state should not report stale ADR" "$output"
+if echo "$output" | grep -q "ADR-999-stale-fixture"; then
+  fail "own fixture should not be stale in clean state" "$output"
 fi
-pass "clean state: no stale ADR line"
+pass "clean state: own fixture not in stale list"
 
 # ─── Step 2: fixture with missing path ───────────────────────────
 mkdir -p docs/decisions
@@ -64,10 +65,10 @@ This ADR exists only for the stale-detection unit test.
 EOF
 
 output=$(HARNESS_DRIFT_FETCH=0 bash "$SDD_BIN" status 2>&1 || true)
-if ! echo "$output" | grep -q "stale ADR: 1 (missing-path)"; then
-  fail "fixture should produce 'stale ADR: 1 (missing-path)' line" "$output"
+if ! echo "$output" | grep -q "ADR-999-stale-fixture"; then
+  fail "own fixture (missing path) should be reported stale" "$output"
 fi
-pass "fixture ADR (1 missing path) → stale ADR: 1 detected"
+pass "fixture ADR (missing path) → own fixture detected stale"
 
 # ─── Step 3: regression with self-contained valid-paths fixture ──
 # Self-contained: a fixture ADR whose backtick paths all exist → no stale line.
@@ -91,10 +92,10 @@ EOF
 
 output=$(HARNESS_DRIFT_FETCH=0 bash "$SDD_BIN" status 2>&1 || true)
 cleanup_valid
-if echo "$output" | grep -q "stale ADR"; then
-  fail "regression: fixture with all-valid paths should produce no stale line" "$output"
+if echo "$output" | grep -q "ADR-998-valid-paths-fixture"; then
+  fail "regression: own all-valid-paths fixture should not be stale" "$output"
 fi
-pass "regression: ADR-998 (all-valid-paths fixture) → no stale line"
+pass "regression: ADR-998 (all-valid-paths fixture) → not in stale list"
 
 # ─── Step 4: ../ relative-path token exclude (spec-x-sdd-drift-fixes) ────
 # ADR 본문에 ../ 시작하는 path token 만 missing 인 경우 stale 카운트 0 이어야 함.
@@ -119,10 +120,10 @@ EOF
 
 output=$(HARNESS_DRIFT_FETCH=0 bash "$SDD_BIN" status 2>&1 || true)
 cleanup_relative
-if echo "$output" | grep -q "stale ADR"; then
-  fail "ADR with only ../ relative-path token should NOT be flagged stale" "$output"
+if echo "$output" | grep -q "ADR-997-relative-path-fixture"; then
+  fail "own ADR with only ../ relative-path token should NOT be flagged stale" "$output"
 fi
-pass "ADR with only ../ relative-path token → no stale line (false positive exclude)"
+pass "ADR with only ../ relative-path token → not in stale list (false positive exclude)"
 
 # ─── Step 5: archived spec path resolution (spec-x-stale-adr-archive-path) ─
 # ADR 이 specs/X/spec.md 를 참조하지만 그 spec 이 sdd archive 로
@@ -148,10 +149,10 @@ EOF
 
 output=$(HARNESS_DRIFT_FETCH=0 bash "$SDD_BIN" status 2>&1 || true)
 cleanup_archived_spec
-if echo "$output" | grep -q "stale ADR"; then
-  fail "ADR referencing an archived spec should NOT be flagged stale" "$output"
+if echo "$output" | grep -q "ADR-996-archived-path-fixture"; then
+  fail "own ADR referencing an archived spec should NOT be flagged stale" "$output"
 fi
-pass "archived spec ref (archive/specs/...) → resolved, no stale line"
+pass "archived spec ref (archive/specs/...) → resolved, not in stale list"
 
 # ─── Step 6: archived backlog path resolution (prefix generality) ─────────
 # 동일 fallback 이 specs/ 뿐 아니라 backlog/ prefix 에도 동작해야 함.
@@ -176,10 +177,10 @@ EOF
 
 output=$(HARNESS_DRIFT_FETCH=0 bash "$SDD_BIN" status 2>&1 || true)
 cleanup_archived_backlog
-if echo "$output" | grep -q "stale ADR"; then
-  fail "ADR referencing an archived backlog file should NOT be flagged stale" "$output"
+if echo "$output" | grep -q "ADR-995-archived-backlog-fixture"; then
+  fail "own ADR referencing an archived backlog file should NOT be flagged stale" "$output"
 fi
-pass "archived backlog ref (archive/backlog/...) → resolved, no stale line"
+pass "archived backlog ref (archive/backlog/...) → resolved, not in stale list"
 
 echo ""
 echo "All tests passed."
