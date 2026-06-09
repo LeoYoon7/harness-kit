@@ -56,15 +56,15 @@
 
 ## Task 4: Ship (필수)
 
-- [ ] 전체 관련 테스트 PASS (`test-sdd-ship-scope.sh`, `test-drift-stale-adr.sh`) + 직접 실행 회귀
-- [ ] 코드 리뷰 게이트 (§6.3): bash 로직 변경이라 리뷰 가치 있음 — `/hk-gemini-review` 또는 `/hk-code-review`(이제 B1) 고려 / Skip 시 사유 기록
-- [ ] **walkthrough.md 작성**
-- [ ] **pr_description.md 작성**
-- [ ] **Ship Commit**: `docs(spec-x-sdd-robustness-fixes): ship walkthrough and pr description` (← Bug1 자기 도그푸딩: scope 온전 검증)
-- [ ] **Push**: `git push -u origin spec-x-sdd-robustness-fixes`
-- [ ] **PR 생성**: `/hk-pr-gh` (base = fork main, 승인 후)
-- [ ] **사용자 알림**: push + PR URL
-- [ ] (머지 후) `sdd specx done sdd-robustness-fixes`
+- [x] 전체 관련 테스트 PASS (`test-sdd-ship-scope.sh` 5/5, `test-drift-stale-adr.sh` 4/4) + 직접 실행 회귀(help/version/status exit 0)
+- [x] 코드 리뷰 게이트 (§6.3): **Gemini cross-model 실행 → Approve (0/0/0)**. `code-review-gemini.md`
+- [x] **walkthrough.md 작성**
+- [x] **pr_description.md 작성**
+- [x] **Ship Commit**: `docs(spec-x-sdd-robustness-fixes): ship walkthrough and pr description` ← **Bug1 도그푸딩 성공: subject 온전(truncate 없음)**
+- [x] **Push**: `git push -u origin spec-x-sdd-robustness-fixes`
+- [x] **PR 생성**: `/hk-pr-gh` (base = fork main, 승인 후)
+- [x] **사용자 알림**: push + PR URL
+- [ ] (머지 후) `sdd specx done sdd-robustness-fixes` — post-merge
 
 ---
 
