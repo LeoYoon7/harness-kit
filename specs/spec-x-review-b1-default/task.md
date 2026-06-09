@@ -48,11 +48,11 @@
 ## Task 3: hk-code-review B1 업그레이드 + 미러 + 페르소나 opt-in (→ C1~C4 Green)
 
 ### 3-1. 커맨드 + 미러 동시 수정 (도그푸딩 sync — 같은 commit)
-- [ ] `sources/commands/hk-code-review.md` — "독립 리뷰 수행" 을 B1 dispatch(Opus×3 self-consistency + generalist 정독)로 교체. 결과 계약(ADR-010, source enum) + **증류 조작적 정의**(dedup/합의(N/k)/심각도충돌/이견보존) + **부분실패 fallback** + 요약(합의 분포·미반환 워커) + 페르소나 opt-in 섹션 추가.
-- [ ] `.claude/commands/hk-code-review.md` — 위와 **byte-identical** 동기화.
-- [ ] `bash tests/test-review-b1.sh` → **전 항목 PASS** (C1~C6)
-- [ ] `bash tests/test-governance-dedup.sh` → PASS (회귀 없음)
-- [ ] Commit: `refactor(spec-x-review-b1-default): upgrade hk-code-review to B1 + persona opt-in doc`
+- [x] `sources/commands/hk-code-review.md` — "독립 리뷰 수행" 을 B1 dispatch(Opus×3 self-consistency + generalist 정독)로 교체. 결과 계약(ADR-010, source enum) + **증류 조작적 정의**(dedup/합의(N/k)/심각도충돌/이견보존) + **부분실패 fallback** + 요약(합의 분포·미반환 워커) + 페르소나 opt-in 섹션 추가.
+- [x] `.claude/commands/hk-code-review.md` — 위와 **byte-identical** 동기화 (cp + diff 확인).
+- [x] `bash tests/test-review-b1.sh` → **전 항목 PASS** (18/18, C1~C8)
+- [x] `bash tests/test-governance-dedup.sh` → PASS (8/8, 회귀 없음)
+- [x] Commit: `refactor(spec-x-review-b1-default): upgrade hk-code-review to B1 + persona opt-in doc`
 
 ---
 
