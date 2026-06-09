@@ -65,7 +65,7 @@ phase-22 는 동일 Opus 가 패널·baseline·채점을 모두 수행 → self-
 
 ## 4. POC 설계 (2자 비교)
 
-- **표본 ≥2 (균형 표집)**: ① `spec-x-notify-channel-formatter`(phase-22 표본 — 설계 갈림, 폭 우위 표본) ② **깊이-중심 대조 표본 1건**(구체 구현/플랫폼 버그가 핵심이던 archived spec — 표집 편향 완화) — Task 3 확정.
+- **표본 2 (균형 표집, 확정)**: S1 `archive/specs/spec-x-notify-channel-formatter`(폭/설계 갈림 — phase-22 표본) + S2 `archive/specs/spec-x-notify-chunk-line-aware`(깊이/구체 구현 — 청킹 경계·off-by-one 중심, 표집 편향 완화).
 - **2자 비교**: 하이브리드(H1) vs baseline(B0, B1). **pure-panel 은 phase-22 데이터 서술 참조**(재실행 안 함 — 한계효용 낮음).
 - **dispatch**: sub-agent 팬아웃, 결과 계약(`issue/severity/rationale`)만 반환(ADR-010), 메인 context 격리. 채점은 별도 Gemini blind 패스(§3.2).
 - **재사용**: phase-22 의 `scripts/research/persona-panel-poc.md` 프로토콜 확장 → `persona-hybrid-poc.md`.

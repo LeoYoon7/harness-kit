@@ -41,9 +41,9 @@
 
 ## Task 3: POC 프로토콜 정의 (2자 + 채점 분리)
 
-- [ ] `scripts/research/persona-hybrid-poc.md` — H1 dispatch(페르소나3+generalist1, 결과 계약만), 종료/증류, **baseline B0/B1**, **Gemini blind 채점(라벨 제거)** 절차, 2자 비교. phase-22 POC 확장.
-- [ ] 표본 2건 확정 — ① `spec-x-notify-channel-formatter`(폭 표본) + ② **깊이-중심 대조 표본 1건**(구체/플랫폼 버그 핵심) + 선정 근거(균형 표집).
-- [ ] Commit: `docs(spec-x-persona-hybrid-research): define hybrid POC protocol with blind cross-model scoring`
+- [x] `scripts/research/persona-hybrid-poc.md` — H1 dispatch(페르소나3+generalist1, 결과 계약만), 종료/증류, **baseline B0/B1**, **Gemini blind 채점(라벨 제거)** 절차, 2자 비교. phase-22 POC 확장.
+- [x] 표본 2건 확정 — S1 `spec-x-notify-channel-formatter`(폭) + S2 `spec-x-notify-chunk-line-aware`(깊이/청킹 경계) + 근거(균형 표집).
+- [x] Commit: `docs(spec-x-persona-hybrid-research): define hybrid POC protocol with blind cross-model scoring`
 
 ---
 
