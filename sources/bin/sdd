@@ -399,6 +399,9 @@ _drift_stale_adr() {
       echo "$token" | grep -qE '^\.\./' && continue
       # 5) 존재하면 skip
       [ -e "$SDD_ROOT/$token" ] && continue
+      # 5b) archive 로 이동된 참조도 존재로 간주 (spec-x-stale-adr-archive-path)
+      #     sdd archive 는 specs/·backlog/ 1단계 prefix 를 archive/ 하위 동명 디렉토리로 보존 이동 (기본 경로 전제)
+      [ -e "$SDD_ROOT/archive/$token" ] && continue
       has_missing=1
       break
     done <<< "$toks"
