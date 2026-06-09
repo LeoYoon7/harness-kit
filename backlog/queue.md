@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-drift-test-fixture-race — drift-test-fixture-race
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
