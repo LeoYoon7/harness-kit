@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-review-b1-default — review-b1-default
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -162,6 +161,7 @@
 - [x] spec-x-gitignore-archive-coverage (완료)
 - [x] spec-x-gemini-review-edgecases (완료)
 - [x] spec-x-persona-hybrid-research (완료)
+- [x] spec-x-review-b1-default (완료)
 <!-- sdd:done:end -->
 
 ---
