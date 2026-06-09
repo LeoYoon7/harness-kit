@@ -378,13 +378,15 @@ _drift_stale_adr() {
 
   local stale_count=0
   local stale_list=""
-  local adr token has_missing
+  local adr token has_missing toks
 
   for adr in "$adr_dir"/ADR-*.md; do
     [ -f "$adr" ] || continue
 
     has_missing=0
     # 본문에서 backtick 토큰 추출 → 한 줄씩 필터 → 존재 검사
+    # here-string 사용: 프로세스 치환 `< <(...)` 은 git-bash 에서 fd race → 부하 시 간헐 미탐지 (spec-x-sdd-robustness-fixes)
+    toks="$(grep -oE '`[^`]+`' "$adr" 2>/dev/null | tr -d '`')"
     while IFS= read -r token; do
       [ -z "$token" ] && continue
       # 1) 슬래시 포함 필수
@@ -399,7 +401,7 @@ _drift_stale_adr() {
       [ -e "$SDD_ROOT/$token" ] && continue
       has_missing=1
       break
-    done < <(grep -oE '`[^`]+`' "$adr" 2>/dev/null | tr -d '`')
+    done <<< "$toks"
 
     if [ "$has_missing" -eq 1 ]; then
       stale_count=$((stale_count + 1))

@@ -45,11 +45,12 @@
 ## Task 3: Bug 2 fix — stale-adr 프로세스치환 → here-string (+미러)
 
 ### 3-1. sources + 미러 동시 수정 (같은 commit)
-- [ ] `sources/bin/sdd` — `_drift_stale_adr()` 의 `done < <(grep...)` 를 `toks="$(grep...)"; ... done <<< "$toks"` 로 교체.
-- [ ] `.harness-kit/bin/sdd` — byte-identical 동기화.
-- [ ] `bash tests/test-drift-stale-adr.sh` → **PASS** (Step 1-4, detection 회귀 없음)
-- [ ] 미러 diff: `diff sources/bin/sdd .harness-kit/bin/sdd` → 차이 0.
-- [ ] Commit: `fix(spec-x-sdd-robustness-fixes): replace process-substitution with here-string in stale-adr scan`
+- [x] `sources/bin/sdd` — `_drift_stale_adr()` 의 `done < <(grep...)` 를 `toks="$(grep...)"; ... done <<< "$toks"` 로 교체 (local toks 추가, 빈 toks=빈줄1회 기존 `[ -z ]` 처리).
+- [x] `.harness-kit/bin/sdd` — byte-identical 동기화.
+- [x] 구문 검사 `bash -n` OK + ship-scope 테스트 회귀 PASS=5/0.
+- [x] `bash tests/test-drift-stale-adr.sh` → **PASS** (Step 1-4, detection 회귀 없음)
+- [x] 미러 diff: `diff sources/bin/sdd .harness-kit/bin/sdd` → 차이 0.
+- [x] Commit: `fix(spec-x-sdd-robustness-fixes): replace process-substitution with here-string in stale-adr scan`
 
 ---
 
