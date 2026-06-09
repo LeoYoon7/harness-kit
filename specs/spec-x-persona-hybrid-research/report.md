@@ -6,8 +6,7 @@
 
 ## 0. 요약 (Executive Summary)
 
-<!-- 연구 종료 시 작성 — 하이브리드가 baseline 대비 깊이 회복 + 폭 유지 + ROI 정당화 여부 결론 -->
-_(POC 후 작성)_
+하이브리드(페르소나 패널 + generalist 정독)를 ≥2 표본·cross-model blind 채점으로 검증한 결과 **조건부 결론**에 도달했다. **두 lever 의 가치가 분리됨**: ① **generalist 정독 패스 = 깊이 lever** — 두 표본 모두에서 phase-22 패널이 놓친 구체 버그(awk locale/byte-count, fence desync, UTF-8 절단)를 회복, *값싸고 항상 유효*. ② **페르소나 패널 = 폭 lever** — 폭(설계/UX/거버넌스)이 지배적인 리뷰(S1)에서만 순기여(baseline·B1 이 놓친 모바일→embed 핵심 이슈 포착), 깊이 지배 리뷰(S2)에선 비용만 추가. 결정적으로 **B1(self-consistency + 정독 1패스)** 이 깊이 표본에서 H1 을 *cheaperEqual* 로 지배. → **블랭킷 페르소나 패널은 비용 정당화 실패(Conditional No-Go), 그러나 "self-consistency + generalist 정독" = 값싼 깊이 회복 win, 페르소나는 폭 지배 리뷰 한정 opt-in.** phase-22 의 flat No-Go 를 *실행 가능한 라우팅 결론*으로 진전시킴. (n=2 — 일반화 아님, 방향 일치.)
 
 ## 1. 문제 정의
 
@@ -86,11 +85,47 @@ phase-22 는 동일 Opus 가 패널·baseline·채점을 모두 수행 → self-
 - **사전등록 4기준 모두 H1 PASS**: 깊이회복(GT3 byte-count 등)·폭 retention(GT1·2)·페르소나 순기여>0(A>C, **C 는 지배적 GT1 놓침**)·ROI(1.67÷1.33≈1.25).
 - **핵심**: phase-22(pure-panel No-Go)와 대비 — 하이브리드는 generalist 로 깊이 회복 + 페르소나로 폭(GT1) 확보해 baseline 2변형 모두 지배. **B1(정독만 강화)도 GT1 놓침 → 페르소나는 정독으로 대체 불가**(대안 C 가설 S1 반증). n=1 → S2 확인 필요(사전등록: 1건 충족=표본 확대).
 
-### S2 — `spec-x-notify-chunk-line-aware` (깊이 표본)
+### S2 — `spec-x-notify-chunk-line-aware` (깊이 표본, Gemini blind 채점)
 
-_(사용자 S2 진행 결정 시)_
+| Method | valid | depth | breadth | GT recall(5) |
+|---|---|---|---|---|
+| A=H1 패널+generalist | 10 | 7 | 3 | 5/5 |
+| B=B0 self-consistency | 9 | 7 | 2 | 4/5 |
+| **C=B1 B0+generalist** | **12** | **10** | 2 | **5/5** |
+
+- **S2 = H1 FAIL**: C(B1) valid 12 ≥ A(H1) 10 + GT 동급(5/5) → cheaperEqual=YES, 페르소나 순기여 ≈0(설계 제안 A8 뿐), ROI 0.83<1.0. **"B1≥H1 → 페르소나 불요" No-Go 트리거 발동.**
+- 깊이 표본엔 *지배적 폭 GT 부재* → 페르소나의 폭 lever 가 값할 곳이 없음. 정독(generalist)이 깊이를 다 회복.
+
+### 교차 종합 (S1 vs S2)
+
+| | S1 폭 | S2 깊이 |
+|---|---|---|
+| 페르소나 순기여 | **양(+)**, 폭 GT1 결정 | **≈0**, 설계 제안뿐 |
+| ROI(H1 vs B0) | 1.25 ✅ | 0.83 ❌ |
+| B1 vs H1 | H1 우위(B1 폭 놓침) | **B1 우위(동급+저비용)** |
+| 사전등록 | PASS | FAIL |
+
+**메커니즘(n=2, 방향 일치)**: generalist 정독 = *깊이 lever*(싸고 항상 유효, phase-22 깊이 갭 회복). 페르소나 패널 = *폭 lever*(폭 지배 리뷰에서만 순기여). 깊이 리뷰에선 B1(self-consistency+정독)이 H1 을 cheaperEqual 로 지배.
 
 ## 6. Go / No-Go 권고
 
-<!-- value 우위 + ROI 정당화 여부 기반 명시적 결론. n 한계 명시. 최종 결정권=사용자 -->
-_(POC 후 작성)_
+### 결론: **Conditional No-Go** (블랭킷 페르소나 패널 채택 보류) + **값싼 win 채택 권고**
+
+사전등록 판정(§3.4): S1 PASS / S2 FAIL = **1/2** → 규칙상 "표본 확대(보류)". 단 메커니즘이 명확해 다음으로 정리한다.
+
+**근거**
+1. **페르소나 패널의 순 ROI 가 조건부** — 폭 지배 리뷰(S1)에선 H1 이 baseline·B1 을 지배(GT1 결정), 깊이 지배 리뷰(S2)에선 B1 이 H1 을 cheaperEqual 로 지배(ROI 0.83). 블랭킷 채택은 비용 정당화 실패.
+2. **진짜 win 은 generalist 정독** — 두 표본 모두에서 phase-22 깊이 갭을 회복. self-consistency 에 정독 1패스만 더한 **B1 이 저비용 고효율**.
+
+**권고 (택1, 별도 spec — 최종 결정권 = 사용자)**
+- **A (권장)**: `hk-*-review` 기본 업그레이드 = **B1 패턴(self-consistency Opus×N + generalist 정독 1패스)**. 페르소나 패널은 *폭 지배(설계/UX/거버넌스 분기 큰) 리뷰 한정 opt-in* 으로 문서화. — 값싼 깊이 회복 + 폭은 필요 시.
+- B: 라우팅 — 변경 성격(폭/깊이) 자동 판별 후 패널/B1 선택. (판별 로직 비용·신뢰도 리스크 → 보류.)
+- C: 보류 유지 (현 단일 Opus). — phase-22 대비 후퇴(정독 win 포기).
+
+**ADR 후보 (결론 확정 시 작성)**
+- `review-value-baseline` (invariant): 다관점 리뷰 도입은 baseline(self-consistency) 대비 value 측정을 Go 전제로. — 본 연구가 그 틀로 *블랭킷 패널을 기각*한 실증 사례.
+- `review-eval-independence` (invariant): 리뷰 value 측정은 채점자/ground-truth 가 피측정 모델과 독립(cross-model/사람 blind). — 본 연구가 Gemini blind 로 적용, 순환 평가를 피해 결론 신뢰도 확보.
+
+**한계**: n=2 (표본별 방향 일치만, 통계적 일반화 아님). ground truth 가 과거 Opus 산출 기반(완전 독립 아님 — 채점자만 cross-model 분리). 폭/깊이 표본 각 1건 — 경계 사례(혼합형)는 미검증.
+
+**최종 결정권**: 본 권고는 에이전트 분석. Go/No-Go 최종 결정은 사용자.

@@ -47,4 +47,49 @@ Gemini verdict: depthRecovery — A·C 가 GT3(byte vs char) 포착; B·C 가 fe
 
 ## S2 — `spec-x-notify-chunk-line-aware` (깊이/구체 구현 표본)
 
-_(사용자 S2 진행 결정 시 실행)_
+대상: notify chunk 분할(라인 경계 + 코드펜스 균형). 구체 알고리즘 — locale/경계/펜스가 핵심.
+
+### Ground truth (디렉터 추출, 워커 비공개) — 대부분 *깊이*, 지배적 폭 GT 없음
+- **GT-A(깊이)**: `awk length()`/CHUNK_SIZE locale 의존(char vs byte) → CJK 본문 채널 한도 초과 가능(원 리뷰는 "마진 안전"으로 기각).
+- **GT-B(깊이)**: long-line fallback `substr` UTF-8 codepoint 중간 절단 → mojibake.
+- **GT-C(깊이/회귀)**: 모든 청크에 trailing newline 추가 → 단일 청크 byte 비동일(NFR3/4 회귀, 원 리뷰 미발견).
+- **GT-D(깊이)**: long-line fallback 펜스 desync / END dangling 펜스 → invalid 마크다운(fix 목적 자체 훼손, 원 리뷰 미발견).
+- **GT-E(risk)**: mktemp 예측가능 /tmp 경로 + 본문 디스크 기록.
+
+### Gemini blind 채점 결과
+
+| Method | valid | false-pos | depth valid | breadth valid | GT recall(5) |
+|---|---|---|---|---|---|
+| A = H1 (패널+generalist) | 10 | 1 | 7 | 3 | GT-A·B·C·D·E = 5/5 |
+| B = B0 (self-consistency) | 9 | 1 | 7 | 2 | GT-A·C·D·E = 4/5 |
+| **C = B1 (B0+generalist)** | **12** | 1 | **10** | 2 | GT-A·B·C·D·E = **5/5** |
+
+Gemini verdict: depthRecovery — A·C 둘 다 모든 깊이 GT 회복, **C 가 long-line fallback 논리버그 식별에서 기술적 우위**. breadthWinner = A(단 폭 GT 부재). personaNetValue = "yes, A 가 A8(temp 파일 process-substitution) 설계 이슈 추가" (단 *버그 아닌 설계 제안*). **cheaperEqual = YES — C 가 total valid 더 높고 GT recall 동급.**
+
+### 사전등록 기준(report §3.4) 대비 — S2
+
+| 기준 | 임계 | H1 결과 | 판정 |
+|---|---|---|---|
+| 깊이 회복 | ≥2/3 | 5/5 GT 회복 | ✅ (단 C 가 더 우수) |
+| 폭 retention | ≥0.8 | 폭 GT 부재 — breadth 3, marginal | △ N/A(폭 표본 아님) |
+| 페르소나 순기여 (H1 vs B1) | >0 | **A valid 10 < C 12, GT 동급** → 순기여 ≤0(A8 설계 제안만) | ❌ FAIL |
+| ROI (H1 vs B0) | ≥1.0 | value 10/9=1.11 ÷ 비용 1.33 ≈ **0.83** | ❌ FAIL |
+| **B1≥H1 → 페르소나 불요** | (No-Go 트리거) | **C(B1) 12 ≥ A(H1) 10, GT 동급** | ❌ **트리거됨** |
+
+**S2 = H1 FAIL.** 깊이 표본에선 정독(generalist)이 깊이를 다 잡고, 페르소나는 *비용만 추가*(설계 제안 외 순기여 없음). B1(정독 강화)이 더 싸면서 H1 이상.
+
+## 교차 표본 종합 (S1 vs S2)
+
+| | S1 (폭 표본) | S2 (깊이 표본) |
+|---|---|---|
+| H1 GT recall | 4/4 ✅ | 5/5 ✅ |
+| B1(C) GT recall | 3/4 (**GT1 폭 놓침**) | 5/5 (동급) |
+| 페르소나 순기여 | **양(+) — 폭 GT1 결정적** | **≈0 — 설계 제안뿐** |
+| ROI(H1 vs B0) | 1.25 ✅ | 0.83 ❌ |
+| 사전등록 판정 | PASS | FAIL |
+
+**명확한 조건부 메커니즘 (n=2, 일반화 아님 — 방향 일치 보고)**:
+- **generalist 정독 패스 = 깊이 lever** — 두 표본 모두에서 phase-22 패널이 놓친 구체 버그를 회복. *값싸고 항상 유효*.
+- **페르소나 패널 = 폭 lever** — *폭(설계/UX/거버넌스)이 지배적인 리뷰에서만* 순기여. 깊이 지배 리뷰에선 비용만 추가.
+- **B1(self-consistency + 정독)** 이 깊이 표본에서 H1 을 cheaperEqual 로 지배 → *블랭킷 페르소나 패널 채택은 비용 정당화 실패*.
+

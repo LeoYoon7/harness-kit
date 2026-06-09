@@ -57,16 +57,18 @@
 - [x] `persona-hybrid-poc-run.md` S1 + report.md §5 S1 — 4기준 모두 H1 PASS.
 - [x] Commit: `docs(spec-x-persona-hybrid-research): run S1 hybrid POC with blind cross-model scoring`
 
-### 4-S2 (사용자 결정 대기)
-- [ ] S2(`spec-x-notify-chunk-line-aware`, 깊이 표본) 동일 절차 → 사전등록 2/2 여부 확정.
+### 4-S2 (완료)
+- [x] S2(`spec-x-notify-chunk-line-aware`, 깊이 표본) H1 4워커 + B0 3 + B1=B0∪G, Gemini blind 채점.
+- [x] 결과: A(H1) 5/5 GT·valid 10, **C(B1) 5/5 GT·valid 12 → cheaperEqual=YES, H1 FAIL** (ROI 0.83, 페르소나 순기여≈0). poc-run.md S2 + report §5 S2 + 교차 종합.
+- [x] Commit: `docs(spec-x-persona-hybrid-research): run S2 hybrid POC + cross-sample synthesis`
 
 ---
 
 ## Task 5: Go/No-Go 권고
 
-- [ ] report.md §0 요약 + §6 Go/No-Go — **사전등록(§3.4) 규칙 기반** 결론 + 근거 + n=2 방향일치(일반화 금지) 한계.
-- [ ] (방향 확정 시) `review-value-baseline` + `review-eval-independence` ADR 작성 판단.
-- [ ] Commit: `docs(spec-x-persona-hybrid-research): document go/no-go recommendation`
+- [x] report.md §0 요약 + §6 Go/No-Go — **Conditional No-Go(블랭킷 패널)** + B1 정독 win 채택 권고. 사전등록 1/2 + 메커니즘(폭 lever vs 깊이 lever).
+- [x] (방향 확정 시) `review-value-baseline` + `review-eval-independence` ADR 후보 §6 에 기록(결론 확정 시 작성).
+- [x] Commit: `docs(spec-x-persona-hybrid-research): document go/no-go recommendation`
 
 ---
 
