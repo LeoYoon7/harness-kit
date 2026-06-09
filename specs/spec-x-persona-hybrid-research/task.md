@@ -49,11 +49,16 @@
 
 ## Task 4: POC 실행 (표본 ≥2) + 2자 비교 + blind 채점
 
-- [ ] 표본 1·2 에 H1 실행(sub-agent 팬아웃, 격리/종료/증류 기록).
-- [ ] 동일 표본에 baseline B0(Opus×3) + B1(Opus×3+정독1패스) 실행. pure-panel 은 phase-22 데이터 서술 참조.
-- [ ] **Gemini blind 채점**(산출물 라벨 제거) → value/깊이회복/폭유지 판정.
-- [ ] `scripts/research/persona-hybrid-poc-run.md` 실행 로그 + report.md §5 — liveness + 2자 비교표 + 표본별 PASS/FAIL(사전등록 임계 대비).
-- [ ] Commit: `docs(spec-x-persona-hybrid-research): run H1 vs baseline POC across >=2 samples with blind scoring`
+> 증분 실행(사용자 결정 2026-06-09): S1 먼저 → 보고 → S2 결정.
+
+### 4-S1 (완료)
+- [x] S1 H1 4워커 + B0 3워커 팬아웃(격리/종료/증류 확인) + B1=B0∪G.
+- [x] **Gemini blind 채점**(라벨 익명화 A/B/C) → A(H1) 4/4 GT, C(B1) 3/4(GT1 놓침), B(B0) 2/4.
+- [x] `persona-hybrid-poc-run.md` S1 + report.md §5 S1 — 4기준 모두 H1 PASS.
+- [x] Commit: `docs(spec-x-persona-hybrid-research): run S1 hybrid POC with blind cross-model scoring`
+
+### 4-S2 (사용자 결정 대기)
+- [ ] S2(`spec-x-notify-chunk-line-aware`, 깊이 표본) 동일 절차 → 사전등록 2/2 여부 확정.
 
 ---
 

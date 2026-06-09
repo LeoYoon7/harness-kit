@@ -72,8 +72,23 @@ phase-22 는 동일 Opus 가 패널·baseline·채점을 모두 수행 → self-
 
 ## 5. POC 실행 결과
 
-<!-- liveness(격리/종료/증류) + 2자 비교표 H1 vs B0/B1 (깊이회복/폭유지/비용/ROI), Gemini blind 채점 결과, 표본별 PASS/FAIL -->
-_(POC 후 작성)_
+전문 로그: `scripts/research/persona-hybrid-poc-run.md`. 증분 실행(사용자 결정) — S1 완료, S2 대기.
+
+### S1 — `spec-x-notify-channel-formatter` (폭 표본, Gemini blind 채점)
+
+| Method | valid | depth | breadth | GT recall(4) |
+|---|---|---|---|---|
+| **A=H1** 패널+generalist | **15** | 7 | **5** | **4/4 (GT1·2·3·4)** |
+| B=B0 self-consistency | 9 | 6 | 2 | 2/4 |
+| C=B1 B0+generalist | 13 | 10 | 2 | 3/4 |
+
+- **liveness**: 격리 ✅(워커 계약만) / 종료 ✅(라운드1) / 증류 ✅.
+- **사전등록 4기준 모두 H1 PASS**: 깊이회복(GT3 byte-count 등)·폭 retention(GT1·2)·페르소나 순기여>0(A>C, **C 는 지배적 GT1 놓침**)·ROI(1.67÷1.33≈1.25).
+- **핵심**: phase-22(pure-panel No-Go)와 대비 — 하이브리드는 generalist 로 깊이 회복 + 페르소나로 폭(GT1) 확보해 baseline 2변형 모두 지배. **B1(정독만 강화)도 GT1 놓침 → 페르소나는 정독으로 대체 불가**(대안 C 가설 S1 반증). n=1 → S2 확인 필요(사전등록: 1건 충족=표본 확대).
+
+### S2 — `spec-x-notify-chunk-line-aware` (깊이 표본)
+
+_(사용자 S2 진행 결정 시)_
 
 ## 6. Go / No-Go 권고
 
