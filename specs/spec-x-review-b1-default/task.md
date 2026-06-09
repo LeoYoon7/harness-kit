@@ -58,15 +58,15 @@
 
 ## Task 4: Ship (필수)
 
-- [ ] 전체 관련 테스트 실행 → PASS (`test-review-b1.sh`, `test-governance-dedup.sh`, `test-drift-stale-adr.sh` — ADR 추가 회귀 확인)
-- [ ] 코드 리뷰 게이트 (§6.3): 본 spec 으로 업그레이드되는 `/hk-code-review` 적용 가능 — 단 docs/마크다운 변경이라 Skip + walkthrough 사유 기록 허용
-- [ ] **walkthrough.md 작성** (증거 로그)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-x-review-b1-default): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-review-b1-default`
-- [ ] **PR 생성**: `/hk-pr-gh` (PR base = fork main, 사용자 승인 후)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
-- [ ] (머지 후) `sdd specx done review-b1-default`
+- [x] 전체 관련 테스트 실행 → PASS (`test-review-b1.sh` 18/18, `test-governance-dedup.sh` 8/8, `test-drift-stale-adr.sh` clean state)
+- [x] 코드 리뷰 게이트 (§6.3): **Skip** — docs/거버넌스 + grep 구조 테스트, 실행 코드 없음. 독립 Opus critique 가 review 의도 충족(walkthrough 코드 리뷰 필드 사유 기록)
+- [x] **walkthrough.md 작성** (증거 로그)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `docs(spec-x-review-b1-default): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-x-review-b1-default`
+- [x] **PR 생성**: `/hk-pr-gh` (PR base = fork main, 사용자 승인 후)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [ ] (머지 후) `sdd specx done review-b1-default` — post-merge 단계
 
 ---
 

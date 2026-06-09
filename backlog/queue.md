@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-review-b1-default — review-b1-default
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -49,7 +50,12 @@
 - ~~**gemini-review.sh plan-mode 위반 (심각, spec-21-04 발견)**~~ → ✓ **spec-x-gemini-review-sandbox** 로 해결 (2026-06-05 머지): `--approval-mode plan` read-only 불신 + 방어 래퍼(부수효과 감지/거부 + clean-pre 자동 원복 + 형식 검증). guard 테스트 12종. (완료 표기 누락분 — spec-x-gemini-review-edgecases 에서 정리.)
 - ~~**spec-21-06 persona-review-panel**~~ → ✓ **phase-22 research (PR #45) 로 결론 (2026-06-08)**: Conditional No-Go — POC(n=1)에서 페르소나 패널이 self-consistency baseline(Opus×3)을 지배 못함(상보적, 비용 동급). 단순 패널 미구현. 후속 = 아래 하이브리드 항목.
 - ~~**persona-panel 하이브리드 재설계 research**~~ → ✓ **spec-x-persona-hybrid-research (#48, 2026-06-09)**: Conditional No-Go (블랭킷 페르소나 패널). 발견 — generalist 정독=깊이 lever(항상 유효), 페르소나=폭 lever(폭 지배 리뷰 한정). Gemini cross-model blind 채점, n=2 (S1 폭 PASS / S2 깊이 FAIL, B1 cheaperEqual). 후속 = 아래 B1 항목.
-- **`hk-*-review` 기본을 B1 패턴(self-consistency Opus×N + generalist 정독 1패스)으로 업그레이드** (persona-hybrid research 권고 A, 2026-06-09) — 두 표본 모두 phase-22 깊이갭을 값싸게 회복한 win. 페르소나 패널은 *폭 지배(설계/UX/거버넌스) 리뷰 한정 opt-in* 으로 문서화. ADR 후보 `review-value-baseline` + `review-eval-independence` (invariant) 동반 트리거. 별도 spec-x/phase 승격 검토.
+- ~~**`hk-*-review` 기본을 B1 패턴으로 업그레이드** (persona-hybrid research 권고 A)~~ → ✓ **spec-x-review-b1-default** (2026-06-09): `/hk-code-review` 를 B1(Opus×3 self-consistency + generalist 정독 → 증류)로 교체 + 증류 조작적 정의(critique blocking 갭) + 페르소나 opt-in 문서화 + **ADR-013**(review-value-baseline)·**ADR-014**(review-eval-independence) invariant. 잔여 follow-up 아래.
+  - **B2 — self-consistency N 분리 측정** (N=1 vs N=3 ROI). #48 은 generalist 깊이 회복만 직접 측정, N=3 비용 3배 증분은 미측정(약근거). 외부 문헌(arXiv 2511.00751)상 frontier self-consistency 증분 작음 — N 적정값 실측 필요.
+  - **적응형 N / 폭·깊이 자동 라우팅** (#48 권고 B + spec-x-review-b1 critique 대안 A) — diff 크기·성격 판별로 N 또는 패널/B1 선택. 미검증·경계값 임의성으로 보류. B2 측정 후 재평가.
+  - **hk-phase-review B1 적용 검토** — 코드 리뷰(diff) 외 phase 회고(다파일 감사)에 self-consistency 가 값하는지 별도 측정. 본 spec OOS.
+- **sdd ship spec-x 커밋 subject slug truncation 버그** — `sdd ship` 이 `spec-x-review-b1-default` 의 커밋 subject 를 `docs(spec-x-review):` 로 생성(`-b1-default` 누락). spec-id 추출이 `-b1` 수치 세그먼트에서 잘리는 것으로 추정. 수동 amend 로 정정함. `sources/bin/sdd` 의 ship spec-id 파싱 점검 필요(spec-x slug 에 숫자 포함 케이스).
+- **test-drift-stale-adr.sh Step 2 Windows 플래키** — fixture(untracked ADR-999) 탐지가 간헐 실패(b6c2rakls PASS / bze38u4y7 FAIL, 동일 코드). Windows fs 쓰기→즉시 sdd status 읽기 race 또는 워킹트리 dirty 민감 의심. macOS 1차 타깃이라 best-effort — 재실행 시 green. 안정화(예: fixture write 후 sync/대기) 검토.
 - ~~**`.gitignore` review 산출물 패턴이 `archive/` 미커버 (kit 버그, 2026-06-08 발견)**~~ → ✓ **spec-x-gitignore-archive-coverage (#46, `c5f28f8`)** — `.gitignore` 에 `archive/specs/**/code-review*.md` 추가(ignore 대칭). 잔여(소): 옛 archived spec 의 tracked `code-review*.md` 혼재 정리 정책 미결 — 필요 시 별도.
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
