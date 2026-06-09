@@ -31,11 +31,11 @@
 
 ## Task 2: 하이브리드 설계(H1 확정) + 측정 설계 + 사전등록
 
-- [ ] H1/H2/H3 트레이드오프 표 → report.md §2. **POC 대상 = H1 단일** 확정(H2/H3 문서만) + 근거.
-- [ ] 측정 설계 — phase-22 §3 재사용 + **평가 독립성(Gemini blind 채점)** + baseline 2변형(B0/B1) → report.md §3.2~3.3.
-- [ ] **사전 등록** — 깊이회복/폭유지/ROI 정량 임계 + Go/No-Go 판정 규칙을 report.md §3.4 에 박제(POC 전).
-- [ ] ADR-008/010/011 정합 점검 명시 → report.md §2.2.
-- [ ] Commit: `docs(spec-x-persona-hybrid-research): fix H1 design + define measurement + pre-register thresholds`
+- [x] H1/H2/H3 트레이드오프 표 → report.md §2. **POC 대상 = H1 단일** 확정 + H1 상세(페르소나3+generalist1, 결과계약, 증류) §2.1.1.
+- [x] 측정 설계 — phase-22 §3 재사용 + **평가 독립성(Gemini blind 채점)** + baseline 2변형(B0/B1) → report.md §3.2~3.3.
+- [x] **사전 등록** — 깊이회복≥2/3·폭retention≥0.8·ROI≥1.0·페르소나순기여>0 + Go/No-Go 판정 규칙 박제 → report.md §3.4.
+- [x] ADR-008/010/011 정합 점검 명시 → report.md §2.2.
+- [x] Commit: `docs(spec-x-persona-hybrid-research): fix H1 design + define measurement + pre-register thresholds`
 
 ---
 
