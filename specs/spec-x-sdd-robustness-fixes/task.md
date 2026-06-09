@@ -33,11 +33,12 @@
 ## Task 2: Bug 1 fix — sdd_ship_scope 헬퍼 + 소스 가드 (+미러)
 
 ### 2-1. sources + 미러 동시 수정 (도그푸딩 sync — 같은 commit)
-- [ ] `sources/bin/sdd` — `sdd_ship_scope()` 헬퍼 추가 + `cmd_ship` 이 헬퍼 사용 + 말미 `main "$@"` 를 `[ "${BASH_SOURCE[0]}" = "$0" ] && main "$@"` 로 가드.
-- [ ] `.harness-kit/bin/sdd` — byte-identical 동기화.
-- [ ] `bash tests/test-sdd-ship-scope.sh` → **PASS**
-- [ ] 직접 실행 회귀: `bash .harness-kit/bin/sdd help` / `bash .harness-kit/bin/sdd status --brief --no-drift` → 정상.
-- [ ] Commit: `fix(spec-x-sdd-robustness-fixes): correct ship commit scope for spec-x slugs`
+- [x] `sources/bin/sdd` — `sdd_ship_scope()` 헬퍼 추가 + `cmd_ship` 이 헬퍼 사용 + 말미 `main "$@"` 를 `[ "${BASH_SOURCE[0]}" = "$0" ] && main "$@"` 로 가드.
+- [x] `.harness-kit/bin/sdd` — byte-identical 동기화.
+- [x] (테스트 교정) 헬퍼를 source 후 고유 이름(t_ok/t_bad)으로 정의 — sdd 의 ok() 충돌로 카운터 0 오탐 수정.
+- [x] `bash tests/test-sdd-ship-scope.sh` → **PASS** (5/5 genuine)
+- [x] 직접 실행 회귀: `sdd help` / `sdd version` / `sdd status --brief` → 정상(exit 0).
+- [x] Commit: `fix(spec-x-sdd-robustness-fixes): correct ship commit scope for spec-x slugs`
 
 ---
 
