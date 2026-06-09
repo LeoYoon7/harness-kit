@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-stale-adr-archive-path — stale-adr-archive-path
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -166,6 +165,7 @@
 - [x] spec-x-persona-hybrid-research (완료)
 - [x] spec-x-review-b1-default (완료)
 - [x] spec-x-sdd-robustness-fixes (완료)
+- [x] spec-x-stale-adr-archive-path (완료)
 <!-- sdd:done:end -->
 
 ---
