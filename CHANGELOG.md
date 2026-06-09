@@ -7,6 +7,42 @@ harness-kit의 주요 변경 사항을 버전별로 정리합니다.
 
 ---
 
+## [0.17.0-leo.1] — 2026-06-10
+
+> **Fork-distinct stable release** — LeoYoon7/harness-kit (forked from Changsik00/harness-kit).
+> `-leo.N` suffix 는 upstream 충돌 방지용 식별자이며 unstable 의미 없음.
+>
+> Director Mode(컨텍스트 오케스트레이션) 도입 + 코드 리뷰 B1 패턴 기본화 + persona review panel 리서치(Conditional No-Go). gemini-review / sdd 견고성 fix 다수. ADR 5건(010~014) 추가.
+
+### Added
+
+- **Director Mode (컨텍스트 오케스트레이션)** — `/hk-director` 토글로 orchestrator–worker 위임 모델 활성화. 메인 세션=director(계획·판단·게이트), sub-agent=worker(task 실행). 워커는 distilled contract(commit SHA·테스트 상태·결정)만 반환하고 transcript 전문 재흡수 금지 불변식 유지. 모델 tier 역할 기반 config 화(`sdd config models`). ADR-010(context offloading)·ADR-011(model tier de-hardcode), agent.md §6.6/6.8 (#44)
+
+### Changed
+
+- **코드 리뷰 기본을 B1 패턴으로 업그레이드** — `/hk-code-review` 를 Opus×N self-consistency + generalist 정독 → 증류로 교체. 증류 조작적 정의(critique blocking 갭) + 페르소나 패널 opt-in 문서화. ADR-013(review-value-baseline)·ADR-014(review-eval-independence) invariant (#49)
+- **거버넌스 다이어트** — director-mode phase 와 병행해 agent.md 축소(governance word-count 상한 해소), ADR-012(governance-word-budget) (#44)
+
+### Fixed
+
+- **gemini-review 워크스페이스 변경 방어** — `--approval-mode plan` read-only 불신, 부수효과 감지·거부 + clean-pre 자동 원복 방어 래퍼. guard 테스트 12종 (#42)
+- **gemini-review.sh 엣지케이스 2종** — base 브랜치 부재 시 main fallback + 지시문 argv→stdin 이동 (#47)
+- **sdd 견고성 2종** — `sdd ship` 의 spec-x 커밋 subject slug truncation + stale-adr 검사 fd race (#50)
+- **stale ADR 오탐(archive 이동 참조)** — `_drift_stale_adr` 가 archive/ 로 이동된 spec 참조를 missing 으로 오탐하던 문제. archive/ fallback 추가 (#51)
+- **drift-stale-adr / phase16 테스트 cross-fixture 간섭** — 전역 `ADR-*.md` glob 단언을 자기 fixture 특정으로 변경(동시 실행 플래키 해소) (#52)
+- **`.gitignore` review 산출물 패턴이 `archive/` 미커버** — ignore 대칭 사이트에 `archive/specs/**/code-review*.md` 추가 (#46)
+
+### Docs
+
+- **persona review panel 리서치 — Conditional No-Go** — phase-22(#45) POC + spec-x-persona-hybrid-research(#48). 페르소나 패널이 self-consistency baseline(Opus×N)을 지배하지 못함(상보적·비용 동급). generalist 정독=깊이 lever, 페르소나=폭 lever 로 정리되어 B1 기본화(#49)로 이어짐
+- **phase-20 upstream-parity 공식 Phase Ship** (#36)
+
+### Chore
+
+- spec-x-icebox-prune(#37) + archive/icebox 정리 다수
+
+---
+
 ## [0.16.0-leo.1] — 2026-06-04
 
 > **Fork-distinct stable release** — LeoYoon7/harness-kit (forked from Changsik00/harness-kit).
