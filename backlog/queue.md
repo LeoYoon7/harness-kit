@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-drift-test-fixture-race — drift-test-fixture-race
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -168,6 +167,7 @@
 - [x] spec-x-review-b1-default (완료)
 - [x] spec-x-sdd-robustness-fixes (완료)
 - [x] spec-x-stale-adr-archive-path (완료)
+- [x] spec-x-drift-test-fixture-race (완료)
 <!-- sdd:done:end -->
 
 ---
