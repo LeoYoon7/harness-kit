@@ -54,7 +54,7 @@
   - **B2 — self-consistency N 분리 측정** (N=1 vs N=3 ROI). #48 은 generalist 깊이 회복만 직접 측정, N=3 비용 3배 증분은 미측정(약근거). 외부 문헌(arXiv 2511.00751)상 frontier self-consistency 증분 작음 — N 적정값 실측 필요.
   - **적응형 N / 폭·깊이 자동 라우팅** (#48 권고 B + spec-x-review-b1 critique 대안 A) — diff 크기·성격 판별로 N 또는 패널/B1 선택. 미검증·경계값 임의성으로 보류. B2 측정 후 재평가.
   - **hk-phase-review B1 적용 검토** — 코드 리뷰(diff) 외 phase 회고(다파일 감사)에 self-consistency 가 값하는지 별도 측정. 본 spec OOS.
-- **sdd ship spec-x 커밋 subject slug truncation 버그** — `sdd ship` 이 `spec-x-review-b1-default` 의 커밋 subject 를 `docs(spec-x-review):` 로 생성(`-b1-default` 누락). spec-id 추출이 `-b1` 수치 세그먼트에서 잘리는 것으로 추정. 수동 amend 로 정정함. `sources/bin/sdd` 의 ship spec-id 파싱 점검 필요(spec-x slug 에 숫자 포함 케이스).
+- ~~**sdd ship spec-x 커밋 subject slug truncation 버그** — `docs(spec-x-review):` 로 `-b1-default` 누락~~ → ✓ **spec-x-sdd-robustness-fixes (#50, `f495749`)** 로 해결 (2026-06-09): `sdd_ship_scope()` 신설 — `spec-x-*` 케이스 전체 id 유지 + `tests/test-sdd-ship-scope.sh` 회귀 5/5 PASS. (strike 누락분을 spec-x-stale-adr-archive-path 에서 정리.)
 - **test-drift-stale-adr.sh Step 2 Windows 플래키** — fixture(untracked ADR-999) 탐지가 간헐 실패(b6c2rakls PASS / bze38u4y7 FAIL, 동일 코드). Windows fs 쓰기→즉시 sdd status 읽기 race 또는 워킹트리 dirty 민감 의심. macOS 1차 타깃이라 best-effort — 재실행 시 green. 안정화(예: fixture write 후 sync/대기) 검토.
 - ~~**`.gitignore` review 산출물 패턴이 `archive/` 미커버 (kit 버그, 2026-06-08 발견)**~~ → ✓ **spec-x-gitignore-archive-coverage (#46, `c5f28f8`)** — `.gitignore` 에 `archive/specs/**/code-review*.md` 추가(ignore 대칭). 잔여(소): 옛 archived spec 의 tracked `code-review*.md` 혼재 정리 정책 미결 — 필요 시 별도.
 
