@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-stale-adr-archive-path — stale-adr-archive-path
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -39,7 +40,9 @@
 - **컨테이너 빌드 컨텍스트 비대칭** — `install.sh` 가 `.gitignore` 는 자동 관리하면서 `.dockerignore` 는 손대지 않음. Dockerfile 있는 프로젝트에 설치 시 `.harness-kit/`, `archive/`, `specs/`, `.env.*` 등이 빌드 컨텍스트에 포함되어 (a) WSL2 + Docker Desktop 환경에서 컨텍스트 전송 지연, (b) `COPY . .` 패턴 사용 시 `.env.telegram`/`.env.discord` 토큰이 이미지에 포함될 위험. fix 후보: `sdd doctor` 에 "Dockerfile 존재 + .dockerignore 에 `.harness-kit/` 미등재" 경고 + README 컨테이너 가이드 섹션. `install.sh` 자동 갱신은 사용자 정책 충돌 우려로 보류. 검토 메모: 토큰 유출은 대부분 프로젝트가 이미 `.env*` 차단으로 방어됨 — 진짜 비대칭 가치는 spec/archive 수백 파일로 인한 컨텍스트 비대화. Containerfile/compose.yml/Earthfile 등 다른 컨테이너 도구도 동일 함정. 권장 항목에서 `telegram.sh` 제외 (사용자 측 임의 스크립트 가능성)
 - **AUQ 잔존 호출 경로 추가 점검** — `spec-x-notify-bidirectional-policy` 후 "에이전트는 AskUserQuestion 사용 안 함" 정책이 있음에도, align 직후 단순 의도 확인 시 AUQ 호출 사례 발생 (2026-05-29). 정책 텍스트만으론 부족할 수 있어 보강 검토: (a) `agent.md §8.4` / CLAUDE.md fragment 의 "사용 안 함" 문구를 더 강하게 (예: "절대 금지 — 위반 시 RCA"), (b) AUQ 호출 시 사전 차단 hook 검토 가능성, (c) 메모리 보강 [[feedback-no-auq-ever]] 와 별개로 거버넌스 문서 자체 강화 필요 여부 평가
 - **Discord embed 기반 구조화 메시지 (`spec-x-notify-discord-embed`)** — `spec-x-notify-channel-formatter` 의 시각 검증 (2026-05-29) 에서 *모바일 좁은 화면* 의 code-block 표가 *긴 셀* (예: 31 chars `spec-x-notify-channel-formatter`) 일 때 자동 word wrap → 정렬 깨짐 실증. Critique 의 *대안 B (embed)* 가 결정적 — title/description/fields 분리로 모바일 가독성 우위. surface: `notify-discord.sh` 의 `content` 송신 → `embeds` JSON 으로 확장, embed 본문 4096자 / field name 256 / value 1024 / 총 6000자 제한 (Discord API), chunking 재설계. ADR-006 `discord-table-rendering-policy` (type: tradeoff) 본 spec 트리거 시 작성. *직전 spec 의 한계가 다음 spec 의 정확한 ROI* — 문제-실증 기반 spec 정신
-- **stale ADR 오탐 근본책 (sdd drift 가 archive/ 미탐색)** — `sdd status` 의 stale ADR 검사가 `[ -e "$token" ]` 로 repo 루트만 확인 → ADR 이 참조하는 spec 이 archive 되면 경로가 깨져 false-positive 재발. 본 사건 (2026-06-01 ADR-003/004/005 경로 갱신) 의 근본 원인. fix 후보: (a) drift 검사 시 `archive/` 도 탐색 (`[ -e "$token" ] || [ -e "archive/$token" ]`), (b) ADR 템플릿이 spec 참조 시 처음부터 영구 식별자(PR 링크 / commit hash) 권장. 별도 spec-x 후보
+- ~~**stale ADR 오탐 근본책 (sdd drift 가 archive/ 미탐색)**~~ → ✓ **spec-x-stale-adr-archive-path** 로 해결 (2026-06-09): `_drift_stale_adr()` 에 `[ -e "$SDD_ROOT/archive/$token" ] && continue` fallback (fix a) + 회귀 테스트 Step 5/6 + dogfood sync. Gemini cross-model Approve(0/0/0). 잔여 follow-up:
+  - **(b) ADR 가 spec 참조 시 영구 식별자(PR#/commit SHA) 권장** (convention) — fix(a)의 보완재. 미착수 (Icebox).
+  - **비기본 `specsDir`/`backlogDir` 대응 — `$SDD_SPECS` 기반 동적 archive 경로** — 현재 fix 는 기본 경로 1단계 prefix 전제. 외부 확산 시점 재평가 (critique/gemini 공통 관찰).
 - ~~**CC 네이티브 세션 기능 검증 spec**~~ → ✓ `spec-x-native-session-feature-verify` 로 검증 (2026-06-02): `/background`·`/branch` 문서+정적 분석 → 조건부 Go(2단계) 승격, ADR-007 Amendment 반영. 잔여 라이브 test 1(계층 1 자동 알림)은 사용자 체크리스트로 분리(Done 조건 아님)
 - **`/batch` Bitbucket 정합성** — target Bitbucket 에서 `/batch` 자동 PR off + worktree diff → `/hk-pr-bb` 경로. 검증 테스트 2·3·5 해소 전 보류. 도그푸딩(GitHub) 시점엔 정합하나 키트 배포 대상 중립성 우선. (조사: report §5 보류)
 - ~~**CC 네이티브 1단계 6종 즉시 채택**~~ → ✓ `native-feature-usage.md` 에 6종(`/deep-research`·`/workflows`·`/copy`·`/rewind`·`/team-onboarding`·`/btw`) "1단계" 표로 채택 반영.
@@ -53,7 +56,7 @@
   - **B2 — self-consistency N 분리 측정** (N=1 vs N=3 ROI). #48 은 generalist 깊이 회복만 직접 측정, N=3 비용 3배 증분은 미측정(약근거). 외부 문헌(arXiv 2511.00751)상 frontier self-consistency 증분 작음 — N 적정값 실측 필요.
   - **적응형 N / 폭·깊이 자동 라우팅** (#48 권고 B + spec-x-review-b1 critique 대안 A) — diff 크기·성격 판별로 N 또는 패널/B1 선택. 미검증·경계값 임의성으로 보류. B2 측정 후 재평가.
   - **hk-phase-review B1 적용 검토** — 코드 리뷰(diff) 외 phase 회고(다파일 감사)에 self-consistency 가 값하는지 별도 측정. 본 spec OOS.
-- **sdd ship spec-x 커밋 subject slug truncation 버그** — `sdd ship` 이 `spec-x-review-b1-default` 의 커밋 subject 를 `docs(spec-x-review):` 로 생성(`-b1-default` 누락). spec-id 추출이 `-b1` 수치 세그먼트에서 잘리는 것으로 추정. 수동 amend 로 정정함. `sources/bin/sdd` 의 ship spec-id 파싱 점검 필요(spec-x slug 에 숫자 포함 케이스).
+- ~~**sdd ship spec-x 커밋 subject slug truncation 버그** — `docs(spec-x-review):` 로 `-b1-default` 누락~~ → ✓ **spec-x-sdd-robustness-fixes (#50, `f495749`)** 로 해결 (2026-06-09): `sdd_ship_scope()` 신설 — `spec-x-*` 케이스 전체 id 유지 + `tests/test-sdd-ship-scope.sh` 회귀 5/5 PASS. (strike 누락분을 spec-x-stale-adr-archive-path 에서 정리.)
 - **test-drift-stale-adr.sh Step 2 Windows 플래키** — fixture(untracked ADR-999) 탐지가 간헐 실패(b6c2rakls PASS / bze38u4y7 FAIL, 동일 코드). Windows fs 쓰기→즉시 sdd status 읽기 race 또는 워킹트리 dirty 민감 의심. macOS 1차 타깃이라 best-effort — 재실행 시 green. 안정화(예: fixture write 후 sync/대기) 검토.
 - ~~**`.gitignore` review 산출물 패턴이 `archive/` 미커버 (kit 버그, 2026-06-08 발견)**~~ → ✓ **spec-x-gitignore-archive-coverage (#46, `c5f28f8`)** — `.gitignore` 에 `archive/specs/**/code-review*.md` 추가(ignore 대칭). 잔여(소): 옛 archived spec 의 tracked `code-review*.md` 혼재 정리 정책 미결 — 필요 시 별도.
 
