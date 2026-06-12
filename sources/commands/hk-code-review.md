@@ -16,10 +16,18 @@ bash .harness-kit/bin/sdd status --json
 
 출력에서 `spec` 필드로 spec 디렉토리를 특정합니다. spec 이 없으면 사용자에게 알리고 멈춥니다.
 
+리뷰 base 결정 — 같은 출력에서 **한 번에** 해석합니다 (해석 체인: phase `baseBranch` → `defaultBranch` → `main`):
+
+```bash
+REVIEW_BASE=$(bash .harness-kit/bin/sdd status --json | jq -r '.baseBranch // .defaultBranch // "main"')
+```
+
+`REVIEW_BASE` ref 가 로컬에 없으면 (base-branch 모드 첫 spec 등) `defaultBranch` → `main` 순으로 fallback 합니다 (`gemini-review.sh` 와 동일 체인).
+
 diff 범위 확인:
 
 ```bash
-git diff main...HEAD --stat
+git diff ${REVIEW_BASE}...HEAD --stat
 ```
 
 변경 파일이 없으면 "리뷰할 코드 변경이 없습니다" 를 알리고 멈춥니다.
@@ -50,7 +58,7 @@ R1~R3 의 `source` 는 `spec대비`/`품질`/`테스트` 중 해당값, generali
 >
 > **입력 자료**:
 > 1. spec 문서: `specs/<spec-dir>/spec.md` 를 읽어서 요구사항을 파악하세요.
-> 2. 코드 변경: `git diff main...HEAD` 를 실행해서 전체 변경사항을 확인하세요.
+> 2. 코드 변경: `git diff <REVIEW_BASE>...HEAD` 를 실행해서 전체 변경사항을 확인하세요 (REVIEW_BASE 는 디스패치 시 디렉터가 치환).
 > 3. 변경된 파일들의 전체 내용이 필요하면 해당 파일을 직접 읽으세요.
 >
 > 다음 3가지 관점에서 리뷰하고, 발견된 문제마다 심각도(Critical/Major/Minor)를 매기세요:
@@ -80,7 +88,7 @@ R1~R3 의 `source` 는 `spec대비`/`품질`/`테스트` 중 해당값, generali
 
 > 당신은 독립 시니어 리뷰어입니다. **렌즈에 얽매이지 말고** 변경 전체를 처음부터 끝까지 **정독**하세요.
 >
-> **입력 자료**: `specs/<spec-dir>/spec.md`(요구사항) + `git diff main...HEAD`(전체 변경) + 필요한 파일 직접 읽기.
+> **입력 자료**: `specs/<spec-dir>/spec.md`(요구사항) + `git diff <REVIEW_BASE>...HEAD`(전체 변경, REVIEW_BASE 는 디렉터가 치환) + 필요한 파일 직접 읽기.
 >
 > 단일 리뷰어/렌즈가 놓치기 쉬운 **깊이** 에 집중하세요:
 > - 구체 구현 버그(off-by-one, 경계, null/빈 입력, 상태 전이)
