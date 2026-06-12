@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-review-base-config — review-base-config
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -173,6 +172,7 @@
 - [x] spec-x-sdd-robustness-fixes (완료)
 - [x] spec-x-stale-adr-archive-path (완료)
 - [x] spec-x-drift-test-fixture-race (완료)
+- [x] spec-x-review-base-config (완료)
 <!-- sdd:done:end -->
 
 ---
