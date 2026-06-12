@@ -38,9 +38,9 @@
 ## Task 3: 템플릿 note fix (TDD Green)
 
 ### 3-1. 템플릿 수정
-- [ ] `sources/templates/adr.md` note 의 예시 `` `src/foo.ts` `` → 평문화 + `../` 제외 규칙 명시
-- [ ] `.harness-kit/agent/templates/adr.md` 동기 (pre-edit IDENTICAL 확인 후 cp)
-- [ ] `bash tests/test-drift-stale-adr.sh` → Step 1~7 전부 Pass 확인
+- [x] `sources/templates/adr.md` note 의 예시 `` `src/foo.ts` `` → 평문화 + `../` 제외 규칙 명시
+- [x] `.harness-kit/agent/templates/adr.md` 동기 (pre-edit IDENTICAL 확인 후 cp)
+- [x] `bash tests/test-drift-stale-adr.sh` → Step 1~7 전부 Pass 확인 (7/7, EXITCODE=0) + 정적 검사 트리거 토큰 0개
 - [ ] Commit: `fix(spec-x-adr-template-stale-note): plain-text path example in adr template note`
 
 ---

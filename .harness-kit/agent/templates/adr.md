@@ -7,8 +7,8 @@ status: proposed  # proposed | accepted | superseded | deprecated
 
 # ADR-{NNN}: <한 줄 제목>
 
-> **Note — 경로 표기와 stale ADR 검사 대상**: 본 ADR 의 inline backtick 경로 (예: `src/foo.ts`) 는 `sdd status` 의 stale ADR 검사 대상입니다.
-> 검사 패턴은 *inline backtick + 슬래시 + 확장자* 만. ` ``` ` code fence 안 경로, 슬래시 없는 토큰, URL 은 무시됩니다.
+> **Note — 경로 표기와 stale ADR 검사 대상**: 본 ADR 의 inline backtick 경로는 `sdd status` 의 stale ADR 검사 대상입니다.
+> 검사 패턴은 *inline backtick + 슬래시 + 확장자* 를 가진 토큰입니다 (예: 백틱으로 감싼 src/foo.ts 형태 — 이 예시는 평문이라 검사에 안 걸림). ` ``` ` code fence 안 경로, 슬래시 없는 토큰, `../` 로 시작하는 상대경로, URL 은 무시됩니다.
 > 코드 경로가 이동/삭제되면 stale 라인이 떠 ADR 갱신 신호가 됩니다.
 
 ## 📚 Context
