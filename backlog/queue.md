@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-adr-template-stale-note — adr-template-stale-note
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -42,6 +43,7 @@
 - ~~**stale ADR 오탐 근본책 (sdd drift 가 archive/ 미탐색)**~~ → ✓ **spec-x-stale-adr-archive-path** 로 해결 (2026-06-09): `_drift_stale_adr()` 에 `[ -e "$SDD_ROOT/archive/$token" ] && continue` fallback (fix a) + 회귀 테스트 Step 5/6 + dogfood sync. Gemini cross-model Approve(0/0/0). 잔여 follow-up:
   - **(b) ADR 가 spec 참조 시 영구 식별자(PR#/commit SHA) 권장** (convention) — fix(a)의 보완재. 미착수 (Icebox).
   - **비기본 `specsDir`/`backlogDir` 대응 — `$SDD_SPECS` 기반 동적 archive 경로** — 현재 fix 는 기본 경로 1단계 prefix 전제. 외부 확산 시점 재평가 (critique/gemini 공통 관찰).
+  - **monorepo sibling 레포 경로 stale-ADR false-positive** — `_drift_stale_adr` 가 system 루트 기준으로만 backtick 경로 실재를 검사. 거버넌스 허브 + 코드 레포 분리 형상에서 ADR 이 sibling 레포 소관 경로 (예: api 레포 업로드 디렉토리) 를 inline backtick 으로 참조하면 missing-path 오판. sibling-repo 경로 인식 부재. 멀티레포 리뷰 지원과 같은 계열 — 별도 검토. (이슈 #55 연관, spec-x-adr-template-stale-note 발견)
 - ~~**CC 네이티브 세션 기능 검증 spec**~~ → ✓ `spec-x-native-session-feature-verify` 로 검증 (2026-06-02): `/background`·`/branch` 문서+정적 분석 → 조건부 Go(2단계) 승격, ADR-007 Amendment 반영. 잔여 라이브 test 1(계층 1 자동 알림)은 사용자 체크리스트로 분리(Done 조건 아님)
 - **`/batch` Bitbucket 정합성** — target Bitbucket 에서 `/batch` 자동 PR off + worktree diff → `/hk-pr-bb` 경로. 검증 테스트 2·3·5 해소 전 보류. 도그푸딩(GitHub) 시점엔 정합하나 키트 배포 대상 중립성 우선. (조사: report §5 보류)
 - ~~**CC 네이티브 1단계 6종 즉시 채택**~~ → ✓ `native-feature-usage.md` 에 6종(`/deep-research`·`/workflows`·`/copy`·`/rewind`·`/team-onboarding`·`/btw`) "1단계" 표로 채택 반영.
