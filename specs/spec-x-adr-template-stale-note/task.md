@@ -49,16 +49,16 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 전체 테스트 실행 → PASS (`test-drift-stale-adr` + 회귀: `test-install-manifest-sync`, `test-wiki-structure` 등 템플릿 영향 suite)
-- [ ] 수동 검증 시나리오 1~2 수행
-- [ ] **walkthrough.md 작성**
-- [ ] **pr_description.md 작성** (`Fixes #55` 포함)
-- [ ] 코드 리뷰 게이트 (gemini / opus / skip — walkthrough 에 기록)
-- [ ] **Ship Commit**: `docs(spec-x-adr-template-stale-note): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-adr-template-stale-note`
-- [ ] **PR 생성**: `/hk-pr-gh` (base: fork main, body 에 `Fixes #55`)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
-- [ ] (머지 후) `sdd specx done adr-template-stale-note` + 이슈 #55 close 확인
+- [x] 전체 테스트 실행 → drift-stale-adr 7/7 PASS + manifest/wiki PASS (two-tier Check4 는 main 기존·무관, Icebox)
+- [x] 수동 검증 시나리오 1~2 수행
+- [x] **walkthrough.md 작성**
+- [x] **pr_description.md 작성** (`Fixes #55` 포함)
+- [x] 코드 리뷰 게이트 → Skip (docs/test-only, walkthrough 사유 기록)
+- [x] **Ship Commit**: `docs(spec-x-adr-template-stale-note): ship walkthrough and pr description` (`00babd0`)
+- [x] **Push**: `git push -u origin spec-x-adr-template-stale-note`
+- [x] **PR 생성**: `/hk-pr-gh` (base: fork main, body 에 `Fixes #55`)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [-] (머지 후) `sdd specx done adr-template-stale-note` + 이슈 #55 close 확인 — 머지 signal 후 (Post-Merge)
 
 ---
 
