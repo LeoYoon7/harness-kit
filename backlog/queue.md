@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-adr-template-stale-note — adr-template-stale-note
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -176,6 +175,7 @@
 - [x] spec-x-stale-adr-archive-path (완료)
 - [x] spec-x-drift-test-fixture-race (완료)
 - [x] spec-x-review-base-config (완료)
+- [x] spec-x-adr-template-stale-note (완료)
 <!-- sdd:done:end -->
 
 ---
