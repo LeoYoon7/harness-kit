@@ -165,6 +165,41 @@ RC7=$(run_review "$FX7" valid)
 if [ "$RC7" -eq 0 ]; then ok "base 부재 → fallback 성공(exit 0)"; else fail "base 부재인데 리뷰 실패(exit=$RC7)"; fi
 if [ -f "$(review_file "$FX7")" ]; then ok "리뷰 파일 생성됨(main fallback)"; else fail "fallback 실패 — 리뷰 파일 미생성"; fi
 
+# --- T8: installed.json defaultBranch=develop → diff base 가 develop (spec-x-review-base-config) ---
+echo "▶ T8: defaultBranch=develop → Diff (develop...HEAD)"
+FX8=$(setup_fixture); CLEAN="$CLEAN $FX8"
+git -C "$FX8" branch develop main >/dev/null 2>&1
+INST8="$FX8/.harness-kit/installed.json"
+TMP8=$(mktemp)
+jq '.defaultBranch="develop"' "$INST8" > "$TMP8" && mv "$TMP8" "$INST8"
+CAP8=$(mktemp -d); CLEAN="$CLEAN $CAP8"
+( cd "$FX8" && PATH="$STUB_DIR:$PATH" STUB_MODE=capture CAPTURE_DIR="$CAP8" HARNESS_DRIFT_FETCH=0 \
+    bash "$FX8/.harness-kit/bin/gemini-review.sh" >/dev/null 2>&1 )
+RC8=$?
+if [ "$RC8" -eq 0 ]; then ok "defaultBranch 리뷰 성공(exit 0)"; else fail "defaultBranch 리뷰 실패(exit=$RC8)"; fi
+if [ -f "$CAP8/stdin" ] && grep -q "Diff (develop...HEAD)" "$CAP8/stdin"; then
+  ok "diff base = develop 반영됨"
+else
+  fail "diff base 가 develop 이 아님 (defaultBranch 미반영)"
+fi
+
+# --- T9: defaultBranch 실재 안 함 → 2단 fallback 종착(main) 으로 진행 ---
+echo "▶ T9: defaultBranch 부재 ref → main 종착 fallback"
+FX9=$(setup_fixture); CLEAN="$CLEAN $FX9"
+INST9="$FX9/.harness-kit/installed.json"
+TMP9=$(mktemp)
+jq '.defaultBranch="no-such-branch"' "$INST9" > "$TMP9" && mv "$TMP9" "$INST9"
+CAP9=$(mktemp -d); CLEAN="$CLEAN $CAP9"
+( cd "$FX9" && PATH="$STUB_DIR:$PATH" STUB_MODE=capture CAPTURE_DIR="$CAP9" HARNESS_DRIFT_FETCH=0 \
+    bash "$FX9/.harness-kit/bin/gemini-review.sh" >/dev/null 2>&1 )
+RC9=$?
+if [ "$RC9" -eq 0 ]; then ok "부재 defaultBranch → fallback 성공(exit 0)"; else fail "부재 defaultBranch 인데 리뷰 실패(exit=$RC9)"; fi
+if [ -f "$CAP9/stdin" ] && grep -q "Diff (main...HEAD)" "$CAP9/stdin"; then
+  ok "diff base = main 종착 fallback 반영됨"
+else
+  fail "main 종착 fallback 미동작"
+fi
+
 echo ""
 echo "=== 결과: PASS=$PASS FAIL=$FAIL ==="
 [ "$FAIL" -eq 0 ] || exit 1
