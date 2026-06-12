@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-review-base-config — review-base-config
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -59,6 +60,10 @@
 - ~~**test-drift-stale-adr.sh Step 2 Windows 플래키**~~ → ✓ **spec-x-drift-test-fixture-race** 로 해결 (2026-06-09). **원인 정정**: fs-visibility race 가 아니라 *cross-test fixture 간섭* — `_drift_stale_adr` 가 `docs/decisions/ADR-*.md` 전역 glob 이라 다른 테스트(phase16)의 ADR fixture 가 동시 실행 시 잡혀 전역 count 단언이 깨짐. fix: drift+phase16 단언을 자기 fixture 특정으로. serial 은 본래 결정적. "b6c2rakls/bze38u4y7" 는 CI 아닌 백그라운드 task ID(동시 실행 아티팩트). deterministic 검증: 두 fixture 동시 존재 → count=2 → 구 단언 실패/신 단언 통과.
 - **`sdd status` Windows 성능 저하** — solo ~1m24s (sys 54s, 서브프로세스 spawn 과다 — `_drift_dogfood_sync` 의 `diff -q` 다수 + ADR grep). 동시 다중 호출 시 악화(~3.5분). macOS 1차라 best-effort. fix 후보: drift 검사 배치/캐싱 또는 Windows subprocess 절감. (spec-x-drift-test-fixture-race 조사 중 발견.)
 - ~~**`.gitignore` review 산출물 패턴이 `archive/` 미커버 (kit 버그, 2026-06-08 발견)**~~ → ✓ **spec-x-gitignore-archive-coverage (#46, `c5f28f8`)** — `.gitignore` 에 `archive/specs/**/code-review*.md` 추가(ignore 대칭). 잔여(소): 옛 archived spec 의 tracked `code-review*.md` 혼재 정리 정책 미결 — 필요 시 별도.
+- **멀티레포 리뷰 지원 (2-repo diff)** — 리뷰 게이트가 PROJECT_ROOT 단일 레포 git diff 만 수집. 거버넌스 허브 + 코드 레포 분리 형상 (nextmarket 라이브 실증, 2026-06-12) 에서 핵심 코드가 리뷰 사각지대. kit 1차 타깃 (단일 레포) 밖이라 feature 급 별도 검토. (spec-x-review-base-config 발견)
+- **sdd 내부 main fallback 설정화** — `sources/bin/sdd:515,1908` git log 캐시·drift 감지의 `base_branch="main"` 리터럴이 defaultBranch 미반영. 리뷰 게이트와 별개 경로 + 영향 범위 커서 별도 spec. **착수 시 ADR `review-base-resolution-chain` (type: tradeoff) 작성** — phase baseBranch → defaultBranch → main 해석 체인 + origin/HEAD 자동추론 비채택 근거 (spec-x-review-base-config critique). (spec-x-review-base-config 발견)
+- **hk-ship PR_BASE·governance main 전제 재검토** — `hk-ship.md:150` `PR_BASE="main"` fallback + constitution §3.3 "spec-x PR Target: always main". defaultBranch 와 PR 타깃 정책 정합 필요 — 거버넌스 개정 동반이라 별도 spec. (spec-x-review-base-config 발견)
+- **hk-cleanup defaultBranch 실재 검사** — cleanup 은 `baseBranch` remote 부재만 점검. `defaultBranch` 오설정 (오타 등) 감지를 추가할지 sdd 내부 fallback 설정화와 함께 검토. (spec-x-review-base-config critique 발견)
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
 - ~~접근성 개선~~ → phase-17 **spec-17-02** (accessibility-install-and-entry)

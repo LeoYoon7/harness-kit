@@ -61,20 +61,32 @@ if [ ! -f "$SPEC_DIR/spec.md" ]; then
     exit 1
 fi
 
-# 3. PR base 결정 (phase base 또는 main)
-BASE_BRANCH=$(echo "$STATUS_JSON" | jq -r '.baseBranch // "main"')
-if [ -z "$BASE_BRANCH" ] || [ "$BASE_BRANCH" = "null" ]; then
-    BASE_BRANCH="main"
+# 3. PR base 결정 — 해석 체인: phase baseBranch → defaultBranch → main (spec-x-review-base-config)
+DEFAULT_BRANCH=$(jq -r '.defaultBranch // "main"' "$PROJECT_ROOT/.harness-kit/installed.json" 2>/dev/null) || DEFAULT_BRANCH="main"
+if [ -z "$DEFAULT_BRANCH" ] || [ "$DEFAULT_BRANCH" = "null" ]; then
+    DEFAULT_BRANCH="main"
 fi
 
-# base 브랜치 실재 확인 — 없으면 main 으로 fallback.
-# base-branch 모드 phase 의 첫 spec 은 base 브랜치가 hk-ship 시점에 just-in-time 생성되어
-# 작업 중에는 아직 없다 (constitution §3.1). ref 부재를 빈-diff 로 오진단하지 않도록 명시적 fallback.
+BASE_BRANCH=$(echo "$STATUS_JSON" | jq -r '.baseBranch // empty')
+if [ -z "$BASE_BRANCH" ] || [ "$BASE_BRANCH" = "null" ]; then
+    BASE_BRANCH="$DEFAULT_BRANCH"
+fi
+
+# base 브랜치 실재 확인 — 2단 fallback 종착 (defaultBranch → 리터럴 main).
+# 1단: base-branch 모드 phase 의 첫 spec 은 base 브랜치가 hk-ship 시점에 just-in-time 생성되어
+#      작업 중에는 아직 없다 (constitution §3.1). ref 부재를 빈-diff 로 오진단하지 않도록 defaultBranch 로 fallback.
 if ! git rev-parse --verify --quiet "${BASE_BRANCH}^{commit}" >/dev/null 2>&1; then
-    # main 은 캐논 base 전제 — main 자체가 부재한 저장소(default 가 master/trunk 등)는 범위 외.
-    # 이 경우 fallback 미발동 → 이어지는 git diff 가 빈 결과 → "리뷰할 변경이 없습니다" 로 보고된다.
+    if [ "$BASE_BRANCH" != "$DEFAULT_BRANCH" ]; then
+        echo "⚠ base 브랜치 '$BASE_BRANCH' 부재 (첫 spec 추정) → $DEFAULT_BRANCH 으로 fallback" >&2
+        BASE_BRANCH="$DEFAULT_BRANCH"
+    fi
+fi
+# 2단: defaultBranch (기본 main) 는 캐논 base 전제 — 그것도 부재면 리터럴 main 종착 (무한 체인 없음).
+#      main 자체가 부재한 저장소(default 가 master/trunk 등)는 범위 외 — 이 경우 fallback 미발동 →
+#      이어지는 git diff 가 빈 결과 → "리뷰할 변경이 없습니다" 로 보고된다.
+if ! git rev-parse --verify --quiet "${BASE_BRANCH}^{commit}" >/dev/null 2>&1; then
     if [ "$BASE_BRANCH" != "main" ]; then
-        echo "⚠ base 브랜치 '$BASE_BRANCH' 부재 (첫 spec 추정) → main 으로 fallback" >&2
+        echo "⚠ defaultBranch '$BASE_BRANCH' 부재 → main 으로 종착 fallback (sdd config default-branch 확인)" >&2
         BASE_BRANCH="main"
     fi
 fi

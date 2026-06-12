@@ -10,7 +10,7 @@ description: 현재 SPEC 브랜치의 코드 변경을 Gemini CLI 로 cross-mode
 
 - `gemini` CLI 가 설치 + 인증되어 있어야 합니다 (https://geminicli.com).
 - 현재 활성 spec 이 있어야 합니다 (`sdd status --json` 의 `spec` 필드).
-- 현재 브랜치와 base (phase base 또는 main) 사이에 변경이 있어야 합니다.
+- 현재 브랜치와 base 사이에 변경이 있어야 합니다. base 는 해석 체인 `phase baseBranch → defaultBranch → main` 으로 결정됩니다 (`sdd config default-branch` 로 변경).
 
 ## 2. 실행
 
@@ -21,7 +21,7 @@ bash .harness-kit/bin/gemini-review.sh
 내부 동작:
 
 1. `gemini` CLI 존재 확인 → 미설치 시 명확한 에러 + exit 1.
-2. `sdd status --json --no-drift` 로 활성 spec / base branch 식별.
+2. `sdd status --json --no-drift` 로 활성 spec / base 식별 (phase `baseBranch` → installed.json `defaultBranch` → `main` 체인, ref 부재 시 단계별 fallback).
 3. `spec.md` 본문 + `git diff <base>...HEAD` 를 stdin 으로 전달 (argv 크기 한계 회피).
 4. `gemini -p "<짧은 지시문>" --approval-mode plan` 헤드리스 호출 (read-only — 워크스페이스 수정 차단).
 5. 결과를 `specs/<spec-dir>/code-review-gemini.md` 에 저장.
