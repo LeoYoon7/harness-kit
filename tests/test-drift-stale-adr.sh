@@ -23,6 +23,7 @@ ARCHIVED_SPEC_ADR="docs/decisions/ADR-996-archived-path-fixture.md"
 ARCHIVED_SPEC_DIR="archive/specs/spec-x-archived-fixture"
 ARCHIVED_BACKLOG_ADR="docs/decisions/ADR-995-archived-backlog-fixture.md"
 ARCHIVED_BACKLOG_FILE="archive/backlog/phase-fixture.md"
+TEMPLATE_NOTE_FIXTURE="docs/decisions/ADR-994-template-note-fixture.md"
 
 # Ensure clean state on exit (even on test failure)
 cleanup() { rm -f "$FIXTURE"; }
@@ -30,7 +31,8 @@ cleanup_valid() { rm -f "$VALID_FIXTURE"; }
 cleanup_relative() { rm -f "$RELATIVE_FIXTURE"; }
 cleanup_archived_spec() { rm -rf "$ARCHIVED_SPEC_DIR"; rm -f "$ARCHIVED_SPEC_ADR"; }
 cleanup_archived_backlog() { rm -f "$ARCHIVED_BACKLOG_FILE" "$ARCHIVED_BACKLOG_ADR"; }
-trap 'cleanup; cleanup_valid; cleanup_relative; cleanup_archived_spec; cleanup_archived_backlog' EXIT
+cleanup_template_note() { rm -f "$TEMPLATE_NOTE_FIXTURE"; }
+trap 'cleanup; cleanup_valid; cleanup_relative; cleanup_archived_spec; cleanup_archived_backlog; cleanup_template_note' EXIT
 
 pass() { printf "  ✓ %s\n" "$1"; }
 fail() { printf "  ✗ %s\n" "$1"; echo "    output: $2"; exit 1; }
@@ -181,6 +183,35 @@ if echo "$output" | grep -q "ADR-995-archived-backlog-fixture"; then
   fail "own ADR referencing an archived backlog file should NOT be flagged stale" "$output"
 fi
 pass "archived backlog ref (archive/backlog/...) → resolved, not in stale list"
+
+# ─── Step 7: ADR 템플릿 note 가 자가-트리거하지 않음 (issue #55, spec-x-adr-template-stale-note) ─
+# 라이브 템플릿의 note blockquote 를 그대로 ADR 본문에 삽입한다. note 는 stale 검사 규칙을
+# *설명*하는 문구이므로, 그 안의 예시 경로가 backtick 토큰이면 자기 자신이 missing-path 로
+# 잡혀 note 를 가진 모든 다운스트림 ADR 이 영구 stale 이 된다.
+# 이 Step 은 미래에 누군가 트리거 예시(backtick+슬래시+확장자 미실재 경로)를 템플릿에
+# 재도입하면 실패한다 — 하드코딩 텍스트가 아니라 grep 으로 라이브 note 를 끌어오므로.
+TEMPLATE_NOTE=$(grep '^>' sources/templates/adr.md)
+cat > "$TEMPLATE_NOTE_FIXTURE" <<EOF
+---
+id: ADR-994
+type: decision
+date: 2026-06-12
+status: accepted
+---
+# ADR-994: Fixture embedding the live ADR template note
+
+$TEMPLATE_NOTE
+
+## Decision
+This ADR exists only for issue #55 regression — the live template note MUST NOT self-trigger stale.
+EOF
+
+output=$(HARNESS_DRIFT_FETCH=0 bash "$SDD_BIN" status 2>&1 || true)
+cleanup_template_note
+if echo "$output" | grep -q "ADR-994-template-note-fixture"; then
+  fail "live ADR template note must NOT self-trigger stale (issue #55)" "$output"
+fi
+pass "template note fixture (live note embedded) → not in stale list"
 
 echo ""
 echo "All tests passed."
