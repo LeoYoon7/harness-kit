@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # tests/test-sdd-config.sh
 # spec-x-governance-ask-user-guideline: sdd config ux-mode 커맨드 검증
+# spec-x-review-base-config: sdd config default-branch 검증 (T7~T10)
 #
 # 4 시나리오:
 #   T1: sdd config ux-mode text        → installed.json uxMode=text 갱신
@@ -157,6 +158,97 @@ if echo "$OUT6" | grep -q "toggle"; then
   ok "에러 메시지에 toggle 노출"
 else
   fail "에러 메시지에 toggle 누락 — 실제: $OUT6"
+fi
+
+# ─────────────────────────────────────────────────────────
+# T7: sdd config default-branch (미설정) → main 출력
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "T7: sdd config default-branch (미설정) → main 출력"
+F7=$(make_fixture)
+FIXTURES_TO_CLEAN+=("$F7")
+
+OUT7=$(run_sdd "$F7" config default-branch)
+if echo "$OUT7" | grep -q "main"; then
+  ok "미설정 조회 시 main 출력: $OUT7"
+else
+  fail "미설정 조회 실패 — 실제: $OUT7"
+fi
+
+# ─────────────────────────────────────────────────────────
+# T8: sdd config default-branch <branch> → 설정 + 조회
+#     (실재 브랜치는 경고 없음, 부재 브랜치는 경고 후 설정)
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "T8: sdd config default-branch 설정 + 조회 (실재/부재 경고)"
+F8=$(make_fixture)
+FIXTURES_TO_CLEAN+=("$F8")
+git -C "$F8" branch develop 2>/dev/null
+
+run_sdd "$F8" config default-branch develop >/dev/null
+ACTUAL8=$(jq -r '.defaultBranch // empty' "$F8/.harness-kit/installed.json" 2>/dev/null)
+if [ "$ACTUAL8" = "develop" ]; then
+  ok "installed.json defaultBranch=develop 갱신됨"
+else
+  fail "defaultBranch 갱신 실패 — 예상: develop, 실제: $ACTUAL8"
+fi
+
+OUT8B=$(run_sdd "$F8" config default-branch ghost-branch)
+ACTUAL8B=$(jq -r '.defaultBranch // empty' "$F8/.harness-kit/installed.json" 2>/dev/null)
+if [ "$ACTUAL8B" = "ghost-branch" ] && echo "$OUT8B" | grep -qE "⚠|경고|없"; then
+  ok "부재 브랜치 → 경고 후 설정됨 (거부 아님)"
+else
+  fail "부재 브랜치 처리 실패 — installed: $ACTUAL8B, 출력: $OUT8B"
+fi
+
+OUT8C=$(run_sdd "$F8" config default-branch)
+if echo "$OUT8C" | grep -q "ghost-branch"; then
+  ok "설정 후 조회 = ghost-branch"
+else
+  fail "설정 후 조회 실패 — 실제: $OUT8C"
+fi
+
+# ─────────────────────────────────────────────────────────
+# T9: 부적합 브랜치명 (형식 위반) → 거부 + 미설정 유지
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "T9: sdd config default-branch 'bad branch' → 형식 거부"
+F9=$(make_fixture)
+FIXTURES_TO_CLEAN+=("$F9")
+
+RC9=0
+run_sdd "$F9" config default-branch "bad branch" >/dev/null || RC9=$?
+ACTUAL9=$(jq -r '.defaultBranch // empty' "$F9/.harness-kit/installed.json" 2>/dev/null)
+if [ "$RC9" -ne 0 ] && [ -z "$ACTUAL9" ]; then
+  ok "형식 위반 거부 (exit=$RC9) + defaultBranch 미설정 유지"
+else
+  fail "형식 위반 미거부 — exit: $RC9, installed: $ACTUAL9"
+fi
+
+# ─────────────────────────────────────────────────────────
+# T10: sdd status --json 에 defaultBranch 노출
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "T10: sdd status --json 에 defaultBranch 노출"
+F10=$(make_fixture)
+FIXTURES_TO_CLEAN+=("$F10")
+
+JSON10A=$( cd "$F10" && HARNESS_DRIFT_FETCH=0 bash "$SDD" status --json 2>/dev/null )
+VAL10A=$(echo "$JSON10A" | jq -r '.defaultBranch // empty' 2>/dev/null)
+if [ "$VAL10A" = "main" ]; then
+  ok "미설정 시 status --json defaultBranch=main"
+else
+  fail "미설정 노출 실패 — 실제: '$VAL10A'"
+fi
+
+git -C "$F10" branch develop 2>/dev/null
+run_sdd "$F10" config default-branch develop >/dev/null
+JSON10B=$( cd "$F10" && HARNESS_DRIFT_FETCH=0 bash "$SDD" status --json 2>/dev/null )
+VAL10B=$(echo "$JSON10B" | jq -r '.defaultBranch // empty' 2>/dev/null)
+if [ "$VAL10B" = "develop" ]; then
+  ok "설정 후 status --json defaultBranch=develop"
+else
+  fail "설정 후 노출 실패 — 실제: '$VAL10B'"
 fi
 
 # ─────────────────────────────────────────────────────────
