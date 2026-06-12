@@ -22,15 +22,15 @@
 
 ### 1-2. 계획 산출물 + Icebox 등록 커밋
 - [x] `backlog/queue.md` Icebox 에 1건 등록 (monorepo sibling 레포 stale-ADR false-positive)
-- [ ] Commit: `docs(spec-x-adr-template-stale-note): add spec/plan/task and icebox entry`
+- [x] Commit: `docs(spec-x-adr-template-stale-note): add spec/plan/task and icebox entry` (`182ff30`)
 
 ---
 
 ## Task 2: 회귀 테스트 추가 (TDD Red)
 
 ### 2-1. Step 7 작성
-- [ ] `tests/test-drift-stale-adr.sh` 에 Step 7 추가 — 라이브 템플릿 note 삽입 fixture ADR-994 가 stale 미보고 단언 + trap cleanup 등록
-- [ ] `bash tests/test-drift-stale-adr.sh` → Step 7 Fail 확인 (현 버그 템플릿: `src/foo.ts` backtick → 자가-트리거)
+- [x] `tests/test-drift-stale-adr.sh` 에 Step 7 추가 — 라이브 템플릿 note 삽입 fixture ADR-994 가 stale 미보고 단언 + trap cleanup 등록
+- [x] `bash tests/test-drift-stale-adr.sh` → Step 7 Fail 확인 (Step 1~6 PASS, Step 7 ✗ — `stale ADR: 1 — ADR-994-template-note-fixture.md`)
 - [ ] Commit: `test(spec-x-adr-template-stale-note): add failing regression for template note self-trigger`
 
 ---
