@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-fragment-two-tier-restore — fragment-two-tier-restore
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox

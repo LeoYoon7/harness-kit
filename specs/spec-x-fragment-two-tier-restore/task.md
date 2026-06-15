@@ -65,14 +65,14 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 전체 테스트 실행 → 모두 PASS (`test-two-tier-loading.sh`, `test-governance-dedup.sh`, 그 외 영향 테스트)
-- [ ] 코드 리뷰 게이트 (docs-only 성격 — Skip 시 walkthrough 에 사유 1줄)
-- [ ] **walkthrough.md 작성** (증거 로그)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-x-fragment-two-tier-restore): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-x-fragment-two-tier-restore`
-- [ ] **PR 생성**: `/hk-pr-gh` (base = fork main)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 전체 테스트 실행 → 영향 테스트 모두 PASS (two-tier 10/10, dedup 8/8, install·context·config 등). 사전 존재 실패 2건은 무관 확인
+- [x] 코드 리뷰 게이트 → Skip (사용자 3번 응답, 사유 walkthrough 기록)
+- [x] **walkthrough.md 작성** (증거 로그)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `docs(spec-x-fragment-two-tier-restore): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-x-fragment-two-tier-restore`
+- [x] **PR 생성**: `/hk-pr-gh` (base = fork main)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -81,6 +81,6 @@
 | 항목 | 값 |
 |---|---|
 | **총 Task 수** | 4 (+ Ship) |
-| **예상 commit 수** | 4 (test / feat / refactor / chore) + 1 ship |
-| **현재 단계** | Planning |
+| **예상 commit 수** | test / docs(spec,plan) / feat / refactor / chore + 1 ship |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-06-16 |
