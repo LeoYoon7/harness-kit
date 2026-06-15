@@ -10,6 +10,7 @@ description: SDD 세션 정렬 — constitution 로드 + 컨텍스트 점검 + �
 - @.harness-kit/agent/constitution.md
 - @.harness-kit/agent/agent.md
 - @.harness-kit/agent/align.md
+- @.harness-kit/agent/notify.md
 
 ## 2. 컨텍스트 점검 (Context Check)
 
