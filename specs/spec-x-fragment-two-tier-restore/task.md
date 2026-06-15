@@ -43,11 +43,11 @@
 ## Task 3: tier-1 정리 — fragment slim + 패턴 이전 (TDD Green 완료)
 
 ### 3-1. fragment 슬림화 + 패턴 align.md 이전
-- [ ] `sources/governance/align.md` 말미에 "검증된 패턴 & 안티패턴" 섹션 이전
-- [ ] `sources/claude-fragments/CLAUDE.fragment.md` 를 핵심 규칙 요약 + tier-2 포인터 1줄로 축소
-- [ ] `wc -w` ≤150 확인
-- [ ] `bash tests/test-two-tier-loading.sh` → 전체 PASS
-- [ ] Commit: `refactor(spec-x-fragment-two-tier-restore): slim fragment to summary, move detail to tier-2`
+- [x] `sources/governance/align.md` 말미에 "검증된 패턴 & 안티패턴" 섹션 이전
+- [x] `sources/claude-fragments/CLAUDE.fragment.md` 를 핵심 규칙 요약 + tier-2 포인터 1줄로 축소
+- [x] `wc -w` ≤150 확인 (113w)
+- [x] `bash tests/test-two-tier-loading.sh` → 전체 PASS (10/10)
+- [x] Commit: `refactor(spec-x-fragment-two-tier-restore): slim fragment to summary, move detail to tier-2`
 
 ---
 
