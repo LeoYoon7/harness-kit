@@ -54,10 +54,10 @@
 ## Task 4: 도그푸딩 동기화
 
 ### 4-1. 설치본 sync
-- [ ] 변경 파일 targeted cp: `.harness-kit/CLAUDE.fragment.md`, `.harness-kit/agent/notify.md`, `.harness-kit/agent/align.md`, `.claude/commands/hk-align.md` (설치본 존재분만)
-- [ ] `bash tests/test-governance-dedup.sh` → PASS
-- [ ] `bash .harness-kit/bin/sdd status` → drift 깔끔 확인
-- [ ] Commit: `chore(spec-x-fragment-two-tier-restore): sync installed copies (dogfood)`
+- [x] 변경 파일 targeted cp: `.harness-kit/CLAUDE.fragment.md`, `.harness-kit/agent/notify.md`, `.harness-kit/agent/align.md`, `.claude/commands/hk-align.md`
+- [x] `bash tests/test-governance-dedup.sh` → PASS (8/8). sources↔설치본 diff 4건 모두 일치
+- [x] 영향 테스트 회귀 점검 → install/context/director/config/queue/export 전부 PASS. 사전 존재 실패 2건(sdd-drift T1, phase17 4c)은 이 spec 무관 확인 (walkthrough 기록)
+- [x] Commit: `chore(spec-x-fragment-two-tier-restore): sync installed copies (dogfood)`
 
 ---
 
