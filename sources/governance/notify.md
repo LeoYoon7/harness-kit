@@ -1,0 +1,446 @@
+# 알림 & 선택지 제시 운영 규약 (Notify & Choice Protocol)
+
+> tier-2 거버넌스 문서 — `/hk-align` 슬래시 커맨드가 `@import` 로 로딩한다 (상시 로딩 아님).
+> 본 문서는 `CLAUDE.fragment.md` 에서 이전된 상세 규약을 담는다: 선택지 제시 규약 + 의사결정 알림 프로토콜(§1~§10) + 알림 마크다운 컨벤션 및 정책.
+> `agent.md` / `CLAUDE.fragment.md` 요약이 참조하는 "§5/§9 알림" 은 본 문서의 §5 / §9 를 가리킨다 (섹션 번호 보존).
+
+---
+
+## 선택지 제시 규약 (Choice Presentation Protocol)
+
+agent.md §8.5 의 강제 규칙입니다. 본 프로젝트의 에이전트는 **사용자에게 선택지를 제시하는 모든 순간** 반드시 권장안을 포함해야 합니다.
+
+### 규칙
+
+사용자에게 2개 이상의 선택지를 제시할 때마다 다음 형식을 따릅니다:
+
+```
+[상황 / 맥락]
+<어떤 의사결정이 필요한지 1-2줄>
+
+[선택지]
+1. <옵션 A — 간결한 요약>
+2. <옵션 B — 간결한 요약>
+3. <옵션 C — 간결한 요약>  ← 해당 시
+
+[권장]
+<옵션 번호> — <이전 패턴 / 리스크 / 프로젝트 제약 기반의 간단한 근거>
+
+[의사결정 요청]
+<사용자에게 선택을 요청하는 명확한 질문 하나>
+```
+
+### 적용 범위
+
+이 규칙은 다음 **모든 상황**에 적용됩니다:
+
+- Alignment Phase 의 작업 모드 선택 (agent.md §3)
+- Hard Stop for Review 이후 Plan Accept 선택 (agent.md §4.4)
+- **Task 분해 제안** (Strict Loop 중간에 복합 task 를 쪼갤 때)
+- **구현 방식 A/B/C 선택** (기술 방향 분기)
+- **예상 못한 edge case 처리 방향 결정**
+- Strict Loop 중 Ad-hoc 으로 발생하는 모든 선택지
+- `/hk-phase-ship` 의 Go/No-Go 결정
+
+### 자가 점검
+
+선택지 메시지를 보내기 **전에** 에이전트는 반드시 내부적으로 확인합니다:
+
+1. 서로 다른 2개 이상의 옵션이 있는가? → 그렇다면 [권장] 필수
+2. 권장안에 구체적 이유(이전 패턴 / 리스크 / 제약)가 붙어있는가?
+3. 의사결정 질문이 명확한가? (하나의 질문, 모호하지 않음)
+
+셋 중 하나라도 실패하면 보내기 전에 수정합니다.
+
+### 예외
+
+**단순 Yes/No 확인** 질문은 기본 방향이 명시되어 있으면 [권장] 생략 가능합니다.
+
+예: "Plan 을 이대로 수락하시겠습니까? [Y/n]" — Y 가 기본이므로 [권장] 생략 OK
+
+### 왜 이 규칙이 필요한가
+
+- 사용자는 모바일 (원격 채널 알림 (Telegram/Discord) / Remote Control) 에서 의사결정을 내리는 경우가 많습니다.
+- 긴 옵션을 모두 읽을 시간이 없으며, [권장] + 근거만 보고 빠르게 판단합니다.
+- "권장안 누락" 은 반복적으로 발생하는 실수이므로, 에이전트가 **메시지 전송 전 자가 점검** 해야 합니다.
+
+---
+
+## 의사결정 알림 프로토콜 (Telegram/Discord)
+
+본 프로젝트는 SDD 워크플로우의 주요 **의사결정 지점(Decision Gate)** 에서 Telegram/Discord 로 알림을 발송합니다. 사용자가 PC 앞에 없을 때도 진행 상황을 파악하고 원격 판단을 내릴 수 있도록 지원합니다.
+
+알림은 **두 가지 계층**으로 구성됩니다:
+
+1. **자동 감지 알림 (Hook 기반)** — Claude Code가 사용자 입력을 대기하는 순간 자동 발화
+2. **에이전트 발송 알림 (명시적 호출)** — 공식 Decision Gate에서 에이전트가 직접 호출
+
+### 전제 조건
+
+프로젝트 루트에 `.env.telegram` 파일이 존재하며 다음 변수가 설정되어 있어야 합니다:
+
+```
+TELEGRAM_BOT_TOKEN=<봇 토큰>
+TELEGRAM_CHAT_ID=<사용자 chat_id>
+```
+
+이 파일이 없으면 알림은 **silent skip** (에러 없이 무시)됩니다. SDD 워크플로우 자체는 영향받지 않습니다.
+
+### 계층 1: 자동 감지 알림 (Hook 기반)
+
+`settings.json` 의 `Notification` 및 `Stop` hook 에 `notify-on-input-wait.sh` 가 등록되어 있습니다. 이 hook 은 **에이전트의 판단 없이 시스템 레벨에서 자동 발화**하므로 다음 상황을 모두 커버합니다:
+
+- 에이전트가 공식 Gate 가 아닌 곳에서 사용자 선택지를 제시할 때 (예: "Task 분해할까요? 1/2/3")
+- 에이전트가 60초 이상 사용자 응답을 대기할 때
+- 권한 승인 다이얼로그가 뜨고 사용자가 자리를 비운 경우
+- 세션 턴이 종료되고 사용자 입력 대기 상태로 진입할 때
+
+메시지에는 **최근 Claude 발화 일부 (약 500자)** 가 포함되어 사용자가 원격 채널만 보고도 상황을 파악할 수 있습니다. 따라서 위의 "선택지 제시 규약" 에 따라 [권장] 이 메시지에 포함되어 있어야 사용자가 원격 채널만 보고도 판단할 수 있습니다.
+
+**입력 *대기* 시점의 알림 발화는 시스템이 자동 처리.** 사용자 *응답* 도착 시점의 처리는 §10 절차 (양방향 채널 — 채널 답장을 의사결정 응답으로 인식).
+
+### 계층 2: 에이전트 발송 알림 (명시적 Decision Gate)
+
+공식 Gate 에서는 자동 알림보다 **구조화된 메시지** 가 유용합니다. 에이전트는 다음 단일 Bash 명령을 실행합니다 (agent.md §6.4 단일 명령 원칙 준수):
+
+```bash
+bash .harness-kit/bin/notify.sh "<메시지>" <level>
+```
+
+레벨: `info | align | plan | accept | stop | ship | merge | phase`
+
+### 의사결정 지점별 알림 프로토콜
+
+다음 지점들에서 알림을 발송합니다. 알림은 **양방향 채널** — 발송 + 응답 인식 모두 지원하며, 의사결정은 PC/CLI 또는 원격 채널 (Telegram/Discord) 답장으로 가능합니다 (§10 절차).
+
+#### 1. `/hk-align` 직후 — 세션 상태 보고 (align)
+
+상태 요약을 사용자에게 보고한 직후, 동일 내용의 축약판을 원격 채널에도 발송:
+
+```bash
+bash .harness-kit/bin/notify.sh "**세션 시작**
+
+**Phase:** <phase-id 또는 없음>
+**Spec:** <spec-id 또는 없음>
+**Branch:** \`<current-branch>\`
+**Plan Accept:** <yes/no>" align
+```
+
+⚠ 미완 항목이 있으면 메시지에 포함.
+
+#### 2. Spec/Plan/Task 작성 완료 — Plan Accept 게이트 (plan) 【필수】
+
+agent.md §4.4 Hard Stop for Review 시점. spec.md/plan.md/task.md 작성 완료 보고와 동시에:
+
+```bash
+bash .harness-kit/bin/notify.sh "**<spec-id>** 계획 작성 완료
+
+**Spec:** \`specs/<spec-dir>/spec.md\`
+**Plan:** \`specs/<spec-dir>/plan.md\`
+**Task:** \`specs/<spec-dir>/task.md\` (총 <N>개 task)
+
+**[선택지]**
+1. Plan Accept (/hk-plan-accept) — 즉시 실행 단계로 진입
+2. Critique (/hk-spec-critique) — 요구사항 비평 (Opus, 선택)
+
+**[권장]** 1번 (spec/plan 품질에 확신이 있는 경우 기본 경로). 2번을 선택할 경우 비평 후 plan 재작성 가능
+
+⚠ 승인 전까지 코드 편집 금지" plan
+```
+
+#### 3. `/hk-plan-accept` 실행 — Execution 모드 진입 (accept)
+
+코드 편집이 시작되는 중요한 전환점:
+
+```bash
+bash .harness-kit/bin/notify.sh "**<spec-id> Plan Accepted**
+
+Strict Loop 실행을 시작합니다.
+**첫 Task:** <첫 번째 미완 task 제목>" accept
+```
+
+#### 4. Hard Stop — 중단 상황 (stop) 【필수】
+
+agent.md §7 Deviation & Hard Stop 시점. 사용자 개입이 반드시 필요:
+
+```bash
+bash .harness-kit/bin/notify.sh "**<spec-id> HARD STOP**
+
+**사유:** <plan 이탈 / 테스트 실패 / hook 차단 / main 커밋 시도 등>
+**상세:** <구체적 메시지 1-2줄>
+**Branch:** \`<current-branch>\`
+
+재정렬이 필요합니다." stop
+```
+
+#### 5. Ad-hoc 선택지 제시 — 중간 의사결정 (stop) 【필수】
+
+Strict Loop 진행 중 plan 에 없는 선택지가 발생해 사용자 의사결정이 필요한 경우. 예: Task 분해 제안, 구현 방식 A/B 선택, 예상 못한 edge case 처리 방향.
+
+이 경우 **계층 1 자동 감지 알림이 먼저 발동**하지만, 에이전트는 선택지 정보를 더 구체적으로 전달하기 위해 다음 명령을 **추가로** 실행합니다. 본 메시지는 반드시 "선택지 제시 규약" (위 섹션 참조) 을 따라 [권장] 을 포함합니다:
+
+```bash
+bash .harness-kit/bin/notify.sh "**<spec-id> 의사결정 요청**
+
+**[상황]** <1-2줄 요약>
+
+**[선택지]**
+1. <옵션 1 요약>
+2. <옵션 2 요약>
+3. <옵션 3 요약>
+
+**[권장]** <N번> — <근거: 이전 패턴 / 리스크 / 제약>" stop
+```
+
+**판단 기준**: 사용자에게 2개 이상의 선택지를 제시하거나, 기술 방향이 갈리는 결정이면 명시적 알림을 발송합니다. 단순 Yes/No 확인은 계층 1 자동 알림으로 충분합니다.
+
+**AUQ 사용 시 §5 stop 조건부 생략 + 옵션 순서 sync 보조 규칙 (단일 소스 원칙)**
+
+> **현재 정책 (spec-x-notify-bidirectional-policy 이후)**: 에이전트는 AskUserQuestion 도구 사용 안 함 — 모든 게이트 텍스트 형식 통일 (multi-device 응답 지원). 본 조건부 생략 규칙은 *이론상 발화 불가* — 본 에이전트 절차에서 사용 안 됨. 향후 6개월 dead 누적 시 별도 spec 으로 완전 제거 재평가.
+>
+> **적용 범위**: 본 에이전트 (Claude Code main 세션) + sub-agent (Opus critique, code review 등 — 동일 절차 권장). 외부 도구 (Gemini CLI 모달, Codex 자체 UI 등) 는 OOS — 본 키트 통제 밖.
+
+에이전트가 동일 의사결정을 `AskUserQuestion` 도구로 발산할 때 *(legacy — 본 에이전트는 사용 안 함)*:
+
+**조건부 생략 (§5 stop 미발송)**: 다음 모든 조건 충족 시 §5 stop 을 *생략* 한다.
+- 옵션 ≤ 4개 (AUQ 한계 내)
+- free-text 자유 응답 미요구
+- 같은 turn 의 AUQ + §5 stop 동시 의도 없음
+- AUQ 가 의사결정 발산의 *유일한 경로*
+
+생략 시 hook (c) 분기가 AUQ 의 `header`/`question`/`options.label` 을 자동 노출 → 채널에 알림 도달.
+
+**생략 불가 케이스 — §5 stop 발송 + 옵션 순서 sync 필수**:
+- 옵션 5개 이상 (AUQ 한계 초과)
+- free-text 응답 포함
+- AUQ + §5 stop 동시 의도 (예: 텍스트 선택지 + 모달 confirm)
+
+이 경우 §5 stop 의 옵션 순서를 AUQ 와 *동일* (권장-첫번째 관행) 으로 강제. *단일 sink 원칙이 주, 옵션 순서 sync 가 fallback 이중화*. 번호 충돌 차단.
+
+**근거**: PR #9 직후 라이브 실증 — §5 stop 의 사람-작성 순서 (1.Gemini/2.Opus/3.Skip, 권장 3번) 와 AUQ 의 권장-첫번째 (1.Skip(권장)/2.Gemini/3.Opus) 가 *번호 충돌* → Telegram=3 Skip / Desktop=1 Skip → 사용자 혼동. ADR-004 의 Amendment 절 참조.
+
+**범위 한정**: 본 규칙은 §5 (Ad-hoc 선택지) 만 적용. §4 (Hard Stop) 은 그대로 유지 — Hard Stop 은 사용자 즉시 개입 요청이며 AUQ 동반 케이스는 본 규칙 범위 외.
+
+**예시 (Task 분해 제안)**:
+
+```bash
+bash .harness-kit/bin/notify.sh "**spec-8-001 의사결정 요청**
+
+**[상황]** Task 13 을 RollbackService + MigrationCliService 로 분해 제안
+
+**[선택지]**
+1. 분해 (13A → 13B 순차) — 이전 task 7/8/11 패턴과 일관
+2. 단일 Task 13 유지 — 한 commit 에 둘 다
+3. 순서 변경 — 13B 먼저
+
+**[권장]** 1번 — 두 서비스가 구현·테스트·의존성이 독립적이고, 이전 복합 task 모두 분해 후 진행한 패턴을 유지" stop
+```
+
+#### 6. `/hk-ship` 완료 — PR 생성 (ship) 【필수】
+
+```bash
+bash .harness-kit/bin/notify.sh "**<spec-id>** PR 생성 완료
+
+**Title:** <pr title>
+**Base:** \`<PR_BASE>\`
+**URL:** <pr-url>
+
+머지 대기 중..." ship
+```
+
+#### 7. Post-Merge 진입 — 다음 Spec 제안 (merge)
+
+agent.md §6.3.1 Post-Merge Protocol. 사용자가 "머지 완료" 신호를 주면:
+
+```bash
+bash .harness-kit/bin/notify.sh "**<spec-id> Merged**
+
+**NEXT:** <다음 backlog spec 또는 'Phase 완료 준비'>
+**제안:** \`<sdd spec new <slug> 또는 /hk-phase-ship>\`" merge
+```
+
+#### 8. `/hk-phase-ship` Go/No-Go — 최종 승인 요청 (phase) 【필수】
+
+Phase 단위 main merge는 특히 중요한 의사결정. 본 메시지는 "선택지 제시 규약" 에 따라 [권장] 을 포함합니다:
+
+```bash
+bash .harness-kit/bin/notify.sh "**<phase-id> Phase Ship Ready**
+
+**성공 기준:** <N>/<M> PASS
+**통합 테스트:** <N>/<M> PASS
+**Spec 완료:** <N>/<N> Merged
+<FAIL 항목이 있으면 상세>
+
+**[선택지]**
+1. Go — main 으로 merge 진행
+2. No-Go — 보류하고 추가 작업
+
+**[권장]** <1번 또는 2번> — <FAIL 여부 및 리스크 기반 근거>" phase
+```
+
+#### 9. 사용자 응답 직후 — 진행 시작 알림 (info) 【필수】
+
+사용자가 명시적 의사결정에 응답하면 **에이전트는 즉시 *단일 채널* 로 ack 메시지를 발송**합니다.
+multi-device 환경에서 PC 응답 시 모바일 측에 진행 상태를 동기화하기 위한 핵심 알림.
+
+본문에 `[ack]` prefix 가 반드시 포함되어야 합니다 — 사후 grep 으로 응답 알림 누락 사례 추적 가능.
+
+**응답 경로별 분기 (단일 소스 원칙)**:
+
+- **Telegram 경유 응답** (`<channel source="telegram" ...>` 태그가 사용자 메시지에 포함):
+  → `mcp__plugin_telegram_telegram__reply` 사용. reply 본문에 §9 의 `[ack]` 포맷 포함:
+    ```
+    ✅ **[ack]** 사용자 응답: <선택지 요약>
+    **진행:** <다음 단계 요약>
+    ```
+  → `notify.sh` 별도 발송 *생략*. reply 가 단독 ack 역할 겸함.
+
+- **PC chat 경유 응답** (채널 태그 없음):
+  → `notify.sh` 로 §9 ack 발송:
+    ```bash
+    bash .harness-kit/bin/notify.sh "✅ **[ack]** 사용자 응답: <선택지 요약>
+    **진행:** <다음 단계 한 줄 요약>" info
+    ```
+
+> **`[ack]` substring grep 호환성**: `**[ack]**` 라벨은 Discord 측에서 bold 렌더링, Telegram 측 `markdown_simplify` 가 `**` 메타문자 제거 후 평문 `[ack]` 도달 → 기존 사후 grep 추적 정책 유지 (A5 결정, spec-x-notify-channel-formatter).
+
+**Discord 의 절차**: 본 protocol 미명시. Discord MCP reply 도구가 active 화되는 시점의 별도 spec 에서 다룸. 현재는 `notify.sh` dispatcher 가 `NM_NOTIFY_CHANNEL=discord` 설정 시 Discord 도 §9 ack 도달 보장.
+
+**근거**: 이중 발송 (reply + notify.sh) 시 같은 ack 가 양쪽 채널로 도달 → 노이즈. PR #9 직후 사용자 보고 (mcp reply "Plan Accepted..." + 당시 `notify-telegram.sh` 의 "[ack] 사용자 응답..." 둘 다 발송) 의 라이브 사례. ADR-004 Amendment 참조.
+
+**트리거 (반드시 발송)**:
+- 명시적 선택지 응답 (`1`/`2`/`3`/`권장`/`Y`/`N`/`yes`/`no` 등)
+- AskUserQuestion 응답
+- Plan Accept / Critique / spec-critique 등 명시적 게이트 응답
+- Go/No-Go 다이얼로그 의사결정 응답
+- Opinion Divergence Reconciliation 옵션 선택 (constitution §5.6)
+
+**제외 (발송 안 함)**:
+- 일반 대화 / 질문 (선택지 형식 아님)
+- task 완료 / merge signal (별도 `merge` 레벨 알림 존재)
+- 자유 형식 텍스트 응답 (특정 선택지로 매핑 안 됨)
+
+**판단 기준**: *직전 에이전트 발화가 선택지 제시 (`[선택지]` / `[권장]` / `[Y/n]` / AskUserQuestion / numbered options) 였는가?* 그렇다면 사용자의 다음 응답은 의사결정 응답이라 발송 필요.
+
+**판단 책임**: 에이전트가 직접 판단. 본 절차 위반 사례를 사용자가 발견하면 walkthrough.md / RCA 에 캡처하여 학습.
+
+**누락 비용 비대칭** (중요): 다른 절차들 (One Task = One Commit, §1-§8 알림 등) 의 누락은 PC 세션에서 회복 가능하나, **§9 누락은 모바일 사용자가 응답 여부 자체를 모름 → 회복 불가**. 누락 비용이 다른 절차보다 비대칭으로 높음. 절차 위반 발견 시 walkthrough.md 외에 RCA 작성도 우선 고려.
+
+**Multi-device 가치**: PC 에서 응답해도 모바일에서 "어떤 선택지로 진행 중" 즉시 확인 가능. multi-device 사용자의 상태 불확실성 제거.
+
+**예시 (PC chat 경유)**:
+```bash
+# Plan Accept 응답 후
+bash .harness-kit/bin/notify.sh "✅ **[ack]** 사용자 응답: 1번 (Plan Accept)
+**진행:** Strict Loop 시작 — Task 1 브랜치 생성" info
+
+# Reconciliation 옵션 선택 후
+bash .harness-kit/bin/notify.sh "✅ **[ack]** 사용자 응답: A (현재 spec 에 통합)
+**진행:** spec/plan/task 갱신 → Plan Accept 재요청" info
+
+# AskUserQuestion 응답 후
+bash .harness-kit/bin/notify.sh "✅ **[ack]** 사용자 응답: Repo 전체 (archive/ 포함)
+**진행:** spec-x-md-lf-normalize spec/plan/task 작성" info
+```
+
+**예시 (Telegram 경유 응답)**: `mcp__plugin_telegram_telegram__reply` 호출 시 본문에 동일 `[ack]` 포맷 포함.
+
+관련 ADR: `docs/decisions/ADR-004-notification-twofold-decision-flow.md` — 양방향 컨벤션 + Amendment (단일 소스 원칙).
+
+#### 10. 채널 답장을 의사결정 응답으로 인식 (응답 측 양방향) 【필수】
+
+사용자가 Telegram/Discord 등 *원격 채널* 에서 답장으로 응답하면, 에이전트는 이를 *해당 의사결정 게이트의 응답* 으로 처리합니다.
+multi-device 환경에서 외부 작업 시나리오 (모바일에서 plan accept, 모바일에서 옵션 선택 등) 의 핵심 절차.
+
+**트리거 신호**:
+- 사용자 메시지에 `<channel source="telegram" ...>` 또는 `<channel source="discord" ...>` 태그 포함
+- 직전 에이전트 발화가 *의사결정 게이트* (선택지 제시, [Y/n], Plan Accept 등)
+
+**처리 절차**:
+1. 채널 메시지 본문을 PC chat 응답과 *동일 자격* 으로 의사결정 응답으로 처리
+2. **응답 매핑 알고리즘** (ChatOps 패턴):
+   - 숫자 변형 (`1`, `1번`, `첫번째`, `옵션 1`) → 옵션 번호 매핑
+   - 권장 키워드 (`권장`, `recommended`) → 권장 옵션 매핑
+   - 옵션 라벨 substring 매칭 (예: 옵션 "Gemini (cross-model)" 에 `"Gemini"` / `"제미니"` 매칭)
+   - 매핑 실패 또는 모호 → 사용자에게 명시적 확인 요청 (round trip)
+3. §9 ack 발송 — 같은 채널의 reply 도구 사용 (단일 소스 원칙):
+   - Telegram: `mcp__plugin_telegram_telegram__reply` (reply 본문에 `[ack]` 포맷 포함)
+   - Discord: 등가 MCP 도구 (active 시)
+4. 에이전트 작업 진행
+
+**모호 케이스 처리** (간결):
+- 응답 형식 모호 (자유 텍스트, "잘 모르겠어", 제3 제안) → 사용자에게 명시적 확인 요청 (단일 원칙)
+- 직전 게이트가 *둘 이상* 활성 → *가장 최근* 게이트 우선 매핑. 모호 시 확인 요청
+- 같은 게이트 PC + 채널 양쪽 응답 → 먼저 도착 채택, 두 번째 무시 + 사용자 알림
+
+**권한 검증**: MCP 가 담당 (chat_id 화이트리스트 등). 본 fragment 는 MCP 신뢰 전제 — 응답은 *선택지 매핑* 만 수행, 임의 명령 실행 안 함.
+
+**관련 ADR**: `docs/decisions/ADR-004-notification-twofold-decision-flow.md` Amendment 절 — 정책 전환 (보조 → 양방향).
+
+### 알림 메시지 마크다운 컨벤션
+
+본 프로젝트의 모든 `notify.sh` 호출 + Telegram/Discord MCP reply 본문은 단일 마크다운 컨벤션을 따른다. 인프라가 채널별로 적절히 변환하므로 (Discord: raw 마크다운 네이티브 렌더링 + 표 → code-block ASCII 정렬, Telegram: `markdown_simplify` 가 메타문자 제거 + 표 셀 join) **발신 측은 단일 컨벤션만 알면 된다** (spec-x-notify-channel-formatter).
+
+| 요소 | 마크다운 작성 | Discord 렌더링 | Telegram 렌더링 |
+|---|---|---|---|
+| 섹션 라벨 | `**[라벨]**` | bold | 평문 (`[라벨]`) |
+| 강조 | `**값**` | bold | 평문 |
+| 인라인 코드 | `` `값` `` | code (등폭) | 평문 |
+| 표 | ` ```\n\| col \| col \|\n\| --- \| --- \|\n\| a \| b \|\n``` ` | code-block 안 정렬 ASCII 표 (CJK 혼합 시 정렬 깨짐 허용 — NF6 한계) | 셀 ` — ` join (평문화) |
+| 구분선 | `---` | horizontal rule | 제거 |
+| 코드 블록 | ` ```lang\n...\n``` ` | code block (lang hint 적용) | 펜스 라인 제거, 본문 보존, **언어 hint 도 제거** |
+
+**금지**:
+- 표를 plain text 로 작성 (Discord 가독성 손실 — 표 마크다운 정상 사용)
+- bold/italic 메타문자 (`**`, `*`, `_`) 를 평문 의도로 사용 (Telegram 평문화로 의도 손실)
+- 라벨 없이 본문만 나열 (구조화 손실)
+
+**한계 (NF6 / A4 / 모바일 명시)**:
+- 한글 셀과 ASCII 셀이 혼합된 표는 Discord 등폭 폰트에서 정렬 보장 미흡 (Unicode UAX #11 East Asian Width 미적용). 한글 전용 / ASCII 전용 표는 정렬 보존.
+- `***nested***`, `**unbalanced ** text` 같은 중첩·비균형 메타문자는 Telegram 측 `markdown_simplify` 에 일부 메타문자 잔존 가능 — 단순 `**[라벨]**` 만 사용 권장.
+- Branch 이름·식별자 등에 backtick (`` ` ``) 포함 금지 — `markdown_simplify` 의 inline-code sed 매칭이 깨짐 (Git 자체도 backtick branch 권장 안 함).
+- **모바일 화면 폭 한계 (실증 2026-05-29)**: Discord 모바일 클라이언트의 좁은 화면에서 *한 행이 약 40 chars 초과* 하면 code-block 안에서도 자동 줄바꿈으로 시각 정렬 깨짐. 표 셀 값은 가능한 한 짧게 (셀 < 20 chars 권장). 긴 식별자가 필요하면 표 대신 *섹션 라벨 + 줄별 key: value 나열* 형태로 작성. embed 기반 구조화 메시지는 별도 spec (`spec-x-notify-discord-embed` 후보, Icebox) 의 surface.
+
+**참고 ADR (트리거 대기)**:
+- `notify-channel-adapter-responsibility` (type: **invariant**) — 신규 채널 추가 spec 트리거 시 작성. "발신 측은 단일 마크다운 컨벤션, 인프라 측이 채널별 변환 책임" 분담 원칙.
+
+### Strict Loop 중 Task 완료 알림 정책
+
+매 task마다 알림은 소음이 되므로 **기본 비활성**. 다음 경우에만 발송:
+
+- **첫 task 완료 시** (Execution 모드 정상 진입 확인)
+- **마지막 task 완료 시** (`/hk-ship` 직전)
+
+중간 task 알림은 사용자가 명시적으로 요청할 때만 활성화합니다.
+
+### 중복 알림 방지 정책
+
+계층 1 자동 알림과 계층 2 명시적 알림이 **동일 사건에 대해 양쪽 모두 발화**할 수 있습니다 (예: Plan Accept 게이트). 이는 **의도된 동작**이며 문제가 아닙니다:
+
+- 계층 1 은 "Claude 가 입력 대기 중" 이라는 신호 + 최근 대화 컨텍스트
+- 계층 2 는 Gate 에 최적화된 구조화 메시지 ([권장] + 다음 단계 안내 포함)
+
+중복이 불편하면 `.env.telegram` 에 `HARNESS_NOTIFY_DEDUP=1` 를 추가해 계층 1 을 비활성화할 수 있습니다 (향후 지원 예정).
+
+### 알림 정책
+
+| 원칙 | 설명 |
+|------|------|
+| **양방향 채널** | 알림 발송 + 응답 인식. Telegram/Discord 답장을 의사결정 응답으로 처리 (§10). |
+| **무음 실패** | `.env.telegram` 없거나 네트워크 실패 시 SDD 흐름은 계속 진행. 알림 실패로 작업 중단 금지. |
+| **한국어** | 메시지 본문은 한국어 (constitution §5.4). 레이블(Phase, Spec, Task 등)과 기술 용어는 영어 허용. |
+| **간결성** | 각 알림은 10줄 이내. 상세 내용은 본 세션에서 확인. |
+| **민감정보 금지** | 토큰, 비밀번호, 환경변수 값 등을 메시지에 포함하지 않음. |
+| **단일 명령** | `notify.sh` 호출은 한 번에 하나씩. 체이닝 금지 (agent.md §6.4). |
+| **권장안 필수** | 선택지 2개 이상이면 [권장] 반드시 포함 (agent.md §8.5). |
+| **마크다운 컨벤션** | 본문은 단일 마크다운 컨벤션 (위 "알림 메시지 마크다운 컨벤션" 섹션). Discord 가독성 회복 + Telegram 회귀 방지. |
+
+### 알림 비활성화
+
+일시적으로 끄려면 `.env.telegram` 파일을 이동:
+
+```bash
+mv .env.telegram .env.telegram.disabled
+```
+
+다시 활성화는 파일을 원래 이름으로 되돌리면 됩니다.

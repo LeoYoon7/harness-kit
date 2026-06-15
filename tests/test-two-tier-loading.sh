@@ -11,6 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 FRAGMENT="$ROOT/sources/claude-fragments/CLAUDE.fragment.md"
+NOTIFY="$ROOT/sources/governance/notify.md"
 CLAUDE_MD="$ROOT/CLAUDE.md"
 # hk-align.md (sources) 또는 설치된 .claude/commands/hk-align.md 중 존재하는 것 사용
 ALIGN_CMD=""
@@ -95,6 +96,36 @@ if grep -q '핵심 규칙 요약' "$FRAGMENT" 2>/dev/null; then
   pass "핵심 규칙 요약 존재"
 else
   fail "핵심 규칙 요약 누락"
+fi
+
+# --- Check 6: notify.md (tier-2) 존재 + 알림 프로토콜/선택지 규약 이전됨 ---
+echo ""
+echo "▶ Check 6: notify.md 에 알림 프로토콜/선택지 규약 이전됨"
+check
+if [ -f "$NOTIFY" ] && grep -q '의사결정 알림 프로토콜' "$NOTIFY" 2>/dev/null && grep -q '선택지 제시 규약' "$NOTIFY" 2>/dev/null; then
+  pass "notify.md 존재 + 알림 프로토콜/선택지 규약 보유"
+else
+  fail "notify.md 누락 또는 알림 프로토콜/선택지 규약 미이전"
+fi
+
+# --- Check 7: align 커맨드에 notify.md import 추가 ---
+echo ""
+echo "▶ Check 7: align 커맨드에 @.harness-kit/agent/notify.md import"
+check
+if grep -q '@\.harness-kit/agent/notify\.md' "$ALIGN_CMD" 2>/dev/null; then
+  pass "align 커맨드에 @.harness-kit/agent/notify.md 존재"
+else
+  fail "align 커맨드에 @.harness-kit/agent/notify.md 누락"
+fi
+
+# --- Check 8: fragment 에서 알림 프로토콜 본문 헤딩 제거됨 (실제 이전 확인) ---
+echo ""
+echo "▶ Check 8: fragment 에 알림 프로토콜 본문 헤딩 없음"
+check
+if grep -qE '^##+ 의사결정 알림 프로토콜' "$FRAGMENT" 2>/dev/null; then
+  fail "fragment 에 '의사결정 알림 프로토콜' 헤딩이 여전히 존재 (이전 안 됨)"
+else
+  pass "fragment 에서 알림 프로토콜 본문 헤딩 제거됨"
 fi
 
 # --- 결과 ---
