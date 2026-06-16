@@ -61,16 +61,16 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 코드 품질 점검 — `bash tests/test-wiki.sh` + `bash tests/test-hk-doctor.sh`(doctor 회귀)
-- [ ] 전체 관련 테스트 실행 → 모두 PASS
-- [ ] (Integration Test Required = yes) `tests/test-wiki.sh` phase 시나리오 PASS
-- [ ] 코드 리뷰 게이트 (`/hk-gemini-review` 권장 — bash 로직 + 이식성)
-- [ ] **walkthrough.md 작성** (증거 로그)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-23-02): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-23-02-wiki-doctor`
-- [ ] **PR 생성**: `/hk-pr-gh` (base = main)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 코드 품질 점검 — `test-wiki.sh` 14/14
+- [x] 전체 관련 테스트 실행 → `test-hk-doctor` 7/7 · `test-doctor-ignore-coverage` 10/10
+- [x] (Integration Test Required = yes) `test-wiki.sh` phase 시나리오 PASS
+- [x] 코드 리뷰 게이트 — Gemini **Approve (with Comments)** (0/1/2, Major 수정 `45bfbb4`)
+- [x] **walkthrough.md 작성** (증거 로그)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `docs(spec-23-02): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-23-02-wiki-doctor`
+- [x] **PR 생성**: `/hk-pr-gh` (base = main)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -80,5 +80,5 @@
 |---|---|
 | **총 Task 수** | 4 (점검 3 + Ship) |
 | **예상 commit 수** | 4 |
-| **현재 단계** | Planning |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-06-16 |
