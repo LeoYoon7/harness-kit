@@ -50,7 +50,7 @@ phase-19 의 wiki 토대 위에 **유지보수 도구 2종**을 완성해, wiki 
 <!-- sdd:specs:start -->
 | ID | 슬러그 | 우선순위 | 상태 | 디렉토리 |
 |---|---|:---:|---|---|
-| `spec-23-01` | wiki-ingest | P? | Active | `specs/spec-23-01-wiki-ingest/` |
+| `spec-23-01` | wiki-ingest | P? | Merged | `specs/spec-23-01-wiki-ingest/` |
 <!-- sdd:specs:end -->
 
 > 상태 허용값: `Backlog` / `In Progress` / `Merged`

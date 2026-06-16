@@ -8,7 +8,7 @@
 ## 📦 진행 중 Phase
 
 <!-- sdd:active:start -->
-- **phase-23** — wiki 운영 도구 (wiki-tooling) — 1 spec — 다음: spec-23-01-wiki-ingest
+- **phase-23** — wiki 운영 도구 (wiki-tooling) — 1 spec — 다음: (spec 없음)
 <!-- sdd:active:end -->
 
 ## 📥 spec-x 대기
