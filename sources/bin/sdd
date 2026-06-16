@@ -2338,6 +2338,9 @@ cmd_archive() {
     ok_msg="${ok_msg} + spec-x ${specx_count}개"
   fi
   ok "${ok_msg} → archive/"
+
+  # docs/wiki/ 존재 시 wiki 갱신 워크플로 안내 (spec-23-01)
+  [ -d "$SDD_ROOT/docs/wiki" ] && printf "  → %s\n" "/hk-wiki-ingest 로 wiki 갱신 권장"
 }
 
 cmd_doctor() {

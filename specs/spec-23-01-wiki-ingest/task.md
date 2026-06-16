@@ -40,13 +40,13 @@
 ## Task 3: sdd archive 후처리 wiki-ingest 힌트 (TDD)
 
 ### 3-1. 테스트 작성 → Fail (TDD Red)
-- [ ] `tests/test-sdd-dir-archive.sh` 확장: `docs/wiki/` 존재 fixture → archive 출력에 `/hk-wiki-ingest` 힌트 포함 단언 / 부재 시 미포함 단언
-- [ ] `bash tests/test-sdd-dir-archive.sh` → 신규 단언 Fail 확인
+- [x] `tests/test-sdd-dir-archive.sh` 확장: `docs/wiki/` 존재 fixture → archive 출력에 `/hk-wiki-ingest` 힌트 포함 단언 / 부재 시 미포함 단언 (Check 10/11)
+- [x] `bash tests/test-sdd-dir-archive.sh` → Check 10 Fail 확인 (Red)
 
 ### 3-2. 구현 → Pass (TDD Green)
-- [ ] `sources/bin/sdd` `cmd_archive` 말미(`ok "...→ archive/"` 직후)에 `[ -d "$SDD_ROOT/docs/wiki" ] && printf "  → %s\n" "/hk-wiki-ingest 로 wiki 갱신 권장"` 추가
-- [ ] `bash tests/test-sdd-dir-archive.sh` → 전체 PASS 확인
-- [ ] Commit: `feat(spec-23-01): hint /hk-wiki-ingest after archive when wiki exists`
+- [x] `sources/bin/sdd` `cmd_archive` 말미(`ok "...→ archive/"` 직후)에 `[ -d "$SDD_ROOT/docs/wiki" ] && printf "  → %s\n" "/hk-wiki-ingest 로 wiki 갱신 권장"` 추가
+- [x] `bash tests/test-sdd-dir-archive.sh` → 전체 PASS 확인 (20/0)
+- [x] Commit: `feat(spec-23-01): hint /hk-wiki-ingest after archive when wiki exists`
 
 ---
 
