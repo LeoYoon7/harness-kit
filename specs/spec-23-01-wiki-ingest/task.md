@@ -54,15 +54,15 @@
 
 > 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
 
-- [ ] 코드 품질 점검 — `bash tests/test-sdd-dir-archive.sh` (sdd 변경분)
-- [ ] 전체 관련 테스트 실행 → 모두 PASS
-- [ ] 코드 리뷰 게이트 (docs-heavy — `/hk-gemini-review` 또는 Skip+사유 기록)
-- [ ] **walkthrough.md 작성** (증거 로그)
-- [ ] **pr_description.md 작성** (템플릿 준수)
-- [ ] **Ship Commit**: `docs(spec-23-01): ship walkthrough and pr description`
-- [ ] **Push**: `git push -u origin spec-23-01-wiki-ingest`
-- [ ] **PR 생성**: `/hk-pr-gh` (base = main, defaultBranch)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] 코드 품질 점검 — `bash tests/test-sdd-dir-archive.sh` (20/0)
+- [x] 전체 관련 테스트 실행 → `test-wiki-structure.sh` 32/32 PASS
+- [x] 코드 리뷰 게이트 — Gemini cross-model **Approve** (0/0/1, Minor 무변경)
+- [x] **walkthrough.md 작성** (증거 로그)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `docs(spec-23-01): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-23-01-wiki-ingest`
+- [x] **PR 생성**: `/hk-pr-gh` (base = main, defaultBranch)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -72,5 +72,5 @@
 |---|---|
 | **총 Task 수** | 4 (작업 3 + Ship) |
 | **예상 commit 수** | 4 (feat/docs/feat/docs-ship) |
-| **현재 단계** | Planning |
+| **현재 단계** | Ship |
 | **마지막 업데이트** | 2026-06-16 |
