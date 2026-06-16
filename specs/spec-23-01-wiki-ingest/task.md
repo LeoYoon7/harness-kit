@@ -17,13 +17,13 @@
 ## Task 1: hk-wiki-ingest 슬래시 커맨드 작성
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-23-01-wiki-ingest`
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-23-01-wiki-ingest`
+- [x] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. 커맨드 문서 작성 (docs)
-- [ ] `sources/commands/hk-wiki-ingest.md` 신규 — frontmatter `description:` + 4단계 워크플로 (archived walkthrough 읽기 → decisions/patterns 갱신(원문 인용) → log 기록 → index 갱신)
-- [ ] 검증: `sources/commands/hk-archive.md` 와 동형 구조 + 4단계 명확성 육안 확인
-- [ ] Commit: `feat(spec-23-01): add hk-wiki-ingest slash command`
+- [x] `sources/commands/hk-wiki-ingest.md` 신규 — frontmatter `description:` + 4단계 워크플로 (archived walkthrough 읽기 → decisions/patterns 갱신(원문 인용) → log 기록 → index 갱신)
+- [x] 검증: `sources/commands/hk-archive.md` 와 동형 구조 + 4단계 명확성 육안 확인
+- [x] Commit: `feat(spec-23-01): add hk-wiki-ingest slash command`
 
 ---
 
