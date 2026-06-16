@@ -64,10 +64,10 @@ This section defines the roles and boundaries of work types used in harness-kit.
 - **Identifier**: `phase-{N}` (→ §6.1)
 
 ### 3.2 Spec
-A single PR unit within a Phase, independently testable + fully functional. **Entry**: a User-approved Plan in the Phase. **Exit**: unit tests PASS + walkthrough/pr_description + PR merge. **PR Target**: `phase-{N}-{slug}` (base mode) else `main`. **Identifier**: `spec-{phaseN}-{seq}-{slug}` (→ §6.2).
+A single PR unit within a Phase, independently testable + fully functional. **Entry**: a User-approved Plan in the Phase. **Exit**: unit tests PASS + walkthrough/pr_description + PR merge. **PR Target**: `phase-{N}-{slug}` (base mode) else `defaultBranch` (default `main`; → ADR-015). **Identifier**: `spec-{phaseN}-{seq}-{slug}` (→ §6.2).
 
 ### 3.3 spec-x (Solo Spec)
-A standalone PR with no Phase — urgent fixes / one-offs too small for a Phase. **Entry** (ALL, → §5.1): single-PR-completable; type `chore`/`fix`/`docs`/small `refactor`; no new architecture or features. **Exit**: PR merge + queue.md done update. **PR Target**: always `main`. **Identifier**: `spec-x-{slug}` (→ §6.2).
+A standalone PR with no Phase — urgent fixes / one-offs too small for a Phase. **Entry** (ALL, → §5.1): single-PR-completable; type `chore`/`fix`/`docs`/small `refactor`; no new architecture or features. **Exit**: PR merge + queue.md done update. **PR Target**: `defaultBranch` (default `main`; → ADR-015). **Identifier**: `spec-x-{slug}` (→ §6.2).
 
 ### 3.4 Icebox
 Holding area for ideas/deferred/future work (free-form in queue.md Icebox section). **Promotion**: related items accumulate → new Phase; standalone → spec-x. **NON-EXECUTABLE** — no code/tasks/commits until promoted to a Phase or spec-x (→ §12).

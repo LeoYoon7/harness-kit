@@ -488,6 +488,30 @@ _status_drift() {
   fi
 }
 
+# base 해석 체인: phase baseBranch(state) → defaultBranch(installed.json) → "main".
+# 각 후보를 git rev-parse 로 실재 확인, 미존재면 다음 단계로 fallback (gemini-review.sh 와 동일 — ADR-015).
+_resolve_base_branch() {
+  local default_branch base_branch
+  default_branch="$(jq -r '.defaultBranch // "main"' "$SDD_ROOT/.harness-kit/installed.json" 2>/dev/null || echo "main")"
+  if [ -z "$default_branch" ] || [ "$default_branch" = "null" ]; then default_branch="main"; fi
+
+  base_branch=""
+  if [ -f "$SDD_STATE" ]; then
+    base_branch="$(jq -r '.baseBranch // empty' "$SDD_STATE" 2>/dev/null || echo "")"
+  fi
+  if [ -z "$base_branch" ] || [ "$base_branch" = "null" ]; then base_branch="$default_branch"; fi
+
+  # 1단: phase base 브랜치가 JIT 미생성(constitution §3.1)이면 defaultBranch 로 fallback
+  if ! git -C "$SDD_ROOT" rev-parse --verify --quiet "${base_branch}^{commit}" >/dev/null 2>&1; then
+    if [ "$base_branch" != "$default_branch" ]; then base_branch="$default_branch"; fi
+  fi
+  # 2단: defaultBranch 도 미존재면 리터럴 main 종착
+  if ! git -C "$SDD_ROOT" rev-parse --verify --quiet "${base_branch}^{commit}" >/dev/null 2>&1; then
+    if [ "$base_branch" != "main" ]; then base_branch="main"; fi
+  fi
+  printf '%s\n' "$base_branch"
+}
+
 # status 자기 진단: phase.md ↔ git 교차 검증 + state.json 정합성
 # 경고가 있을 때만 🔍 진단 섹션을 출력한다.
 _status_diagnose() {
@@ -513,13 +537,9 @@ _status_diagnose() {
         }
       ' "$phase_file")
 
-      # base branch 결정: baseBranch from state.json, fallback to main
-      local base_branch="main"
-      if [ -f "$SDD_STATE" ]; then
-        local bb
-        bb="$(jq -r '.baseBranch // empty' "$SDD_STATE" 2>/dev/null)"
-        [ -n "$bb" ] && base_branch="$bb"
-      fi
+      # base branch 결정: phase baseBranch → defaultBranch → main (_resolve_base_branch)
+      local base_branch
+      base_branch="$(_resolve_base_branch)"
 
       # 각 non-Merged spec에 대해 git 머지 커밋 확인
       local git_log_cache
@@ -1938,12 +1958,8 @@ _check_phase_all_merged() {
     echo ""
   else
     # git 기반 교차 확인: phase.md에 non-Merged가 있지만 git에 모두 머지됨
-    local base_branch="main"
-    if [ -f "$SDD_STATE" ]; then
-      local bb
-      bb="$(jq -r '.baseBranch // empty' "$SDD_STATE" 2>/dev/null)"
-      [ -n "$bb" ] && base_branch="$bb"
-    fi
+    local base_branch
+    base_branch="$(_resolve_base_branch)"
 
     local git_log_cache
     git_log_cache="$(git -C "$SDD_ROOT" log --oneline "$base_branch" 2>/dev/null || true)"

@@ -74,6 +74,7 @@ bash .harness-kit/bin/sdd status --json
 - `phase` 가 설정되어 있는데 해당 `backlog/phase-{N}.md` 파일이 없는 경우
 - `spec` 이 설정되어 있는데 해당 `specs/spec-*/` 디렉토리가 없는 경우
 - `baseBranch` 가 설정되어 있는데 해당 remote 브랜치가 없는 경우
+- `defaultBranch` (installed.json) 가 `git rev-parse --verify --quiet "$defaultBranch"` 로 실재하지 않는 경우 (오타 등 오설정 — base 해석 체인이 종착 `main` 으로만 작동, ADR-015)
 
 ## 5. 결과 보고
 
