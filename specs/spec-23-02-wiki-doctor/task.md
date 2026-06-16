@@ -47,13 +47,13 @@
 ## Task 3: 90일+ stale ADR/RCA 점검 (b)
 
 ### 3-1. 테스트 작성 → Fail (TDD Red)
-- [ ] `tests/test-wiki.sh` 확장 — 오래된 frontmatter date(>90d) ADR fixture → stale 경고 단언 / 최근 → 무경고
-- [ ] `bash tests/test-wiki.sh` → Fail 확인
+- [x] `tests/test-wiki.sh` 확장 — 2020 date ADR → stale 경고 / updated=today → 무경고(updated 우선) / 부재 silent skip (b-1~b-3)
+- [x] `bash tests/test-wiki.sh` → b-1 Fail 확인
 
 ### 3-2. 구현 → Pass (TDD Green)
-- [ ] `cmd_doctor` 에 stale 점검 (frontmatter `updated:`→`date:` vs `_cutoff_90d` 이식성 분기, YYYY-MM-DD 비교)
-- [ ] `bash tests/test-wiki.sh` → PASS
-- [ ] Commit: `feat(spec-23-02): warn stale ADR/RCA (90d+) in sdd doctor`
+- [x] `cmd_doctor` stale 점검 — frontmatter `updated:`(우선)/`date:` vs cutoff(GNU `date -d`/BSD `date -v` 분기), `YYYY-MM-DD` 문자열 비교. set -e 안전(`|| true`, if/then)
+- [x] `bash tests/test-wiki.sh` → 14/14 PASS, 실제 레포 3종 PASS
+- [x] Commit: `feat(spec-23-02): warn stale ADR/RCA (90d+) in sdd doctor`
 
 ---
 

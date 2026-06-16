@@ -2524,6 +2524,28 @@ EOF
     fi
   fi
 
+  # (b) 90일+ stale ADR/RCA — frontmatter updated:(우선)/date: vs cutoff (GNU/BSD 이식성)
+  if [ -d "$SDD_ROOT/docs/decisions" ] || [ -d "$SDD_ROOT/docs/rca" ]; then
+    local _cutoff _stale=0 _df _dt
+    _cutoff=$(date -d '90 days ago' +%Y-%m-%d 2>/dev/null || date -v-90d +%Y-%m-%d 2>/dev/null || true)
+    if [ -n "$_cutoff" ]; then
+      for _df in "$SDD_ROOT/docs/decisions/"ADR-*.md "$SDD_ROOT/docs/rca/"RCA-*.md; do
+        [ -f "$_df" ] || continue
+        _dt=$(grep -m1 '^updated:' "$_df" 2>/dev/null | sed 's/^updated:[[:space:]]*//; s/[[:space:]]*$//' || true)
+        [ -n "$_dt" ] || _dt=$(grep -m1 '^date:' "$_df" 2>/dev/null | sed 's/^date:[[:space:]]*//; s/[[:space:]]*$//' || true)
+        case "$_dt" in
+          [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])
+            if [[ "$_dt" < "$_cutoff" ]]; then _stale=$((_stale + 1)); fi ;;
+        esac
+      done
+      if [ "$_stale" -gt 0 ]; then
+        _doc_warn "stale 결정문서 ${_stale}개 — updated/date 90일+ 경과 (wiki 증류 검토 권장)"
+      else
+        _doc_pass "결정문서 최신성 OK (90일+ stale 0)"
+      fi
+    fi
+  fi
+
   printf "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
   if [ "$fail" -eq 0 ] && [ "$warn" -eq 0 ]; then
     printf "결과: ✅ ALL PASS\n\n"

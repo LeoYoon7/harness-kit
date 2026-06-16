@@ -144,6 +144,47 @@ else
 fi
 
 # ──────────────────────────────────────────────
+# (b) 90일+ stale ADR/RCA 점검
+# ──────────────────────────────────────────────
+echo ""
+echo "▶ (b) 90일+ stale ADR/RCA"
+
+FIXB="$(make_fixture)"
+trap 'rm -rf "$FIXC" "$FIXA" "$FIXB"' EXIT
+bash "$INSTALL" --yes "$FIXB" > /dev/null 2>&1
+mkdir -p "$FIXB/docs/decisions"
+
+# 오래된 ADR (date 2020) → stale 경고
+printf -- '---\nid: ADR-001\ndate: 2020-01-01\n---\n# old\n' > "$FIXB/docs/decisions/ADR-001-old.md"
+outb="$(cd "$FIXB" && bash "$SDD" doctor 2>/dev/null || true)"
+check
+if printf '%s' "$outb" | grep -q "stale 결정문서"; then
+  pass "b-1: 오래된 ADR(2020) → stale 경고 발화"
+else
+  fail "b-1: stale 경고 미발화"
+fi
+
+# updated: 오늘 → stale 아님 (updated 우선)
+rm -f "$FIXB/docs/decisions/ADR-001-old.md"
+TODAY="$(date +%Y-%m-%d)"
+printf -- '---\nid: ADR-002\ndate: 2020-01-01\nupdated: %s\n---\n# fresh\n' "$TODAY" > "$FIXB/docs/decisions/ADR-002-fresh.md"
+outb2="$(cd "$FIXB" && bash "$SDD" doctor 2>/dev/null || true)"
+check
+if printf '%s' "$outb2" | grep -q "stale 결정문서"; then
+  fail "b-2: updated=today ADR 인데 stale 경고 (updated 우선 실패)"
+else
+  pass "b-2: updated=today → stale 아님 (updated: 우선)"
+fi
+
+# docs/decisions·docs/rca 부재(FIXC) → silent skip
+check
+if printf '%s' "$outc" | grep -q "stale 결정문서"; then
+  fail "b-3: docs/decisions 없는 fixture(FIXC)인데 stale 점검 발화"
+else
+  pass "b-3: docs/decisions·rca 부재 → stale 점검 silent skip"
+fi
+
+# ──────────────────────────────────────────────
 # 결과
 # ──────────────────────────────────────────────
 echo ""
