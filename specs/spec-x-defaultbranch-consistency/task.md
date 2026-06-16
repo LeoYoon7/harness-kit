@@ -29,10 +29,10 @@
 ## Task 2: sdd `_resolve_base_branch()` 헬퍼 + 하드코딩 대체 (Green)
 
 ### 2-1. 헬퍼 도입 + 적용
-- [ ] `sources/bin/sdd` 에 `_resolve_base_branch()` 신설 — baseBranch → defaultBranch → main, **각 후보 `git rev-parse --verify --quiet` 실재 확인 후 미존재면 다음 단계** + installed.json/jq/null graceful 가드
-- [ ] 517, 1941 의 하드코딩 블록을 헬퍼 호출로 대체
-- [ ] 테스트 → PASS, 기존 sdd 테스트 회귀 없음
-- [ ] Commit: `refactor(spec-x-defaultbranch-consistency): resolve base branch via defaultBranch chain`
+- [x] `sources/bin/sdd` 에 `_resolve_base_branch()` 신설 — baseBranch → defaultBranch → main, 각 후보 `git rev-parse --verify` 실재 확인 후 미존재면 다음 단계 (2단 fallback) + installed.json/jq/null graceful 가드
+- [x] 517, 1941 의 하드코딩 블록을 헬퍼 호출로 대체
+- [x] `test-sdd-base-resolution.sh` 6/6 PASS, `bash -n` OK, `test-sdd-base-branch.sh` 4/4 PASS. (status-cross-check·phase-done-accuracy 의 사전 실패 2건은 stash 비교로 내 변경 무관 확정 — fixture 가 master 브랜치/미구현 placeholder)
+- [x] Commit: `refactor(spec-x-defaultbranch-consistency): resolve base branch via defaultBranch chain`
 
 ---
 
