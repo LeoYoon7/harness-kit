@@ -48,10 +48,10 @@
 ## Task 4: constitution §3.3 정합 + ADR-015
 
 ### 4-1. 거버넌스 정합 + ADR
-- [ ] `constitution.md` §3.3 "always main" → "defaultBranch (기본 main)" + §3.2(line 67) `else main` → `else defaultBranch`
-- [ ] `docs/decisions/ADR-015-review-base-resolution-chain.md` 작성 (type: tradeoff) — 체인 + origin/HEAD 비채택 근거 + init.defaultBranch 구분 + 3벌 부채 가시화 (템플릿 준수)
-- [ ] `bash tests/test-governance-dedup.sh` → PASS (예산/sync)
-- [ ] Commit: `docs(spec-x-defaultbranch-consistency): amend §3.2/§3.3 to defaultBranch and add ADR-015`
+- [x] `constitution.md` §3.3 "always main" → "defaultBranch (default main)" + §3.2 `else main` → `else defaultBranch` (→ ADR-015)
+- [x] `docs/decisions/ADR-015-review-base-resolution-chain.md` 작성 (type: tradeoff) — 체인 + origin/HEAD 비채택 근거 + init.defaultBranch 구분 + 3벌 부채 가시화 (템플릿 준수)
+- [x] 예산 선검증 const+agent = 6400w ≤ 6500. (dedup Check 2 sync 는 설치본 동기화 의존 → Task 5 에서 전체 PASS 검증)
+- [x] Commit: `docs(spec-x-defaultbranch-consistency): amend §3.2/§3.3 to defaultBranch and add ADR-015`
 
 ---
 
