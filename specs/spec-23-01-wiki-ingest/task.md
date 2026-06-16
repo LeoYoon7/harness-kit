@@ -30,10 +30,10 @@
 ## Task 2: 템플릿 4종 [[wikilink]] Related 정비
 
 ### 2-1. spec/walkthrough Related 섹션 신설 + adr/rca 보강 (docs)
-- [ ] `sources/templates/spec.md`·`walkthrough.md` 말미에 `## 🔗 관련 문서 (Related)` 추가 (`[[spec-id]]`·`[[ADR-NNN]]`·`[[wiki/page]]` 가이드)
-- [ ] `sources/templates/adr.md`·`rca.md` 의 기존 `## 🔗 Related` 에 `[[wikilink]]` 안내 보강 (섹션 신설 금지)
-- [ ] 검증: `grep -l '관련 문서' sources/templates/spec.md sources/templates/walkthrough.md` + adr/rca 의 `[[` 안내 존재
-- [ ] Commit: `docs(spec-23-01): add [[wikilink]] Related sections to artifact templates`
+- [x] `sources/templates/spec.md`·`walkthrough.md` 말미에 `## 🔗 관련 문서 (Related)` 추가 (`[[spec-id]]`·`[[ADR-NNN]]`·`[[wiki/page]]` 가이드)
+- [x] `sources/templates/adr.md`·`rca.md` 의 기존 `## 🔗 Related` 에 `[[wikilink]]` 안내 보강 (섹션 신설 금지)
+- [x] 검증: `grep -l '관련 문서' sources/templates/spec.md sources/templates/walkthrough.md` + adr/rca 의 `[[` 안내 존재
+- [x] Commit: `docs(spec-23-01): add [[wikilink]] Related sections to artifact templates`
 
 ---
 

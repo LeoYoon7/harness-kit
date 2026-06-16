@@ -85,6 +85,10 @@
 
 - <항목 1> → `backlog/queue.md` 에 추가됨
 
+## 🔗 관련 문서 (Related)
+<!-- [[wikilink]] 컨벤션 (docs/wiki/purpose.md): [[spec-NN-NN]] · [[ADR-NNN]] · [[RCA-NNN]] · [[wiki/page]]. 없으면 섹션 삭제 가능. -->
+- 관련 wiki: [[wiki/decisions]] · [[wiki/patterns]]
+
 ## 📅 메타
 
 | 항목 | 값 |

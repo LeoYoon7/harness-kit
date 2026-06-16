@@ -67,3 +67,7 @@
 - [ ] `walkthrough.md` 와 `pr_description.md` 작성 및 ship commit
 - [ ] `spec-{phaseN}-{seq}-{slug}` 브랜치 push 완료
 - [ ] 사용자 검토 요청 알림 완료
+
+## 🔗 관련 문서 (Related)
+<!-- [[wikilink]] 컨벤션 (docs/wiki/purpose.md): [[spec-NN-NN]] · [[ADR-NNN]] · [[RCA-NNN]] · [[wiki/page]]. 없으면 섹션 삭제 가능. -->
+- 관련 wiki: [[wiki/decisions]] · [[wiki/patterns]]
