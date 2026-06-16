@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # tests/test-sdd-status-cross-check.sh
-# sdd status 자기 진단 기능 단위 테스트 (TDD Red 단계)
+# sdd status 자기 진단 기능 단위 테스트
+# fixture 는 git branch -M main 으로 base 를 고정 (init.defaultBranch 무관 — cross-platform)
 # 검증: 브랜치 패턴 → work mode 추론, phase.md/state.json 불일치 경고, plan.md 누락 경고
 
 set -uo pipefail
@@ -48,6 +49,7 @@ EOF
   git -C "$dir" config user.email "test@local"
   git -C "$dir" config user.name "test"
   git -C "$dir" commit --allow-empty -m "init" -q
+  git -C "$dir" branch -M main   # init.defaultBranch 무관하게 main 고정 (cross-platform)
 
   echo "$dir"
 }

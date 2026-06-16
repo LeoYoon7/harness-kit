@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 # tests/test-sdd-phase-done-accuracy.sh
-# _check_phase_all_merged() 와 compute_next_spec() 정확도 테스트 (TDD Red 단계)
+# _check_phase_all_merged() 와 compute_next_spec() 정확도 테스트
 # 검증: Done 잔류 시 "모든 Merged" 미출력, Backlog보다 Done 우선 NEXT, git 기반 phase done 안내
-#
-# 예상 결과:
-#   Check 1: FAIL (버그 — _check_phase_all_merged 가 Done 을 무시해 잘못 출력)
-#   Check 2: PASS (정상 동작)
-#   Check 3: FAIL (버그 — compute_next_spec 이 Backlog 만 검색해 Done 을 무시)
-#   Check 4: FAIL (미구현 — git 기반 phase done 안내 없음)
+# Check 1·3 버그 fix + Check 4 git 기반 안내(sdd 의 "git 기준 모든 spec 머지") 모두 구현 완료 — 전부 PASS 기대.
+# fixture 는 git branch -M main 으로 base 를 고정 (init.defaultBranch 무관 — cross-platform).
 
 set -uo pipefail
 
@@ -54,6 +50,7 @@ EOF
   git -C "$dir" config user.email "test@local"
   git -C "$dir" config user.name "test"
   git -C "$dir" commit --allow-empty -m "init" -q
+  git -C "$dir" branch -M main   # init.defaultBranch 무관하게 main 고정 (cross-platform)
 
   echo "$dir"
 }
@@ -284,6 +281,5 @@ fi
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  결과: PASS=$PASS  FAIL=$FAIL"
-echo "  (TDD Red: Check 1·3·4 FAIL 예상, Check 2 PASS 예상)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 [ "$FAIL" -eq 0 ]
