@@ -65,6 +65,8 @@
 - **sdd 내부 main fallback 설정화** — `sources/bin/sdd:515,1908` git log 캐시·drift 감지의 `base_branch="main"` 리터럴이 defaultBranch 미반영. 리뷰 게이트와 별개 경로 + 영향 범위 커서 별도 spec. **착수 시 ADR `review-base-resolution-chain` (type: tradeoff) 작성** — phase baseBranch → defaultBranch → main 해석 체인 + origin/HEAD 자동추론 비채택 근거 (spec-x-review-base-config critique). (spec-x-review-base-config 발견)
 - **hk-ship PR_BASE·governance main 전제 재검토** — `hk-ship.md:150` `PR_BASE="main"` fallback + constitution §3.3 "spec-x PR Target: always main". defaultBranch 와 PR 타깃 정책 정합 필요 — 거버넌스 개정 동반이라 별도 spec. (spec-x-review-base-config 발견)
 - **hk-cleanup defaultBranch 실재 검사** — cleanup 은 `baseBranch` remote 부재만 점검. `defaultBranch` 오설정 (오타 등) 감지를 추가할지 sdd 내부 fallback 설정화와 함께 검토. (spec-x-review-base-config critique 발견)
+- **`test-phase17-integration.sh` Scenario 4c stale grep** — `CLAUDE.md` 에서 "Phase ship 시 CHANGELOG draft" 룰을 grep 하나, 해당 룰이 spec-x-claude-md-slim(#135)으로 `docs/release-strategy.md` 로 이전되며 stale (CLAUDE.md hit=0 / release-strategy hit=1). 테스트가 새 위치를 보도록 갱신 필요 — 명확한 1-commit 수정. (spec-x-fragment-two-tier-restore 작업 중 발견, 2026-06-16)
+- **`test-sdd-drift.sh` T1 Windows drift-섹션 감지** — 깨끗한 fixture 에서 "동기화 상태 섹션 누락" 일관 FAIL (T2/T3 는 PASS — 섹션 자체는 생성됨, 플래키 아님). sdd·테스트 미변경이라 환경 의존 의심. macOS 1차라 best-effort, 기존 "`sdd status` Windows 성능 저하" 계열과 함께 검토. (spec-x-fragment-two-tier-restore 작업 중 발견, 2026-06-16)
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
 - ~~접근성 개선~~ → phase-17 **spec-17-02** (accessibility-install-and-entry)
