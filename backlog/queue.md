@@ -15,7 +15,6 @@
 
 <!-- sdd:specx:start -->
 없음
-- [ ] spec-x-defaultbranch-consistency — defaultbranch-consistency
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox
@@ -180,6 +179,7 @@
 - [x] spec-x-review-base-config (완료)
 - [x] spec-x-adr-template-stale-note (완료)
 - [x] spec-x-fragment-two-tier-restore (완료)
+- [x] spec-x-defaultbranch-consistency (완료)
 <!-- sdd:done:end -->
 
 ---
