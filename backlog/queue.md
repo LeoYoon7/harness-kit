@@ -67,8 +67,8 @@
 - ~~**hk-cleanup defaultBranch 실재 검사**~~ → ✓ **spec-x-defaultbranch-consistency (#58)**: hk-cleanup 에 `git rev-parse --verify` 실재 점검 항목 추가.
 - ~~**`test-phase17-integration.sh` Scenario 4c stale grep**~~ → ✓ FF 로 해소 (2026-06-16, `e5af4d2`): grep 대상을 `CLAUDE.md` → `docs/release-strategy.md` 로 재타겟 (룰이 #135 로 이전됨). phase17 integration 3 passed / 1 skipped.
 - **`test-sdd-drift.sh` T1 Windows drift-섹션 감지** — 깨끗한 fixture 에서 "동기화 상태 섹션 누락" 일관 FAIL (T2/T3 는 PASS — 섹션 자체는 생성됨, 플래키 아님). sdd·테스트 미변경이라 환경 의존 의심. macOS 1차라 best-effort, 기존 "`sdd status` Windows 성능 저하" 계열과 함께 검토. (spec-x-fragment-two-tier-restore 작업 중 발견, 2026-06-16)
-- **`test-sdd-status-cross-check.sh` 사전 실패 (5/2)** — fixture 가 `master` 브랜치 + `defaultBranch` 미설정이라 base 해석이 `main` 으로 귀결 → `git log main` 무결과 → Check 2(Done+머지 경고) 미발화. Check 1(main 브랜치 work mode 추론)도 fixture 브랜치 불일치로 FAIL. `git stash` 비교로 spec-x-defaultbranch-consistency 와 무관 확정 (신·구 코드 모두 main 귀결). fixture 를 `main` 기반으로 재작성하거나 defaultBranch fixture 추가 필요. (2026-06-16 발견)
-- **`test-sdd-phase-done-accuracy.sh` Check 4 사전 실패 (3/1)** — "git 기준 모든 spec 머지 → status 에 phase done 안내" 가 미구현 placeholder (실패 메시지에 "(미구현)" 명시). 본래 TDD Red 로 남겨둔 항목 추정 — 구현하거나 테스트를 pending 처리할지 결정 필요. (spec-x-defaultbranch-consistency 작업 중 stash 비교로 무관 확정, 2026-06-16)
+- ~~**`test-sdd-status-cross-check.sh` 사전 실패 (5/2)**~~ → ✓ FF 로 해소 (2026-06-16, `4f7cbce`): 근본 원인은 fixture 가 `git init` 기본 브랜치(Windows=master) 사용 — `make_fixture` 에 `git branch -M main` 추가로 cross-platform 고정. 7/7 PASS.
+- ~~**`test-sdd-phase-done-accuracy.sh` Check 4 사전 실패 (3/1)**~~ → ✓ FF 로 해소 (2026-06-16, `4f7cbce`): "(미구현)" 주석은 stale — 기능(sdd "git 기준 모든 spec 머지" 안내)은 구현돼 있었고 fixture 머지 커밋이 master 에 있어 가려진 것. fixture main 고정으로 4/4 PASS. (stale 주석도 정리)
 
 **[phase-17 으로 promote 된 항목 — 처리 진행 중]**:
 - ~~접근성 개선~~ → phase-17 **spec-17-02** (accessibility-install-and-entry)
