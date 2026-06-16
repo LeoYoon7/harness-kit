@@ -34,13 +34,13 @@
 ## Task 2: 고아 [[wikilink]] 점검 (a)
 
 ### 2-1. 테스트 작성 → Fail (TDD Red)
-- [ ] `tests/test-wiki.sh` 확장 — `docs/wiki/` 에 깨진 `[[wiki/none]]` fixture → 고아 경고 단언 / 정상 링크 → 무경고
-- [ ] `bash tests/test-wiki.sh` → Fail 확인
+- [x] `tests/test-wiki.sh` 확장 — 깨진 `[[wiki/nonexistent]]` 고아 경고 / 정상 링크 무경고 / silent skip / placeholder 오탐 없음 (a-1~a-4)
+- [x] `bash tests/test-wiki.sh` → a-1 Fail 확인
 
 ### 2-2. 구현 → Pass (TDD Green)
-- [ ] `cmd_doctor` wiki 건강 섹션에 고아 링크 점검 (`[[...]]` 추출 → prefix glob 해석, spec 은 archive fallback)
-- [ ] `bash tests/test-wiki.sh` → PASS
-- [ ] Commit: `feat(spec-23-02): detect orphan [[wikilink]] in sdd doctor`
+- [x] `cmd_doctor` 고아 링크 점검 (`[[...]]` 추출 → prefix glob 해석, spec archive fallback). **오탐 처리**: purpose.md(컨벤션 문서) 제외 + concrete 포맷(ADR-숫자 등)만 검증 — A1 교훈
+- [x] `bash tests/test-wiki.sh` → 11/11 PASS, 실제 레포 고아 0 확인
+- [x] Commit: `feat(spec-23-02): detect orphan [[wikilink]] in sdd doctor`
 
 ---
 

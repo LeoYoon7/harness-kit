@@ -93,6 +93,57 @@ else
 fi
 
 # ──────────────────────────────────────────────
+# (a) 고아 [[wikilink]] 점검
+# ──────────────────────────────────────────────
+echo ""
+echo "▶ (a) 고아 [[wikilink]]"
+
+FIXA="$(make_fixture)"
+trap 'rm -rf "$FIXC" "$FIXA"' EXIT
+bash "$INSTALL" --yes "$FIXA" > /dev/null 2>&1
+mkdir -p "$FIXA/docs/wiki"
+
+# 깨진 링크 → 고아 경고
+printf '# index\n[[wiki/nonexistent]]\n' > "$FIXA/docs/wiki/index.md"
+outa="$(cd "$FIXA" && bash "$SDD" doctor 2>/dev/null || true)"
+check
+if printf '%s' "$outa" | grep -q "고아 wiki 링크"; then
+  pass "a-1: 깨진 [[wiki/nonexistent]] → 고아 경고 발화"
+else
+  fail "a-1: 고아 경고 미발화"
+fi
+
+# 정상 링크 → 무경고 (오탐 방지)
+printf '# index\n[[wiki/index]]\n' > "$FIXA/docs/wiki/index.md"
+outa2="$(cd "$FIXA" && bash "$SDD" doctor 2>/dev/null || true)"
+check
+if printf '%s' "$outa2" | grep -q "고아 wiki 링크"; then
+  fail "a-2: 정상 [[wiki/index]] 인데 고아 경고 발화 (오탐)"
+else
+  pass "a-2: 정상 [[wiki/index]] → 고아 경고 없음"
+fi
+
+# docs/wiki/ 부재 → silent skip
+check
+if printf '%s' "$outc" | grep -q "고아 wiki 링크"; then
+  fail "a-3: docs/wiki/ 없는 fixture(FIXC)인데 고아 점검 발화"
+else
+  pass "a-3: docs/wiki/ 부재 → 고아 점검 silent skip"
+fi
+
+# 컨벤션 placeholder(ADR-NNN, wiki/page-name, spec-NN-NN) → 오탐 없음
+rm -f "$FIXA/docs/wiki/index.md"
+printf '# purpose\n[[ADR-NNN]] [[wiki/page-name]]\n' > "$FIXA/docs/wiki/purpose.md"
+printf '# decisions\n[[ADR-NNN]] [[spec-NN-NN]]\n' > "$FIXA/docs/wiki/decisions.md"
+outa3="$(cd "$FIXA" && bash "$SDD" doctor 2>/dev/null || true)"
+check
+if printf '%s' "$outa3" | grep -q "고아 wiki 링크"; then
+  fail "a-4: convention placeholder 오탐 발화 (purpose.md 제외/concrete-format 실패)"
+else
+  pass "a-4: convention placeholder(ADR-NNN/wiki/page-name) → 오탐 없음"
+fi
+
+# ──────────────────────────────────────────────
 # 결과
 # ──────────────────────────────────────────────
 echo ""

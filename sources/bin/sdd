@@ -2499,6 +2499,31 @@ cmd_doctor() {
     fi
   fi
 
+  # (a) 고아 [[wikilink]] — docs/wiki/ 스캔 → prefix 별 해석 (docs/wiki/purpose.md 컨벤션)
+  #  - purpose.md(컨벤션 문서)는 형식 예시(placeholder)를 담으므로 스캔 제외
+  #  - ID 는 concrete 포맷(ADR-숫자 / RCA-숫자 / spec-숫자|spec-x)만 검증 — NNN/NN-NN placeholder 무시
+  if [ -d "$SDD_ROOT/docs/wiki" ]; then
+    _glob_exists() { local f; for f in $1; do [ -e "$f" ] && return 0; done; return 1; }
+    local _orphan=0 _wl _wf
+    while IFS= read -r _wl; do
+      [ -z "$_wl" ] && continue
+      case "$_wl" in
+        wiki/*)               _glob_exists "$SDD_ROOT/docs/$_wl.md" || _orphan=$((_orphan + 1)) ;;
+        ADR-[0-9]*)           _glob_exists "$SDD_ROOT/docs/decisions/$_wl-*.md" || _orphan=$((_orphan + 1)) ;;
+        RCA-[0-9]*)           _glob_exists "$SDD_ROOT/docs/rca/$_wl-*.md" || _orphan=$((_orphan + 1)) ;;
+        spec-[0-9]*|spec-x-*) { _glob_exists "$SDD_ROOT/specs/$_wl-*" || _glob_exists "$SDD_ROOT/archive/specs/$_wl-*"; } || _orphan=$((_orphan + 1)) ;;
+        *) : ;;
+      esac
+    done <<EOF
+$(for _wf in "$SDD_ROOT/docs/wiki/"*.md; do [ "$(basename "$_wf")" = "purpose.md" ] && continue; grep -oE '\[\[[^]]+\]\]' "$_wf" 2>/dev/null; done | sed 's/^\[\[//; s/\]\]$//')
+EOF
+    if [ "$_orphan" -gt 0 ]; then
+      _doc_warn "고아 wiki 링크 ${_orphan}개 — [[...]] 참조 대상 부재 (docs/wiki/)"
+    else
+      _doc_pass "wiki 링크 정합 (고아 0)"
+    fi
+  fi
+
   printf "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
   if [ "$fail" -eq 0 ] && [ "$warn" -eq 0 ]; then
     printf "결과: ✅ ALL PASS\n\n"
