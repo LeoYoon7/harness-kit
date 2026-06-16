@@ -17,17 +17,17 @@
 ## Task 1: test-wiki.sh 신설 + governance 단어수 점검 (c)
 
 ### 1-1. 브랜치 생성
-- [ ] `git checkout -b spec-23-02-wiki-doctor`
-- [ ] Commit: 없음 (브랜치 생성만)
+- [x] `git checkout -b spec-23-02-wiki-doctor`
+- [x] Commit: 없음 (브랜치 생성만)
 
 ### 1-2. 테스트 작성 → Fail (TDD Red)
-- [ ] `tests/test-wiki.sh` 신설 — governance 단어수 6500 초과 fixture → doctor 경고 단언 + 템플릿 Related 회귀 검증
-- [ ] `bash tests/test-wiki.sh` → 단어수 단언 Fail 확인
+- [x] `tests/test-wiki.sh` 신설 — governance 단어수 6500 초과 fixture → doctor 경고 단언 + 템플릿 Related 회귀 검증
+- [x] `bash tests/test-wiki.sh` → 단어수 단언 Fail 확인 (4/7, c-section/c-1/c-2 FAIL)
 
 ### 1-3. 구현 → Pass (TDD Green)
-- [ ] `sources/bin/sdd` `cmd_doctor` 에 "wiki/문서 건강" 섹션 + 단어수 점검(`.harness-kit/agent/{constitution,agent}.md` `wc -w` 합 > 6500 경고)
-- [ ] `bash tests/test-wiki.sh` → PASS
-- [ ] Commit: `feat(spec-23-02): add governance word-count doctor check + test-wiki.sh`
+- [x] `sources/bin/sdd` `cmd_doctor` 에 "wiki/문서 건강" 섹션 + 단어수 점검(`.harness-kit/agent/{constitution,agent}.md` `wc -w` 합 > 6500 경고)
+- [x] `bash tests/test-wiki.sh` → 7/7 PASS
+- [x] Commit: `feat(spec-23-02): add governance word-count doctor check + test-wiki.sh`
 
 ---
 

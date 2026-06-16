@@ -2485,6 +2485,20 @@ cmd_doctor() {
   _check_hooks
   _check_lefthook_hookspath
 
+  printf "\nwiki/문서 건강\n"
+  # (c) governance 단어수 상한 (ADR-012, 6500) — 대상 부재 시 silent skip
+  local _gov_c="$SDD_ROOT/.harness-kit/agent/constitution.md"
+  local _gov_a="$SDD_ROOT/.harness-kit/agent/agent.md"
+  if [ -f "$_gov_c" ] && [ -f "$_gov_a" ]; then
+    local _gov_total
+    _gov_total=$(( $(wc -w < "$_gov_c") + $(wc -w < "$_gov_a") ))
+    if [ "$_gov_total" -gt 6500 ]; then
+      _doc_warn "governance 단어수 ${_gov_total}w — 상한 6500 초과 (ADR-012) — prune 또는 상향 ADR 필요"
+    else
+      _doc_pass "governance 단어수 ${_gov_total}w (상한 6500 이하)"
+    fi
+  fi
+
   printf "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
   if [ "$fail" -eq 0 ] && [ "$warn" -eq 0 ]; then
     printf "결과: ✅ ALL PASS\n\n"
