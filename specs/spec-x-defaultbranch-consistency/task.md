@@ -58,9 +58,9 @@
 ## Task 5: 도그푸딩 동기화
 
 ### 5-1. 설치본 sync
-- [ ] targeted cp: `.harness-kit/bin/sdd`, `.claude/commands/hk-ship.md`, `.claude/commands/hk-cleanup.md`, `.harness-kit/agent/constitution.md`
-- [ ] `bash tests/test-governance-dedup.sh` → PASS, sources↔설치본 diff 일치
-- [ ] Commit: `chore(spec-x-defaultbranch-consistency): sync installed copies (dogfood)`
+- [x] targeted cp: `.harness-kit/bin/sdd`, `.claude/commands/hk-ship.md`, `.claude/commands/hk-cleanup.md`, `.harness-kit/agent/constitution.md` (ADR 은 docs/ 라 설치 대상 아님)
+- [x] `bash tests/test-governance-dedup.sh` → 8/8 PASS, sources↔설치본 diff 4쌍 일치
+- [x] Commit: `chore(spec-x-defaultbranch-consistency): sync installed copies (dogfood)`
 
 ---
 
