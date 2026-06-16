@@ -2515,7 +2515,7 @@ cmd_doctor() {
         *) : ;;
       esac
     done <<EOF
-$(for _wf in "$SDD_ROOT/docs/wiki/"*.md; do [ "$(basename "$_wf")" = "purpose.md" ] && continue; grep -oE '\[\[[^]]+\]\]' "$_wf" 2>/dev/null; done | sed 's/^\[\[//; s/\]\]$//')
+$(for _wf in "$SDD_ROOT/docs/wiki/"*.md; do [ -e "$_wf" ] || continue; [ "$(basename "$_wf")" = "purpose.md" ] && continue; grep -oE '\[\[[^]]+\]\]' "$_wf" 2>/dev/null; done | sed 's/^\[\[//; s/\]\]$//')
 EOF
     if [ "$_orphan" -gt 0 ]; then
       _doc_warn "고아 wiki 링크 ${_orphan}개 — [[...]] 참조 대상 부재 (docs/wiki/)"
