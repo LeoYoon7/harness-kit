@@ -8,7 +8,7 @@
 ## 📦 진행 중 Phase
 
 <!-- sdd:active:start -->
-- **phase-23** — wiki 운영 도구 (wiki-tooling) — 2 spec — 다음: (spec 없음)
+(active phase 없음. `bin/sdd phase new <slug>` 로 시작)
 <!-- sdd:active:end -->
 
 ## 📥 spec-x 대기
@@ -182,6 +182,7 @@
 - [x] spec-x-adr-template-stale-note (완료)
 - [x] spec-x-fragment-two-tier-restore (완료)
 - [x] spec-x-defaultbranch-consistency (완료)
+- **phase-23** — wiki 운영 도구 (wiki-tooling) — completed 2026-06-16
 <!-- sdd:done:end -->
 
 ---
