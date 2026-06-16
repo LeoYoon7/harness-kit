@@ -1,0 +1,84 @@
+# Task List: spec-23-02
+
+> 모든 task 는 한 commit 에 대응합니다 (One Task = One Commit).
+> 매 commit 직후 본 파일의 체크박스를 갱신해야 합니다.
+
+## Pre-flight (Plan 작성 단계)
+
+- [x] Spec ID 확정 및 디렉토리 생성
+- [x] spec.md 작성
+- [x] plan.md 작성
+- [x] task.md 작성 (이 파일)
+- [x] 백로그 업데이트 (phase-23.md SPEC 표 — sdd 자동 갱신)
+- [x] 사용자 Plan Accept
+
+---
+
+## Task 1: test-wiki.sh 신설 + governance 단어수 점검 (c)
+
+### 1-1. 브랜치 생성
+- [x] `git checkout -b spec-23-02-wiki-doctor`
+- [x] Commit: 없음 (브랜치 생성만)
+
+### 1-2. 테스트 작성 → Fail (TDD Red)
+- [x] `tests/test-wiki.sh` 신설 — governance 단어수 6500 초과 fixture → doctor 경고 단언 + 템플릿 Related 회귀 검증
+- [x] `bash tests/test-wiki.sh` → 단어수 단언 Fail 확인 (4/7, c-section/c-1/c-2 FAIL)
+
+### 1-3. 구현 → Pass (TDD Green)
+- [x] `sources/bin/sdd` `cmd_doctor` 에 "wiki/문서 건강" 섹션 + 단어수 점검(`.harness-kit/agent/{constitution,agent}.md` `wc -w` 합 > 6500 경고)
+- [x] `bash tests/test-wiki.sh` → 7/7 PASS
+- [x] Commit: `feat(spec-23-02): add governance word-count doctor check + test-wiki.sh`
+
+---
+
+## Task 2: 고아 [[wikilink]] 점검 (a)
+
+### 2-1. 테스트 작성 → Fail (TDD Red)
+- [x] `tests/test-wiki.sh` 확장 — 깨진 `[[wiki/nonexistent]]` 고아 경고 / 정상 링크 무경고 / silent skip / placeholder 오탐 없음 (a-1~a-4)
+- [x] `bash tests/test-wiki.sh` → a-1 Fail 확인
+
+### 2-2. 구현 → Pass (TDD Green)
+- [x] `cmd_doctor` 고아 링크 점검 (`[[...]]` 추출 → prefix glob 해석, spec archive fallback). **오탐 처리**: purpose.md(컨벤션 문서) 제외 + concrete 포맷(ADR-숫자 등)만 검증 — A1 교훈
+- [x] `bash tests/test-wiki.sh` → 11/11 PASS, 실제 레포 고아 0 확인
+- [x] Commit: `feat(spec-23-02): detect orphan [[wikilink]] in sdd doctor`
+
+---
+
+## Task 3: 90일+ stale ADR/RCA 점검 (b)
+
+### 3-1. 테스트 작성 → Fail (TDD Red)
+- [x] `tests/test-wiki.sh` 확장 — 2020 date ADR → stale 경고 / updated=today → 무경고(updated 우선) / 부재 silent skip (b-1~b-3)
+- [x] `bash tests/test-wiki.sh` → b-1 Fail 확인
+
+### 3-2. 구현 → Pass (TDD Green)
+- [x] `cmd_doctor` stale 점검 — frontmatter `updated:`(우선)/`date:` vs cutoff(GNU `date -d`/BSD `date -v` 분기), `YYYY-MM-DD` 문자열 비교. set -e 안전(`|| true`, if/then)
+- [x] `bash tests/test-wiki.sh` → 14/14 PASS, 실제 레포 3종 PASS
+- [x] Commit: `feat(spec-23-02): warn stale ADR/RCA (90d+) in sdd doctor`
+
+---
+
+## Task 4: Ship (필수)
+
+> 모든 작업 task 완료 후 `/hk-ship` 절차를 따릅니다.
+
+- [x] 코드 품질 점검 — `test-wiki.sh` 14/14
+- [x] 전체 관련 테스트 실행 → `test-hk-doctor` 7/7 · `test-doctor-ignore-coverage` 10/10
+- [x] (Integration Test Required = yes) `test-wiki.sh` phase 시나리오 PASS
+- [x] 코드 리뷰 게이트 — Gemini **Approve (with Comments)** (0/1/2, Major 수정 `45bfbb4`)
+- [x] **walkthrough.md 작성** (증거 로그)
+- [x] **pr_description.md 작성** (템플릿 준수)
+- [x] **Ship Commit**: `docs(spec-23-02): ship walkthrough and pr description`
+- [x] **Push**: `git push -u origin spec-23-02-wiki-doctor`
+- [x] **PR 생성**: `/hk-pr-gh` (base = main)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
+
+---
+
+## 진행 요약
+
+| 항목 | 값 |
+|---|---|
+| **총 Task 수** | 4 (점검 3 + Ship) |
+| **예상 commit 수** | 4 |
+| **현재 단계** | Ship |
+| **마지막 업데이트** | 2026-06-16 |

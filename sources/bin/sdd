@@ -2485,6 +2485,67 @@ cmd_doctor() {
   _check_hooks
   _check_lefthook_hookspath
 
+  printf "\nwiki/문서 건강\n"
+  # (c) governance 단어수 상한 (ADR-012, 6500) — 대상 부재 시 silent skip
+  local _gov_c="$SDD_ROOT/.harness-kit/agent/constitution.md"
+  local _gov_a="$SDD_ROOT/.harness-kit/agent/agent.md"
+  if [ -f "$_gov_c" ] && [ -f "$_gov_a" ]; then
+    local _gov_total
+    _gov_total=$(( $(wc -w < "$_gov_c") + $(wc -w < "$_gov_a") ))
+    if [ "$_gov_total" -gt 6500 ]; then
+      _doc_warn "governance 단어수 ${_gov_total}w — 상한 6500 초과 (ADR-012) — prune 또는 상향 ADR 필요"
+    else
+      _doc_pass "governance 단어수 ${_gov_total}w (상한 6500 이하)"
+    fi
+  fi
+
+  # (a) 고아 [[wikilink]] — docs/wiki/ 스캔 → prefix 별 해석 (docs/wiki/purpose.md 컨벤션)
+  #  - purpose.md(컨벤션 문서)는 형식 예시(placeholder)를 담으므로 스캔 제외
+  #  - ID 는 concrete 포맷(ADR-숫자 / RCA-숫자 / spec-숫자|spec-x)만 검증 — NNN/NN-NN placeholder 무시
+  if [ -d "$SDD_ROOT/docs/wiki" ]; then
+    _glob_exists() { local f; for f in $1; do [ -e "$f" ] && return 0; done; return 1; }
+    local _orphan=0 _wl _wf
+    while IFS= read -r _wl; do
+      [ -z "$_wl" ] && continue
+      case "$_wl" in
+        wiki/*)               _glob_exists "$SDD_ROOT/docs/$_wl.md" || _orphan=$((_orphan + 1)) ;;
+        ADR-[0-9]*)           _glob_exists "$SDD_ROOT/docs/decisions/$_wl-*.md" || _orphan=$((_orphan + 1)) ;;
+        RCA-[0-9]*)           _glob_exists "$SDD_ROOT/docs/rca/$_wl-*.md" || _orphan=$((_orphan + 1)) ;;
+        spec-[0-9]*|spec-x-*) { _glob_exists "$SDD_ROOT/specs/$_wl-*" || _glob_exists "$SDD_ROOT/archive/specs/$_wl-*"; } || _orphan=$((_orphan + 1)) ;;
+        *) : ;;
+      esac
+    done <<EOF
+$(for _wf in "$SDD_ROOT/docs/wiki/"*.md; do [ -e "$_wf" ] || continue; [ "$(basename "$_wf")" = "purpose.md" ] && continue; grep -oE '\[\[[^]]+\]\]' "$_wf" 2>/dev/null; done | sed 's/^\[\[//; s/\]\]$//')
+EOF
+    if [ "$_orphan" -gt 0 ]; then
+      _doc_warn "고아 wiki 링크 ${_orphan}개 — [[...]] 참조 대상 부재 (docs/wiki/)"
+    else
+      _doc_pass "wiki 링크 정합 (고아 0)"
+    fi
+  fi
+
+  # (b) 90일+ stale ADR/RCA — frontmatter updated:(우선)/date: vs cutoff (GNU/BSD 이식성)
+  if [ -d "$SDD_ROOT/docs/decisions" ] || [ -d "$SDD_ROOT/docs/rca" ]; then
+    local _cutoff _stale=0 _df _dt
+    _cutoff=$(date -d '90 days ago' +%Y-%m-%d 2>/dev/null || date -v-90d +%Y-%m-%d 2>/dev/null || true)
+    if [ -n "$_cutoff" ]; then
+      for _df in "$SDD_ROOT/docs/decisions/"ADR-*.md "$SDD_ROOT/docs/rca/"RCA-*.md; do
+        [ -f "$_df" ] || continue
+        _dt=$(grep -m1 '^updated:' "$_df" 2>/dev/null | sed 's/^updated:[[:space:]]*//; s/[[:space:]]*$//' || true)
+        [ -n "$_dt" ] || _dt=$(grep -m1 '^date:' "$_df" 2>/dev/null | sed 's/^date:[[:space:]]*//; s/[[:space:]]*$//' || true)
+        case "$_dt" in
+          [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])
+            if [[ "$_dt" < "$_cutoff" ]]; then _stale=$((_stale + 1)); fi ;;
+        esac
+      done
+      if [ "$_stale" -gt 0 ]; then
+        _doc_warn "stale 결정문서 ${_stale}개 — updated/date 90일+ 경과 (wiki 증류 검토 권장)"
+      else
+        _doc_pass "결정문서 최신성 OK (90일+ stale 0)"
+      fi
+    fi
+  fi
+
   printf "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
   if [ "$fail" -eq 0 ] && [ "$warn" -eq 0 ]; then
     printf "결과: ✅ ALL PASS\n\n"
