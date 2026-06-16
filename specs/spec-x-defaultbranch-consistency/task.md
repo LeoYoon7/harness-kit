@@ -39,9 +39,9 @@
 ## Task 3: hk-ship / hk-cleanup 커맨드 defaultBranch 정합
 
 ### 3-1. 커맨드 문서 정합
-- [ ] `hk-ship.md` line 139 추출 체인 `.baseBranch // .defaultBranch // "null"` + line 144/150 defaultBranch 반영
-- [ ] `hk-cleanup.md` defaultBranch `git rev-parse --verify --quiet` 실재 점검 항목 추가
-- [ ] Commit: `docs(spec-x-defaultbranch-consistency): align hk-ship/hk-cleanup to defaultBranch`
+- [x] `hk-ship.md` — **정정**: plan 의 "line 139 병합" 은 phase-base-mode 감지를 깨므로, 별도 `default_branch` 추출(status --json 캐시) + line 144 `checkout -b ... "$default_branch"` + line 150 `PR_BASE="$default_branch"` 로 적용. line 139 는 baseBranch 전용 유지 (walkthrough 결정 기록)
+- [x] `hk-cleanup.md` defaultBranch `git rev-parse --verify --quiet` 실재 점검 항목 추가
+- [x] Commit: `docs(spec-x-defaultbranch-consistency): align hk-ship/hk-cleanup to defaultBranch`
 
 ---
 

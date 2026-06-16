@@ -136,18 +136,21 @@ done <<< "$prechecks"
 **[Phase base branch 감지]** Push 전, PR 타깃 결정:
 
 ```bash
-base_branch=$(./.harness-kit/bin/sdd status --json | jq -r '.baseBranch // "null"')
+# base 해석 체인: phase baseBranch → defaultBranch → main (ADR-015). status --json 1회 캐시.
+status_json=$(./.harness-kit/bin/sdd status --json)
+default_branch=$(echo "$status_json" | jq -r '.defaultBranch // "main"')
+base_branch=$(echo "$status_json" | jq -r '.baseBranch // "null"')
 if [ "$base_branch" != "null" ]; then
   # phase base branch 모드 — remote 존재 여부 확인
   if ! git ls-remote --exit-code origin "$base_branch" >/dev/null 2>&1; then
-    echo "phase base branch 없음 — 생성: $base_branch"
-    git checkout -b "$base_branch" main
+    echo "phase base branch 없음 — 생성: $base_branch (from $default_branch)"
+    git checkout -b "$base_branch" "$default_branch"
     git push -u origin "$base_branch"
     git checkout -   # spec 브랜치로 복귀
   fi
   PR_BASE="$base_branch"
 else
-  PR_BASE="main"
+  PR_BASE="$default_branch"
 fi
 ```
 
