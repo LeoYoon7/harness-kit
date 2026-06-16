@@ -15,6 +15,7 @@
 
 <!-- sdd:specx:start -->
 없음
+- [ ] spec-x-defaultbranch-consistency — defaultbranch-consistency
 <!-- sdd:specx:end -->
 
 ## 🧊 Icebox

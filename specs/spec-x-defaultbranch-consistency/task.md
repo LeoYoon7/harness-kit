@@ -66,11 +66,12 @@
 
 ## Task N: Ship (필수)
 
-- [ ] 전체 영향 테스트 실행 → PASS (base-branch, governance-dedup, phase-done-accuracy 등)
-- [ ] 코드 리뷰 게이트 (sdd 로직 변경 포함 — 리뷰 권장, Skip 시 사유 기록)
-- [ ] **walkthrough.md 작성**
-- [ ] **pr_description.md 작성**
-- [ ] **Ship Commit**: `docs(spec-x-defaultbranch-consistency): ship walkthrough and pr description`
+- [x] 전체 영향 테스트 실행 → PASS (base-resolution 6/6, base-branch 4/4, sdd-config, governance-dedup 8/8, bash -n)
+- [x] 코드 리뷰 게이트 → Gemini cross-model (사용자 1 선택). clean tree 위해 ship 커밋 선행
+- [x] **walkthrough.md 작성**
+- [x] **pr_description.md 작성**
+- [x] **Ship Commit**: `docs(spec-x-defaultbranch-consistency): ship walkthrough and pr description`
+- [ ] **Gemini 리뷰 수행** → code-review-gemini.md, walkthrough 결과 기록
 - [ ] **Push**: `git push -u origin spec-x-defaultbranch-consistency`
 - [ ] **PR 생성**: `/hk-pr-gh` (base = fork main)
 - [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
