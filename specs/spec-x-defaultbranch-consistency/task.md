@@ -71,10 +71,10 @@
 - [x] **walkthrough.md 작성**
 - [x] **pr_description.md 작성**
 - [x] **Ship Commit**: `docs(spec-x-defaultbranch-consistency): ship walkthrough and pr description`
-- [ ] **Gemini 리뷰 수행** → code-review-gemini.md, walkthrough 결과 기록
-- [ ] **Push**: `git push -u origin spec-x-defaultbranch-consistency`
-- [ ] **PR 생성**: `/hk-pr-gh` (base = fork main)
-- [ ] **사용자 알림**: 푸시 완료 + PR URL 보고
+- [x] **Gemini 리뷰 수행** → Approve (0/0/0), walkthrough 기록 (code-review-gemini.md 는 gitignored)
+- [x] **Push**: `git push -u origin spec-x-defaultbranch-consistency`
+- [x] **PR 생성**: `/hk-pr-gh` (base = fork main)
+- [x] **사용자 알림**: 푸시 완료 + PR URL 보고
 
 ---
 
@@ -83,6 +83,6 @@
 | 항목 | 값 |
 |---|---|
 | **총 Task 수** | 5 (+ Ship) |
-| **예상 commit 수** | test / refactor / docs / docs / chore + 1 ship |
-| **현재 단계** | Planning |
+| **예상 commit 수** | docs(spec,plan,critique) / test / refactor / docs×2 / chore + ship + 리뷰기록 |
+| **현재 단계** | Ship (Gemini Approve) |
 | **마지막 업데이트** | 2026-06-16 |

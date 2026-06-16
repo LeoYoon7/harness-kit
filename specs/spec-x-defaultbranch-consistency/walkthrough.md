@@ -42,7 +42,7 @@
 |---|---|
 | **수행 여부** | 실행 (Gemini cross-model) |
 | **결과 파일** | `specs/spec-x-defaultbranch-consistency/code-review-gemini.md` |
-| **요약** | (리뷰 후 기록) |
+| **요약** | **Approve** — Critical 0 / Major 0 / Minor 0. ref-fallback 회귀 방어 + hk-ship 정정 + ADR-015 부채 가시화 모두 검증. 발견 없음 |
 | **Skip 사유** | — |
 
 ## 🔍 발견 사항
