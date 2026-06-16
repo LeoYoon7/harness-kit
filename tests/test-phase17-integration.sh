@@ -55,9 +55,9 @@ hits=$(grep -c "stale ADR 검사 대상" sources/templates/adr.md .harness-kit/a
   | awk -F: '{s+=$2} END{print s+0}')
 [ "$hits" -ge 2 ] || fail "Scenario 4b: ADR 템플릿 stale 가이드 hit ($hits) < 2" "(expected 1 per file × 2)"
 
-# 4-c. CLAUDE.md CHANGELOG draft 룰
-grep -q "Phase ship 시 CHANGELOG draft" CLAUDE.md \
-  || fail "Scenario 4c: CLAUDE.md CHANGELOG draft 룰 부재" ""
+# 4-c. CHANGELOG draft 룰 (spec-x-claude-md-slim #135 으로 CLAUDE.md → docs/release-strategy.md 이전)
+grep -q "Phase ship 시 CHANGELOG draft" docs/release-strategy.md \
+  || fail "Scenario 4c: release-strategy.md CHANGELOG draft 룰 부재" ""
 
 # 4-d. phase16-integration self-test
 bash tests/test-phase16-integration.sh >/dev/null 2>&1 \
