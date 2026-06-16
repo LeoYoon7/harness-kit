@@ -24,4 +24,4 @@ status: active      # active | resolved
 <!-- 같은 패턴이 재발하지 않도록 박을 장치. 코드 / 규약 / 자동화 / hook 중 하나 이상. -->
 
 ## 🔗 Related
-<!-- 관련 PR / ADR / spec / 다른 RCA. 링크 형식 자유. 없으면 섹션 삭제 가능. -->
+<!-- 관련 PR / ADR / spec / 다른 RCA. [[wikilink]] 컨벤션: [[spec-NN-NN]] · [[ADR-NNN]] · [[RCA-NNN]] · [[wiki/page]] (docs/wiki/purpose.md). 링크 형식 자유. 없으면 섹션 삭제 가능. -->

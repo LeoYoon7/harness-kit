@@ -40,4 +40,4 @@ status: proposed  # proposed | accepted | superseded | deprecated
 <예: Accepted (2026-05-16, spec-16-02 머지 시점). 첫 사용자: <module/component>.>
 
 ## 🔗 Related
-<!-- 관련 spec / RCA / PR / 외부 ADR. 없으면 섹션 삭제 가능. -->
+<!-- 관련 spec / RCA / PR / 외부 ADR. [[wikilink]] 컨벤션: [[spec-NN-NN]] · [[ADR-NNN]] · [[RCA-NNN]] · [[wiki/page]] (docs/wiki/purpose.md). 없으면 섹션 삭제 가능. -->

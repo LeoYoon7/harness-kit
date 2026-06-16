@@ -8,7 +8,7 @@
 ## 📦 진행 중 Phase
 
 <!-- sdd:active:start -->
-(active phase 없음. `bin/sdd phase new <slug>` 로 시작)
+- **phase-23** — wiki 운영 도구 (wiki-tooling) — 1 spec — 다음: spec-23-01-wiki-ingest
 <!-- sdd:active:end -->
 
 ## 📥 spec-x 대기
@@ -27,7 +27,7 @@
 - ~~거버넌스 문서 단어 수 한계 초과~~ → ✓ **phase-21 governance diet (#44)** + **ADR-012-governance-word-budget** — 상한 6000w→6500w 재설정 + agent.md 축소, 현재 6393w (test-governance-dedup 8/8 PASS, 2026-06-09 확인).
 - **hk-wiki-ingest 슬래시 커맨드** — archive 후 Claude가 wiki를 갱신하는 표준 워크플로. `sources/commands/hk-wiki-ingest.md` + 템플릿에 `[[wikilinks]]` 관련 문서 섹션 추가. (phase-19 spec-19-02 deferred)
 - **sdd doctor wiki 점검 3종** — wiki 고아 링크 감지, stale ADR/RCA 90일+ 경고, governance 단어 수 상한 경고. (phase-19 spec-19-03 deferred)
-- 기존 루트 런처(`telegram.sh`/`discord.sh`)의 `.dockerignore` 미커버 — spec-x-skip-perms-launcher 는 신규 권한 우회 런처만 doctor 점검 추가. 동일 갭이 telegram/discord 에도 존재. doctor 점검 확장 또는 컨테이너 가이드 항목 추가 검토
+- ~~기존 루트 런처(telegram.sh/discord.sh)의 .dockerignore 미커버~~ → ✓ 검토 종결 (2026-06-16): doctor ignore 위생 (c) 가 skip-perms 런처를, README §컨테이너 빌드 가이드가 가이드를 커버. telegram/discord 런처는 의도적 제외 — `.env*` 차단으로 토큰 방어 + 이름 충돌 false-positive 우려 (아래 컨테이너 항목 결론)
 - ~~**root CLAUDE.md 슬림화**~~ → ✓ **spec-x-claude-md-slim (#135, `046a091`)** — 릴리스 전략을 `docs/release-strategy.md` 로 분리, root 는 포인터.
 - **분기별 governance prune protocol** — 거버넌스 ratchet 누적 방지. `/hk-governance-refresh` 또는 sdd 진단에 "rule age > 6mo" 경고. 모델 진화에 맞춰 stale rule 제거 메커니즘 부재 (기사 인사이트 #2)
 - ~~**하위 디렉토리 CLAUDE.md**~~ → ✓ **spec-x-claude-md-nested (#136, `8bc7b41`)** — `sources/CLAUDE.md` + `specs/CLAUDE.md` 도입.
@@ -36,7 +36,7 @@
 - ~~**ADR-NNN-dogfood-sync-policy 작성** (convention)~~ → ✓ **ADR-003** 작성 (2026-05-28, commit `3a4ad76`)
 - ~~**`check-secrets.sh` `.env.*.example` 패턴 제외 fix**~~ → ✓ **spec-x-check-secrets-env-example** — `.env` 매칭 후 `grep -vE '\.(example|sample)$'` 로 템플릿 제외.
 - **ADR-NNN-tool-output-in-tree-vs-out-of-tree** (type: tradeoff) — harness-kit 의 도구 출력물 (review/critique vs walkthrough/pr_description) 의 위치 정책 (in-spec-dir vs `.harness-kit/cache/`) 결정 자산화. spec-x-install-ignore-coverage 의 critique (대안 A) 가 떠올린 근본 분기점. 본 spec 머지 후 별도 spec-x-adr-tool-output 또는 ADR 단독 작성. 향후 신규 산출물 (`code-review-claude.md`, `code-review-codex.md`, JSON/HTML 형식 등) 추가 시 한 페이지 참조로 결정 가능
-- **컨테이너 빌드 컨텍스트 비대칭** — `install.sh` 가 `.gitignore` 는 자동 관리하면서 `.dockerignore` 는 손대지 않음. Dockerfile 있는 프로젝트에 설치 시 `.harness-kit/`, `archive/`, `specs/`, `.env.*` 등이 빌드 컨텍스트에 포함되어 (a) WSL2 + Docker Desktop 환경에서 컨텍스트 전송 지연, (b) `COPY . .` 패턴 사용 시 `.env.telegram`/`.env.discord` 토큰이 이미지에 포함될 위험. fix 후보: `sdd doctor` 에 "Dockerfile 존재 + .dockerignore 에 `.harness-kit/` 미등재" 경고 + README 컨테이너 가이드 섹션. `install.sh` 자동 갱신은 사용자 정책 충돌 우려로 보류. 검토 메모: 토큰 유출은 대부분 프로젝트가 이미 `.env*` 차단으로 방어됨 — 진짜 비대칭 가치는 spec/archive 수백 파일로 인한 컨텍스트 비대화. Containerfile/compose.yml/Earthfile 등 다른 컨테이너 도구도 동일 함정. 권장 항목에서 `telegram.sh` 제외 (사용자 측 임의 스크립트 가능성)
+- ~~**컨테이너 빌드 컨텍스트 비대칭**~~ → ✓ 구현완료 (2026-06-16 확인): doctor ignore 위생 (b) (`sources/bin/sdd:2461–2469`, Dockerfile + `.dockerignore` 의 `.harness-kit` 미등재 경고) + README §컨테이너 빌드 가이드 (`README.md:129–150`, `.harness-kit/`·`specs/`·`archive/` 제외 + Containerfile/compose/Earthfile 주석 + skip-perms 런처). `install.sh` 자동 `.dockerignore` 갱신은 사용자 정책 충돌로 의도적 보류(유지). 이하 원본 분석: `install.sh` 가 `.gitignore` 는 자동 관리하면서 `.dockerignore` 는 손대지 않음. Dockerfile 있는 프로젝트에 설치 시 `.harness-kit/`, `archive/`, `specs/`, `.env.*` 등이 빌드 컨텍스트에 포함되어 (a) WSL2 + Docker Desktop 환경에서 컨텍스트 전송 지연, (b) `COPY . .` 패턴 사용 시 `.env.telegram`/`.env.discord` 토큰이 이미지에 포함될 위험. fix 후보: `sdd doctor` 에 "Dockerfile 존재 + .dockerignore 에 `.harness-kit/` 미등재" 경고 + README 컨테이너 가이드 섹션. `install.sh` 자동 갱신은 사용자 정책 충돌 우려로 보류. 검토 메모: 토큰 유출은 대부분 프로젝트가 이미 `.env*` 차단으로 방어됨 — 진짜 비대칭 가치는 spec/archive 수백 파일로 인한 컨텍스트 비대화. Containerfile/compose.yml/Earthfile 등 다른 컨테이너 도구도 동일 함정. 권장 항목에서 `telegram.sh` 제외 (사용자 측 임의 스크립트 가능성)
 - **AUQ 잔존 호출 경로 추가 점검** — `spec-x-notify-bidirectional-policy` 후 "에이전트는 AskUserQuestion 사용 안 함" 정책이 있음에도, align 직후 단순 의도 확인 시 AUQ 호출 사례 발생 (2026-05-29). 정책 텍스트만으론 부족할 수 있어 보강 검토: (a) `agent.md §8.4` / CLAUDE.md fragment 의 "사용 안 함" 문구를 더 강하게 (예: "절대 금지 — 위반 시 RCA"), (b) AUQ 호출 시 사전 차단 hook 검토 가능성, (c) 메모리 보강 [[feedback-no-auq-ever]] 와 별개로 거버넌스 문서 자체 강화 필요 여부 평가
 - **Discord embed 기반 구조화 메시지 (`spec-x-notify-discord-embed`)** — `spec-x-notify-channel-formatter` 의 시각 검증 (2026-05-29) 에서 *모바일 좁은 화면* 의 code-block 표가 *긴 셀* (예: 31 chars `spec-x-notify-channel-formatter`) 일 때 자동 word wrap → 정렬 깨짐 실증. Critique 의 *대안 B (embed)* 가 결정적 — title/description/fields 분리로 모바일 가독성 우위. surface: `notify-discord.sh` 의 `content` 송신 → `embeds` JSON 으로 확장, embed 본문 4096자 / field name 256 / value 1024 / 총 6000자 제한 (Discord API), chunking 재설계. ADR-006 `discord-table-rendering-policy` (type: tradeoff) 본 spec 트리거 시 작성. *직전 spec 의 한계가 다음 spec 의 정확한 ROI* — 문제-실증 기반 spec 정신
 - ~~**stale ADR 오탐 근본책 (sdd drift 가 archive/ 미탐색)**~~ → ✓ **spec-x-stale-adr-archive-path** 로 해결 (2026-06-09): `_drift_stale_adr()` 에 `[ -e "$SDD_ROOT/archive/$token" ] && continue` fallback (fix a) + 회귀 테스트 Step 5/6 + dogfood sync. Gemini cross-model Approve(0/0/0). 잔여 follow-up:

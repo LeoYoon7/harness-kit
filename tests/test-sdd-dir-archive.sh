@@ -461,6 +461,62 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────
+# Check 10: docs/wiki/ 존재 시 archive 후 /hk-wiki-ingest 힌트 출력 (spec-23-01)
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "Check 10: docs/wiki/ 존재 시 archive 후 /hk-wiki-ingest 힌트 출력"
+
+F10="$(make_fixture)"
+trap "rm -rf '$F1' '$F2' '$F4' '$F5' '$F6' '$F7' '$F8' '$F9' '$F10'" EXIT
+
+make_queue "$F10" "phase-01" ""
+cat > "$F10/backlog/phase-01.md" <<'EOF'
+# phase-01: test
+EOF
+make_spec_dir "$F10" "spec-01-001-test"
+mkdir -p "$F10/docs/wiki"
+cat > "$F10/docs/wiki/index.md" <<'EOF'
+# wiki index
+EOF
+
+git -C "$F10" add -A
+git -C "$F10" commit -m "setup" -q
+
+archive_out10=$(cd "$F10" && bash .harness-kit/bin/sdd archive 2>&1)
+
+if echo "$archive_out10" | grep -q "/hk-wiki-ingest"; then
+  ok "docs/wiki/ 존재 → archive 출력에 /hk-wiki-ingest 힌트 포함"
+else
+  fail "docs/wiki/ 존재인데 힌트 없음 — 출력: $archive_out10"
+fi
+
+# ─────────────────────────────────────────────────────────
+# Check 11: docs/wiki/ 부재 시 힌트 미출력 (노이즈 0)
+# ─────────────────────────────────────────────────────────
+echo ""
+echo "Check 11: docs/wiki/ 부재 시 힌트 미출력"
+
+F11="$(make_fixture)"
+trap "rm -rf '$F1' '$F2' '$F4' '$F5' '$F6' '$F7' '$F8' '$F9' '$F10' '$F11'" EXIT
+
+make_queue "$F11" "phase-01" ""
+cat > "$F11/backlog/phase-01.md" <<'EOF'
+# phase-01: test
+EOF
+make_spec_dir "$F11" "spec-01-001-test"
+
+git -C "$F11" add -A
+git -C "$F11" commit -m "setup" -q
+
+archive_out11=$(cd "$F11" && bash .harness-kit/bin/sdd archive 2>&1)
+
+if echo "$archive_out11" | grep -q "/hk-wiki-ingest"; then
+  fail "docs/wiki/ 부재인데 힌트 출력됨 (노이즈) — 출력: $archive_out11"
+else
+  ok "docs/wiki/ 부재 → 힌트 미출력 (노이즈 0)"
+fi
+
+# ─────────────────────────────────────────────────────────
 # 결과 요약
 # ─────────────────────────────────────────────────────────
 echo ""
